@@ -1,0 +1,17 @@
+digikam is good for typical stuff
+gimp is good for editing
+exiv2 is good for metadata manipulation
+
+set a time
+Image timestamp : 2002:10:29 11:53:37
+Image timestamp : 2002:10:28 11:16:20
+
+exiv2 -a -36:00:00 arthur001.jpg
+
+
+# adjst time in file and set file modification time to that time
+exiv2 -T -a +00:19:00 P*.JPG
+
+# adjust file modification time to match the date of the file
+exiv2 -T P*.JPG
+

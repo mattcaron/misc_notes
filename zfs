@@ -1,0 +1,307 @@
+
+Conclusion 12/2007 - It's not really ready on Linux. ZFS on FUSE is
+currently really slow, and there have been some corruption issues on
+certain things.
+
+References:
+http://www.wizy.org/wiki/ZFS_on_FUSE/Debian (doesn't work)
+
+http://www.cuddletech.com/blog/pivot/entry.php?id=446
+http://www.opensolaris.org/os/community/zfs/
+
+Look up ZFS over iSCSI
+
+http://www.csamuel.org/2007/01/01/zfs-disk-mirroring-striping-and-raid-z/
+http://en.wikipedia.org/wiki/ZFS#Limitations
+http://blogs.sun.com/relling/entry/zfs_raid_recommendations_space_performance
+http://blogs.sun.com/bonwick/entry/raid_z
+http://educationcommons.org/forums/thread.jspa?messageID=556
+http://docs.sun.com/app/docs/doc/819-5461/6n7ht6qrs?a=view
+
+http://node-0.mneisen.org/2006/12/31/zfs-unter-ubuntu-kubuntu-610-edgy-eft/
+http://www.opensolaris.org/os/community/zfs/
+http://www.opensolaris.org/os/community/zfs/intro/
+http://lists.freebsd.org/pipermail/freebsd-current/2007-April/070616.html
+
+1.) do the following:
+
+sudo apt-get install build-essential scons libfuse-dev fuse-utils
+
+2.) Get the latest release and save it someplace, then uncompress it
+
+http://www.wizy.org/wiki/ZFS_on_FUSE
+
+3.) Do:
+
+cd zfs-fuse-0.4.0_beta1/src
+scons
+sudo scons install
+
+4.) Start ZFS
+
+cd src/zfs-fuse
+sudo ./run.sh &
+
+5.) Make some fake disks. We'll start with one disk in the pool, then add more
+
+dd if=/dev/zero of=./zfs0 bs=1M count=2048
+dd if=/dev/zero of=./zfs1 bs=1M count=2048
+dd if=/dev/zero of=./zfs2 bs=1M count=1024
+dd if=/dev/zero of=./zfs3 bs=1M count=1024
+dd if=/dev/zero of=./zfs4 bs=1M count=1024
+
+(note the different sizes)
+
+6.) Useful commands:
+
+zpool - administer pools of disks
+
+zfs - handle zfs things
+
+7.) Create a raidz pool w/ 2 2gb disks
+
+zpool create mypool raidz /usr/local/zfs/zfs0 /usr/local/zfs/zfs1
+
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: none requested
+config:
+
+        NAME                     STATE     READ WRITE CKSUM
+        mypool                   ONLINE       0     0     0
+          raidz1                 ONLINE       0     0     0
+            /usr/local/zfs/zfs0  ONLINE       0     0     0
+            /usr/local/zfs/zfs1  ONLINE       0     0     0
+
+errors: No known data errors
+
+8.) Lets try and break stuff...
+
+mke2fs /usr/local/zfs/zfs0
+mkdir foo
+mount -o loop ./zfs0 foo/
+dd if=/dev/urandom of=poop bs=1M count=1024
+umount foo
+
+9.) Force a reread:
+
+zpool export mypool
+zpool import mypool -d /usr/local/zfs
+
+
+Pre:    6b7c9ccebdf1889141297ec611616dcf  SC3U.tar
+Post:   6b7c9ccebdf1889141297ec611616dcf  SC3U.tar
+
+10.) Now, let's add some more disks of different sizes...
+
+Starting:
+
+(root@hiro) /usr/local/zfs# df -h /mypool
+Filesystem            Size  Used Avail Use% Mounted on
+mypool                2.0G  1.2G  774M  62% /mypool
+
+zpool add -f mypool /usr/local/zfs/zfs2
+
+(the -f is because it throws an error because it's a file)
+
+While zfs makes progress, it's not perfect:
+
+(1) RAIDZ devices need to all be the same size (or it throws a warning)
+
+(2) You can't dynamically grow a redundant array - you can add another
+    pair of disks to the pool and they will be redundant, but you
+    can't just add one disk to grow the size (though you can add it to
+    make it a +1 way mirror (ie 2way -> 3way)
+
+So, you can build a box with a 4 disk RAIDZ system which will be a
+decent alternative to SW raid. When you run out of space, however, you
+will need to buy another pair of disks (minimum) to grow the pool in a
+safe fashion. Contrast this with Linux kernel software RAID which
+allows you to grow RAID 5 arrays.
+
+Tests:
+- raidz different sizes:
+
+(root@hiro) /usr/local/zfs# zpool create mypool raidz /usr/local/zfs/zfs0 /usr/local/zfs/zfs2
+invalid vdev specification
+use '-f' to override the following errors:
+raidz contains devices of different sizes
+(root@hiro) /usr/local/zfs# 
+
+- mirror different sizes:
+
+(root@hiro) /usr/local/zfs# zpool create mypool mirror /usr/local/zfs/zfs0 /usr/local/zfs/zfs2
+invalid vdev specification
+use '-f' to override the following errors:
+mirror contains devices of different sizes
+
+- attach a third disk to raidz:
+
+(root@hiro) /usr/local/zfs# zpool create mypool raidz /usr/local/zfs/zfs2 /usr/local/zfs/zfs3
+(root@hiro) /usr/local/zfs# zpool attach mypool /usr/local/zfs/zfs2 /usr/local/zfs/zfs4
+cannot attach /usr/local/zfs/zfs4 to /usr/local/zfs/zfs2: can only attach to mirrors and top-level disks
+
+- grow mirror to third disk:
+
+(root@hiro) /usr/local/zfs# zpool create mypool mirror /usr/local/zfs/zfs2 /usr/local/zfs/zfs3
+(root@hiro) /usr/local/zfs# zpool attach mypool /usr/local/zfs/zfs2 /usr/local/zfs/zfs4
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: resilver completed with 0 errors on Wed May  9 22:08:04 2007
+config:
+
+        NAME                     STATE     READ WRITE CKSUM
+        mypool                   ONLINE       0     0     0
+          mirror                 ONLINE       0     0     0
+            /usr/local/zfs/zfs2  ONLINE       0     0     0
+            /usr/local/zfs/zfs3  ONLINE       0     0     0
+            /usr/local/zfs/zfs4  ONLINE       0     0     0
+
+errors: No known data errors
+
+So, that works...
+
+- add another raidz pair to existing raidz pair:
+
+(root@hiro) /usr/local/zfs# zpool create mypool raidz /usr/local/zfs/zfs2 /usr/local/zfs/zfs3
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: none requested
+config:
+
+        NAME                     STATE     READ WRITE CKSUM
+        mypool                   ONLINE       0     0     0
+          raidz1                 ONLINE       0     0     0
+            /usr/local/zfs/zfs2  ONLINE       0     0     0
+            /usr/local/zfs/zfs3  ONLINE       0     0     0
+
+errors: No known data errors
+(root@hiro) /usr/local/zfs# zpool add mypool raidz /usr/local/zfs/zfs0 /usr/local/zfs/zfs1
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: none requested
+config:
+
+        NAME                     STATE     READ WRITE CKSUM
+        mypool                   ONLINE       0     0     0
+          raidz1                 ONLINE       0     0     0
+            /usr/local/zfs/zfs2  ONLINE       0     0     0
+            /usr/local/zfs/zfs3  ONLINE       0     0     0
+          raidz1                 ONLINE       0     0     0
+            /usr/local/zfs/zfs0  ONLINE       0     0     0
+            /usr/local/zfs/zfs1  ONLINE       0     0     0
+
+errors: No known data errors
+
+mix raidz addition w/ mirror existing
+
+- replace smaller w/ larger
+
+(root@hiro) /usr/local/zfs# zpool create mypool mirror /usr/local/zfs/zfs2 /usr/local/zfs/zfs3
+(root@hiro) /usr/local/zfs# zpool replace mypool /usr/local/zfs/zfs2 /usr/local/zfs/zfs0
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: resilver completed with 0 errors on Wed May  9 22:13:19 2007
+config:
+
+        NAME                       STATE     READ WRITE CKSUM
+        mypool                     ONLINE       0     0     0
+          mirror                   ONLINE       0     0     0
+            replacing              ONLINE       0     0     0
+              /usr/local/zfs/zfs2  ONLINE       0     0     0
+              /usr/local/zfs/zfs0  ONLINE       0     0     0
+            /usr/local/zfs/zfs3    ONLINE       0     0     0
+
+errors: No known data errors
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: resilver completed with 0 errors on Wed May  9 22:13:19 2007
+config:
+
+        NAME                     STATE     READ WRITE CKSUM
+        mypool                   ONLINE       0     0     0
+          mirror                 ONLINE       0     0     0
+            /usr/local/zfs/zfs0  ONLINE       0     0     0
+            /usr/local/zfs/zfs3  ONLINE       0     0     0
+
+errors: No known data errors
+(root@hiro) /usr/local/zfs# df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda5             9.7G  5.9G  3.6G  63% /
+varrun                252M  264K  252M   1% /var/run
+varlock               252M  8.0K  252M   1% /var/lock
+procbususb            252M  148K  252M   1% /proc/bus/usb
+udev                  252M  148K  252M   1% /dev
+devshm                252M     0  252M   0% /dev/shm
+lrm                   252M   33M  219M  14% /lib/modules/2.6.20-15-generic/volatile
+/dev/mapper/sda2       90M   54M   32M  63% /boot
+/dev/mapper/sda7       12G  6.5G  5.5G  55% /home
+/dev/mapper/sda6      9.9G  9.7G  298M  98% /usr/local
+/usr/local/pub        9.9G  9.7G  298M  98% /pub
+mypool                984M   25K  984M   1% /mypool
+(root@hiro) /usr/local/zfs# zpool replace mypool /usr/local/zfs/zfs3 /usr/local/zfs/zfs1
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: resilver completed with 0 errors on Wed May  9 22:13:47 2007
+config:
+
+        NAME                       STATE     READ WRITE CKSUM
+        mypool                     ONLINE       0     0     0
+          mirror                   ONLINE       0     0     0
+            /usr/local/zfs/zfs0    ONLINE       0     0     0
+            replacing              ONLINE       0     0     0
+              /usr/local/zfs/zfs3  ONLINE       0     0     0
+              /usr/local/zfs/zfs1  ONLINE       0     0     0
+
+errors: No known data errors
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: resilver completed with 0 errors on Wed May  9 22:13:47 2007
+config:
+
+        NAME                       STATE     READ WRITE CKSUM
+        mypool                     ONLINE       0     0     0
+          mirror                   ONLINE       0     0     0
+            /usr/local/zfs/zfs0    ONLINE       0     0     0
+            replacing              ONLINE       0     0     0
+              /usr/local/zfs/zfs3  ONLINE       0     0     0
+              /usr/local/zfs/zfs1  ONLINE       0     0     0
+
+errors: No known data errors
+(root@hiro) /usr/local/zfs# zpool status
+  pool: mypool
+ state: ONLINE
+ scrub: resilver completed with 0 errors on Wed May  9 22:13:47 2007
+config:
+
+        NAME                     STATE     READ WRITE CKSUM
+        mypool                   ONLINE       0     0     0
+          mirror                 ONLINE       0     0     0
+            /usr/local/zfs/zfs0  ONLINE       0     0     0
+            /usr/local/zfs/zfs1  ONLINE       0     0     0
+
+errors: No known data errors
+(root@hiro) /usr/local/zfs# df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda5             9.7G  5.9G  3.6G  63% /
+varrun                252M  264K  252M   1% /var/run
+varlock               252M  8.0K  252M   1% /var/lock
+procbususb            252M  148K  252M   1% /proc/bus/usb
+udev                  252M  148K  252M   1% /dev
+devshm                252M     0  252M   0% /dev/shm
+lrm                   252M   33M  219M  14% /lib/modules/2.6.20-15-generic/volatile
+/dev/mapper/sda2       90M   54M   32M  63% /boot
+/dev/mapper/sda7       12G  6.5G  5.5G  55% /home
+/dev/mapper/sda6      9.9G  9.7G  298M  98% /usr/local
+/usr/local/pub        9.9G  9.7G  298M  98% /pub
+mypool                984M   25K  984M   1% /mypool
+
+However, this is just a replacement - you don't get the larger capacity or anything...

@@ -1,0 +1,11 @@
+Install the package:
+
+sudo dpkg -i ./phoronix-test-suite_1.0.0_all.deb 
+
+Install the big test:
+
+phoronix-test-suite install universe
+
+Run the big test:
+
+phoronix-test-suite run universe

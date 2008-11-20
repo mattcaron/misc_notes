@@ -1,0 +1,118 @@
+0.) Fix root's account:
+	delete all the shell login files
+
+1.) Config stuff:
+	Copy the following from backup etc to /etc:
+		passwd
+		shadow
+		group
+		gshadow
+		bashrc
+		csh.cshrc (delete csh.login)
+		profile 
+		a2ps-site.cfg
+		hosts
+		issue
+		rm issue.net; ln -s issue issue.net
+		lpd.perms
+		default/useradd
+		sysconfig/network-scripts/ifcfg-eth0
+		sysconfig/network
+	add /usr/local/lib to ld.so.conf
+
+	in init.d:
+	ntp
+	portsentry
+	sshd.init 
+
+
+2.) in /etc/rc5.d:
+	remove:
+		sendmail
+		portmap
+		kudzu
+		nfs
+		netfs
+		nfslock
+	add:
+		S96sshd.init
+		S98ntp
+		S98portsentry
+
+	in /etc/rc0.d and rc6.d
+	remove:
+		nfs
+		nfslock
+
+3.) in /etc/pam.d
+  cp /usr/local/apps/openssh/openssh-3.1p1/contrib/redhat/sshd.pam-7.x ./sshd
+
+4.) Install rpms:
+	xosview - CD3
+	xlockmore - CD3
+	xdaliclock - CD3
+	transfig - CD3
+	xfig - CD3
+	smpeg-gtv - CD3
+	smpeg-xmms - CD3
+	gnuplot - CD2
+	gv - CD2
+	vnc - CD2
+	vnc-server - CD2
+	tcpdump - CD2
+	
+    Delete rpms:
+	rpm -qa | grep ssh and uninstall all of those
+	rpm -qa | grep samba and uninstall all of those
+	
+
+5.) Install Xaw3d
+	copy from /usr/local/apps/Xaw3d/xc/lib/Xaw3d/ to /usr/X11R6/lib
+	copy:
+		libXaw3d.a
+		libXaw3d.so.7.0
+	then in /usr/X11R6/lib, copy those to their libXaw.* counterparts
+	copy the existing libXaw3d.so.6.1 to libXaw.so.6.1
+
+6.) Set up latex:
+
+	cd /usr/share/texmf/tex/latex
+	ln -s /usr/local/apps/latex/local/ .
+
+	then run texconfig and rebuild the ls-R database
+
+	also, change the dvips configuration to be letter papersize instead
+	of A4.
+
+7.) Fix kdm: in /etc/kde/kdm
+	edit /etc/kde/kdm/Xservers, add -nolisten tcp to the X startup string
+	edit /etc/kde/kdm/Xsetup, delete the whole xsri program stuff
+	edit /etc/kde/kdm/kdmrc, change all the AllowShutdown to =Root
+	edit /etc/kde/kdm/kdmrc. change LogoArea to =None
+	edit /etc/kde/kdm/kdmrc. change GreetString to Welcome to %n
+	
+8.) Fix grub; edit /etc/grub.conf
+	change timeout to 1
+	add hdc=ide-scsi to the kernel string
+
+9.) Compile the kernel with the shit that you want in it 
+	(including visor stuff)
+	NOTE: only do this AFTER all the patches are installed
+
+10.) Install all the stuff in /usr/local/apps/rpms
+
+11.) Make the logfile readable by me.
+
+12.) Make ntp work
+	cd /etc
+	ln -s /usr/local/apps/ntp/etc/* .
+
+13.) Fix it so visor works:
+	add to /etc/fstab:
+		 none    /proc/bus/usb   usbdevfs  defaults  0 0
+	the rest should be done by user configuration
+
+14.) mkdir /var/empty for sshd
+
+
+

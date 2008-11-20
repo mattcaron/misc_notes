@@ -1,0 +1,57 @@
+VAG-COM Version: Release 409.1-US
+
+
+Chassis Type: 1J - VW G/J/B Mk4
+Scan: 01,02,03,08,16,15,17,19,22,35,46,56
+ 
+-------------------------------------------------------------------------------
+Address 01: Engine
+   Controller: 038 997 016 C
+   Component: R4 1,9L EDC G000AG  7000
+   Coding: 0150034
+   Shop #: WSC 01207
+1 Fault Found:
+16687 - Cylinder 3 Misfire Detected
+            P0303 - 000 -  - - Intermittent
+Readiness: N/A
+
+-- CLEARED -- 08/19/07 -- 
+
+VAG-COM Version: Release 409.1-US
+
+Control Module Part Number: 038 997 016 C
+  Component and/or Version: R4 1,9L EDC G000AG  7000
+           Software Coding: 0150034
+            Work Shop Code: WSC 01207
+1 Fault Found:
+16687 - Cylinder 3 Misfire Detected
+        P0303 - 000 -  -
+
+
+-------------------------------------------------------------------------------
+Address 02: Auto Trans
+   Controller: 09A 927 750 BL
+   Component: AG5 Getriebe 09A   0262 
+No fault code found.
+
+-------------------------------------------------------------------------------
+Address 03: ABS Brakes
+   Controller: 1C0 907 379 L
+   Component: ABS FRONT MK60      0101
+   Coding: 0004097
+   Shop #: WSC 00000
+No fault code found.
+
+08 - didn't work.
+16 - didn't work.
+15 - DO NOT USE
+17 - OK
+19 - OK
+22 - didn't work
+35 - didn't work
+46 - OK
+56 - OK
+
+expanded engine:
+
+

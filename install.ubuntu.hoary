@@ -1,0 +1,620 @@
+Install Crib Sheet for Ubuntu 5.04 (Hoary)
+
+Note: These have not been 100% tested, since they are based of the mods
+I had to do to Warty to move to Hoary
+
+##################### BASE INSTALL SECTION #########################
+
+1.) Boot the install cd and follow instructions to do the base install.
+Set up machine as desired. Fairly self-explanatory.
+
+2.) After machine is up, edit /etc/apt/sources.list and do the following:
+	a.) Uncomment the two "universe" lines
+	b.) Change:
+deb http://archive.ubuntu.com/ubuntu hoary universe
+	- to
+deb http://archive.ubuntu.com/ubuntu hoary universe multiverse
+	c.) Add the lines:
+deb http://us.archive.ubuntu.com/ubuntu hoary-backports main universe multiverse restricted
+deb http://jrfonseca.dyndns.org/debian/ ./
+deb ftp://ftp.nerim.net/debian-marillat/ testing main
+	d.) Comment out the cdrom line
+
+3.) Do:
+apt-get update
+apt-get dist-upgrade
+- (this last bit might need to be repeated until it can get all the packages 
+successfully)
+
+4.) Install lots of things (as above. this might need to be repeated):
+
+apt-get install nmap whois logjam k3b flashplugin-nonfree bittorrent gif2png gimp-svg cups-pdf tetex-base tetex-bin tetex-extra prosper chrony sane sane-utils scribus xine-ui gxine kaffeine libdvdcss2 w32codecs gv cgoban gnugo penguin-command kino kino-dvtitler kinoplus kino-timfx grip gqview traceroute symlinks xfce4 xfce4-goodies xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-themes xfce4-toys xfce4-trigger-launcher xfce4-wavelan-plugin xfce4-weather-plugin xfce4-windowlist-plugin xfce4-xkb-plugin xffm4 xfce4-panel-menu-plugin xfce4-sensors-plugin xfce4-taskbar-plugin gkrellm gkrellm-alltraxclock gkrellm-bfm gkrellm-hddtemp gkrellm-ibam gkrellmitime gkrellm-leds gkrellm-mailwatch gkrellmms gkrellm-radio gkrellm-reminder gkrellm-snmp gkrellmss gkrellm-volume gkrellmwho2 gkrellmwireless gkrellm-x86info wmaker wmakerconf wmakerconf-data wmaker-data aterm ipsec-tools xmms xmms-alarm xmms-arts xmms-blursk xmms-bumpscope xmms-cdread xmms-crossfade xmms-dbmix xmms-defx xmms-festalon xmms-finespectrum xmms-flac xmms-fmradio xmms-goodnight xmms-goom xmms-infinity xmms-infopipe xmms-iris xmms-jack xmms-jess xmms-ladspa xmms-lirc xmms-liveice xmms-mad xmms-modplug xmms-msa xmms-normalize xmms-osd-plugin xmms-qbble xmms-rplay xmms-shell xmms-sid xmms-singit xmms-skins xmms-stats xmms-status-plugin xmms-synaesthesia xmms-volnorm xmms-wmdiscotux xmms-xf86audio units unison-gtk xfrisk wine libwine-print libwine-alsa winesetuptk winetools wineboot msttcorefonts dar par2 gdm-themes tftp-hpa xfig xfig-doc xfig-libs audacity mozilla-thunderbird mozilla-thunderbird-enigmail mozilla-thunderbird-offline mozilla-thunderbird-typeaheadfind mozilla-thunderbird-inspector mozilla-firefox-gnome-support portsentry xnest ssmtp openssh-server vncserver sysutils mono monodevelop monodoc ardour-gtk gnuplot gnuplot-mode gstreamer0.8-plugins lame gcc libimlib2 libimlib2-dev libxft-dev sun-j2sdk1.5 libjpeg-progs kile dvdrtools gpdf gftp-gtk libsane-extras libwxgtk2.4-python wpd2sxw doomlegacy-sdl doomlegacy-x11 apt-show-versions kubuntu-desktop xbill netapplet samba smbfs latex2html tdb-tools emacs-goodies-el mozplugger digikam digikamimageplugins digikamplugins 
+
+5.) Optional, set up ATI binary drivers:
+IMPORTANT NOTE - this BREAKS software suspend in hoary!!!!
+apt-get install fglrx-control fglrx-driver
+
+- Add fglrx to /etc/modules
+- load it:
+depmod -a
+modprobe fglrx
+- edit /etc/X11/XF86Config-4 and change "ati" or "radeon" to "fglrx"
+- restart X and it should work
+
+6.) Optional, set up lm sensors:
+
+- howto is here:
+http://www.ubuntuforums.org/showthread.php?t=2780
+
+- install sensor reading packages:
+sudo apt-get install lm-sensors
+
+- find your sensors; run sensors-detect and answer a lot of YES
+- questions to probe for sensors. This will generate a list of what you
+- need to do to make it work. Do that.
+
+- Note: Instead of /etc/modules.d/local, it's /etc/modules.d/aliases. However, 
+- the alias is already listed, so we shoudl be fine
+
+- Run sensors to test it. Gkrellm can read the sensors
+
+- config lives in /etc/sensors.conf. This can be used to modify the scales
+- and such
+
+7.) Optional, install nut stuff:
+apt-get install nut nut-usb
+
+8.) Optional, set up hibernation:
+- edit /etc/default/acpi-support and uncomment the line:
+ACPI_SLEEP=true
+- edit /boot/grub/menu.lst and find the #kopt= line, and add:
+resume=/dev/hda2
+- (where hda2 is your swap partition) to the end
+- run:
+update-grub
+- to regen menu.lst
+
+9.) Fix cdrom stuff
+cd /etc/udev/rules.d
+sudo ln -s ../cd-aliases.rules .
+- edit /etc/udev/cdsymlinks.conf and uncomment the OUTPUT and NUMBERED_LINKS
+- lines
+
+##################### PHASE 1 SET UP SECTION #########################
+
+1.) Set up static IP's (for machines with them)
+- edit /etc/network/interfaces, and add lines like:
+iface eth0-home inet static
+	address 192.168.1.1
+        netmask 255.255.255.0
+	gateway 192.168.1.254
+
+2.) Make ssh work:
+## For an old machine, use the old keys - you did save /etc, didn't you?
+
+## For a new machine, use the existing keys generated by the distro.
+
+## For both, tweak ssh_config/sshd_config as necessary
+- in sshd_config, set:
+	PermitRootLogin no
+	PasswordAuthentication yes
+- in ssh_config, set:
+	ForwardX11 yes
+	ForwardX11Trusted no
+	UseLogin yes
+- You need to restart this for changes to take effect
+/etc/init.d/sshd restart
+
+### Set up /etc/hosts.allow and /etc/hosts.deny for ssh:
+- hosts.allow:
+----------------
+ALL: 127.0.0.1
+sshd: ALL
+-----------------
+
+- hosts.deny:
+----------------
+ALL:ALL
+-----------------
+
+3.) Add important modules to /etc/modules
+vfat
+- for machines with 3ware cards
+3w-xxxx
+
+4.) Set up nvram stuff for laptop 
+cd /etc/init.d
+cp -a /usr/local/apps/init_scripts/nvram .
+sudo update-rc.d nvram defaults
+sudo /etc/init.d/nvram start
+
+##################### DOMAIN MEMBER SET UP SECTION #########################
+
+1.) /etc/hosts
+- add hosts to /etc/hosts as appropriate
+- for machines with static IP's, use that IP and delete it from the localhost 
+- line
+
+2.) Set up lvm2 (for machines using it)
+
+## For machines with new lvm groups:
+
+- create any partitions you want (I'm using /dev/sda1 here)
+emerge lvm2
+mkdir /etc/lvm
+echo 'devices { filter=["r/cdrom/"] }' > /etc/lvm/lvm.conf
+vgscan
+pvcreate /dev/sda1
+vgcreate vg /dev/sda1
+
+- create bits with
+lvcreate -LsizeG -nname vg
+
+- where size is the size and name is the name these are now accessible
+- through /dev/vg/name file systems can be made through
+mke2fs -j -m0 -v /dev/vg/name
+tune2fs -c100 -i0 /dev/vg/name
+
+- 'vgs' can be used to show your volume groups 
+	(sizes and free and all that)
+- make mount points, add the bits to /etc/fstab and mount them
+
+## For machines with existing lvm groups:
+
+- generate the vg's
+vgscan
+
+- make sure all is okay (pv = physical volume, lv = logical volume)
+pvscan
+lvscan
+
+- if it looks okay, enable the lv's. For each one reported by lvscan:
+lvchange -a y /dev/vg/pathname
+
+- once all are active, do:
+vgmknodes
+
+## to resise:
+- lvdisplay and vgdisplay are useful to look at things
+lvextend /dev/vg/home -l+number_of_extents
+- or
+lvextend /dev/vg/home -L+sizeMGK
+- will resize
+- resize2fs to resize the fs...
+
+
+3.) Set up IPSec:
+
+apt-get install ipsec-tools
+
+- set up an /etc/ipsec.conf which should contain sections like:
+
+---------------------------
+###### connections of 192.168.1.1 to 192.168.1.2 ######
+
+# AH SAs using 128 bit long keys
+add 192.168.1.1 192.168.1.2 ah 0x010 -A hmac-md5 
+       	0x8c4708518e279fa02362564358550777;
+add 192.168.1.2 192.168.1.1 ah 0x011 -A hmac-md5 
+        0x2e6893cd15b62788e6b0b70261ec4823;
+
+# ESP SAs using 192 bit long keys (168 + 24 parity)
+add 192.168.1.1 192.168.1.2 esp 0x012 -E 3des-cbc 
+       	0x6f719567a590b91de95bfa460f1576393ae0e6d6b5522c4c;
+add 192.168.1.2 192.168.1.1 esp 0x013 -E 3des-cbc 
+       	0x814c676ea62123fc1c818ff4270eaf254489fccf540ab24f;
+
+# Security policies
+spdadd 192.168.1.1 192.168.1.2 any -P in ipsec
+       	esp/transport//require
+        ah/transport//require;
+spdadd 192.168.1.2 192.168.1.1 any -P out ipsec
+       	esp/transport//require
+        ah/transport//require;
+---------------------------
+	
+- do this for each to/from pair. This needs to be set up on each side
+- of the connection, and you want to flip the in/out section of the
+- policy on one side.
+
+- to generate the AH key, do:
+	
+dd if=/dev/random count=16 bs=1| xxd -ps
+	
+- and take the output and use it for the key. Remember to stick the 0x
+- in front of it
+
+- to generate the ESP key, do:
+
+dd if=/dev/random count=24 bs=1| xxd -ps
+
+- and take the output and use it for the key. Remember to stick the 0x
+- in front of it
+
+- Then copy over my custom ipsec to /etc/init.d
+cp -a /usr/local/apps/init_scripts/ipsec /etc/init.d
+
+- add to normal startup and start. We want it to start right after
+- networking, which comes up in order 40 in runlevel S
+update-rc.d ipsec start 41 S .
+/etc/init.d/ipsec start
+
+
+4.) Set up NIS server:
+
+### Add to hosts:
+- Make sure the server and all clients are in /etc/hosts. This means things
+- will still work if DNS dies or anything else bad happens.
+
+### Add to hosts.allow
+- hosts.allow:
+----------------
+portmap ypserv ypbind : <list of IP ADDRESSES, see note below>
+-----------------
+- Note: This needs to be a list of IP's for each machine needing to
+- connect to the server, which is:
+- 1.) the machine itself
+- 2.) any NIS/NFS client connecting to it.
+
+### Get the bits you need. When asked, enter the name of your domain:
+apt-get install nis
+
+### Set things up:
+- fix portmap; edit /etc/default/portmap and set:
+ARGS=
+
+- edit /etc/default/nis, and change the following:
+NISSERVER=master
+
+- edit /etc/yp.conf and add the line:
+domain fnord server yt
+
+- edit /etc/defaultdomain and add the line:
+fnord
+- (this is not necessary if you set it up when the package was installed)
+
+- edit /var/yp/Makefile set it up. It is well commented.
+- NOTES: 
+	- MINGID should be set to 1 in order to propagate the groups (cdrom,
+	- floppy, games, etc) correctly on all machines.
+	- All I changed was the MINGID, the rest was fine
+
+- edit /etc/ypserv.securenets and add lines to restrict to domain
+- members. I use lines like:
+host                    192.168.1.1
+host                    192.168.1.3
+- Make sure to comment out the 0.0.0.0 line
+
+- To build the DB for the first time, run:
+/usr/lib/yp/ypinit -m
+- and follow the instructions (the one server is fine)
+- This will throw some errors. It's okay.
+
+- restart portmap and nis
+/etc/init.d/portmap restart
+/etc/init.d/nis restart
+- NOTE: I had some problems with portmap exiting correctly on my box, I had
+- to kill -9 it...
+	
+- if you change people's passwords or something, do
+make -C /var/yp
+
+5.) Set up NIS client:
+
+### A note about administration:
+- Since there is no root user, make sure that whomever you want to be
+- able to admin the machine is in /etc/sudoers on the client
+- machine. It is also a good idea to have those users as local users on the
+- machine, with the SAME UID as is shared over NIS.
+
+### Add to hosts:
+- Make sure the server is in /etc/hosts. This means things
+- will still work if DNS dies or anything else bad happens.
+
+### Get the bits you need. When asked, enter the name of your domain:
+apt-get install nis
+
+### Set things up:
+- edit /etc/passwd and add the following line at the end:
++::::::
+
+- edit /etc/group and add the following line at the end:
++:::
+
+- edit /etc/shadow and add the following line at the end:
++::::::::
+
+- edit /etc/yp.conf and add the line:
+domain fnord server yt
+
+- edit /etc/defaultdomain and add the line:
+fnord
+
+- restart nis:
+/etc/init.d/nis restart
+
+- NOTE: sshd will have to be restarted to use the new authentication
+- scheme
+/etc/init.d/sshd restart
+
+
+6.) Set up NFS server:
+
+### Add to netgroups:
+- Edit /etc/netgroup and add a line like:
+boxen (yt,,) (case,,)
+
+### Add to hosts.allow:
+------------
+portmap mountd nfsd statd lockd: <list of machines, see note below>
+(you want to add rquotad as well, if you use it)
+------------
+- NOTE: The easiest way to do this is to just put this on the same line
+- as your portmap
+
+### Get the bits you need:
+apt-get install nfs-common nfs-kernel-server
+
+### Set things up:
+- edit /etc/exports and add shares, like:
+----------
+/home                   @boxen(rw,sync)
+/pub                    @boxen(rw,sync)
+/usr/local              @boxen(rw,sync)
+----------
+
+- Then do:
+exportfs -ra
+
+- Restart it:
+/etc/init.d/nfs-kernel-server restart
+
+7.) Set up NFS client:
+- in /etc/fstab
+# device   mountpoint  fs-type     options    dump fsckorder
+yt:/dir  /mntpoint    nfs     rw,hard,intr   0    0
+
+- Make the mount points
+
+- Mount them with: 
+mount -a
+
+##################### PHASE 2 SET UP SECTION #########################
+
+1.) bash
+cd /etc
+mv bash.bashrc bash.bashrc.orig
+mv profile profile.orig
+mv inputrc inputrc.orig
+cp -a /usr/local/apps/bash/bash.bashrc .
+cp -a /usr/local/apps/bash/profile .
+cp -a /usr/local/apps/bash/inputrc .
+cd /etc/skel
+mv .bash_profile .bash_profile.default
+touch .bash_profile
+mv .bashrc .bashrc.default
+touch .bashrc
+
+2.) emacs:
+cd /etc/emacs
+mv site-start.el site-start.el.old
+ln -s /usr/local/apps/emacs/site-start.el .
+
+3.) bump to better kernel (as appropriate)
+apt-get install linux-686
+apt-get install linux-686-smp
+apt-get install linux-k7-smp
+
+4.) Set up fonts - edit /etc/fonts/local.conf and uncomment the lines for
+bitmapped fonts and subpixel rendering.
+(you need to restart ALL X (including GDM) for the change to take effect)
+
+5.) Configure bootloader (GRUB)
+- edit /boot/grub/menu.lst
+- make sure hiddenmenu is commented out
+- uncomment the color line
+- set the timeout to 5
+- set up password by adding the line:
+	password --md5 PASSWORD
+- and PASSWORD is the output from:
+	grub-md5-crypt
+- then do:
+	chmod 600 /boot/grub/menu.lst
+- so that folks can't read the password
+
+6.) thinkpad stuff
+#### Deprecated ####
+- using the debian unstable package which has xosd support
+apt-get install tpb
+chmod o+r /dev/nvram
+#### Current ####
+dpkg -i /usr/local/apps/debian_packages/tpb_0.6.3-2_i386.deb
+
+
+7.) gimp:
+cd /usr/share/gimp/2.0/scripts
+ln -s /usr/local/apps/gimp/scripts/* .
+
+8.) latex
+cd /usr/share/texmf/tex/latex
+ln -s /usr/local/apps/latex/local .
+- then run texconfig and rebuild the ls-R database
+
+9.) gkrellm skins:
+cd /usr/share
+mkdir gkrellm2
+cd gkrellm2
+ln -s /usr/local/apps/gkrellm2/GKrellM-skins/ themes
+
+10.) Make portsentry work
+cd /etc/portsentry
+mkdir old
+mv * old
+cp -a /usr/local/apps/portsentry/* /etc/portsentry/.
+- edit /etc/default/portsentry and change the modes to:
+TCP_MODE="atcp"
+UDP_MODE="audp"
+- restart it
+/etc/init.d/portsentry restart
+
+11.) set up digital camera
+mkdir /media/card
+- add the following to /etc/fstab
+/dev/sda1	/media/card	auto	noauto,user	0 0
+
+12.) set up smbmount
+chmod u+s /usr/bin/smbmnt
+chmod u+s /usr/bin/smbumount
+
+13.) set up ssmtp
+- edit /etc/ssmtp/ssmtp.conf
+- set the mailhub=localhost:2525 
+	(this will only work for folks with a tunnel like mine)
+- set rewriteDomain=mattcaron.net
+
+14.) chrony (ntp)
+## for standalone (laptop):
+cd /etc/chrony
+mv chrony.conf chrony.conf.orig
+mv chrony.keys chrony.keys.orig
+cp -a /usr/local/apps/ntp/chrony/chrony.conf.standalone ./chrony.conf
+cp -a /usr/local/apps/ntp/chrony/chrony.keys.standalone ./chrony.keys
+
+## for server:
+- add ntpd to hosts.allow list
+cd /etc/chrony
+mkdir old
+mv * old/.
+cp -a /usr/local/apps/ntp/chrony/chrony.conf.server ./chrony.conf
+cp -a /usr/local/apps/ntp/chrony/chrony.keys.server ./chrony.keys
+
+## for client
+cd /etc/chrony
+mkdir old
+mv * old/.
+cp -a /usr/local/apps/ntp/chrony/chrony.conf.client ./chrony.conf
+cp -a /usr/local/apps/ntp/chrony/chrony.keys.client  ./chrony.keys	
+
+15.) set up messages
+- edit /etc/issue to have a nice message
+rm issue.net
+ln -s issue issue.net
+
+16.) Set up hdparm
+- edit /etc/hdparm.conf and add these lines:
+
+# Generic hard drive template, use for all ide hard disks
+/dev/hda {
+	mult_sect_io = 16
+	interrupt_unmask = on
+	dma = on
+	io32_support = 1
+}
+
+# Generic optical drive template, use for all ide cdrom disks
+/dev/hdc {
+	interrupt_unmask = on
+	dma = on
+	io32_support = 1
+}
+
+17.) GDM 
+- Configure it safely with gdmconfig's "security" tab
+
+18.) cups
+- edit /etc/cups/cupsd-browsing.conf and add the lines:
+	RunAsUser No
+- (so that cups-pdf works)
+	Browsing On
+- so that cups works as it should
+
+- add printers with gnome-cups-manager
+- don't forget to add pdf printer support. It's a color postscript queue.
+- prints go into ~/cups-pdf/
+- You can't change the names in gnome-cups-manager, so edit
+- /etc/cups/printers.conf to change the name
+
+- in /etc/cups/cupsd.conf, if you want to share printers, do:
+- Comment out the line:
+	Listen 127.0.0.1:631
+- and add:
+	Port 631
+- in the <Location /printers> section, do:
+        Allow From 192.168.1.*
+
+
+19.) Remove gdm on servers to X doesn't start:
+update-rc.d -f gdm remove
+
+20.) Set up samba:
+sudo cp -a smb.conf smb.conf.old
+sudo cp -a /usr/local/apps/samba/smb.conf.machine_name ./smb.conf
+/etc/init.d/samba restart
+
+- Remember to turn it off on places you don't want it.
+sudo update-rc.d -f samba remove
+
+21.) Set up any periodic cron jobs
+- edit /etc/crontab and add the job
+
+22.) Set up ieee1394 support for machines w/ firewire support
+- Info:
+http://www.ubuntulinux.org/wiki/HowToCaptureDigitalVideo
+- Add the following to /etc/init.d/bootmisc.sh, right at the end before 
+- the exit:
+mknod /dev/raw1394 c 171 0
+chown root:video /dev/raw1394
+chmod 660 /dev/raw1394
+- People have to be in the video group to do video things...
+
+23.) Set up paper size
+- edit /etc/papersize
+- set it to: letter
+
+##################### OTHER MISC NOTES SECTION #########################
+
+1.) set up public key authentication
+- (note: this assumes that you don't already have an
+- authorized_keys file on the remote host.  If you do you'll
+- need to add the contents of id_dsa.pub to the end of it,
+- rather than replacing it with id_dsa.pub as I do below)
+
+- Generate a key:
+
+ssh-keygen -t dsa -f ~/.ssh/identity
+
+- (don't set a passphrase for passwordless auth)
+
+- SSH to your remote host, and add the identity.pub to that
+- machine's ~/.ssh/authorized_keys (or just copy it)
+
+2.) to set DVD region code (only necessary once, per drive, EVER!!!)
+- (indeed, most of them can only be set a few times before, they're
+- locked forever. Be honest)
+apt-get install regionset
+- MAKE SURE THERE IS A VIDEO DVD IN THE DRIVE and (as root) do:
+regionset
+- set it to region 1, and use the mask it calculates. It will
+- probably even tell you how many changes you have left
+
+3.) Default browser/mail/etc
+- can set default browser by doing:
+gnome-control-center
+- then going to Advanced -> Preferred Applications
+	
+4.) Group admin
+gpasswd is used to administer /etc/group
+
+5.) Wine
+- run wt2 and follow instructions. If you have installed all the bits in the
+- big install, it should be fine. Note that this is all done per-user, so
+- it should only need to be done on one machine, and is populated around on
+- sync...
+
+6.) you can dump the list of people in the samba db's by doing:
+sudo tdbdump /var/lib/samba/passdb.tdb
+- for what good it does you
+
+7.) mono stuff:
+glade
+libmono-dev

@@ -1,0 +1,33 @@
+From:
+http://www.byteme.org.uk/secondlife-amd64/apt-get-a-secondlife.html
+
+Stable release track:
+deb http://apt.byteme.org.uk unstable main
+deb-src http://apt.byteme.org.uk unstable main
+
+Join the in world "Secondlife Debian Package Testers"
+
+GPG Key (can't seem to get it from keyserver)
+gpg --keyserver http://subkeys.pgp.net --recv-key 0x3b7ee764
+gpg --export 0x3b7ee764 | sudo apt-key add -
+
+Install:
+apt-get install slviewer
+
+The bleeding edge is renamed:
+apt-get install omvviewer 
+
+Jenn is  Arohee Chatnoir
+
+
+OpenSimulator Docs:
+
+http://opensimulator.org/wiki/User_Documentation
+http://opensimulator.org/wiki/OpenSim_Build_Instructions
+http://opensimulator.org/wiki/OpenSim_Configuration
+http://opensimulator.org/wiki/Connecting
+http://openviewer.org/wiki/Media
+
+
+- on servers, we need to do:
+ufw allow 9000

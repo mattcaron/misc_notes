@@ -1,0 +1,264 @@
+1.) set up public key authentication
+- (note: this assumes that you don't already have an
+- authorized_keys file on the remote host.  If you do you'll
+- need to add the contents of id_dsa.pub to the end of it,
+- rather than replacing it with id_dsa.pub as I do below)
+
+- Generate a key:
+
+ssh-keygen -t dsa -f ~/.ssh/identity
+
+- (don't set a passphrase for passwordless auth)
+
+- SSH to your remote host, and add the identity.pub to that
+- machine's ~/.ssh/authorized_keys (or just copy it)
+
+2.) to set DVD region code (only necessary once, per drive, EVER!!!)
+- (indeed, most of them can only be set a few times before, they're
+- locked forever. Be honest)
+apt-get install regionset
+- MAKE SURE THERE IS A VIDEO DVD IN THE DRIVE and (as root) do:
+regionset
+- set it to region 1, and use the mask it calculates. It will
+- probably even tell you how many changes you have left
+
+3.) Group admin
+gpasswd is used to administer /etc/group
+
+4.) you can dump the list of people in the samba db's by doing:
+sudo tdbdump /var/lib/samba/passdb.tdb
+- for what good it does you
+
+5.) dpkg-reconfigure is useful for reconfiguring stuff
+example:
+sudo dpkg-reconfigure -phigh xserver-xorg
+
+6.) update-alternatives is useful when playing with different
+alternative things - example:
+
+sudo update-alternatives --config usplash-artwork.so
+
+- Of course, in the above case, you need to rebuild the initramfs to make
+it all work:
+sudo dpkg-reconfigure linux-image-`uname -r`
+
+7.) Clean out cache periodically
+sudo apt-get autoclean
+sudo apt-get autoremove
+
+8.) How to get to single user mode
+
+Get there:
+telinit 1
+
+Get back:
+telinit 2
+
+(or currently set initdefault in /etc/inittab)
+
+the command:
+runlevel
+
+tells you where you are..
+
+9.) Tar over an ssh connection
+
+tar -zvcf - ./hda1 | ssh matt@192.168.9.1 "cat - > foo_backup.tar.bz2" 
+
+10.) Clear out symlinks
+
+sudo symlinks -rd .
+
+11.) Set up /etc/iftab to force assignments of interface to MAC
+     address
+
+eth0 mac 00:02:b3:98:df:65 arp 1
+eth1 mac 00:e0:81:20:90:f6 arp 1
+
+12.) Set up compiz, if you want
+
+sudo apt-get install compiz compizconfig-settings-manager compiz-kde emerald 
+
+To config: Menu -> Settings -> Advanced Desktop Effects Manager
+(or run ccsm)
+
+To turn it on, do System -> Preferences -> Desktop Effects and click "Enable Desktop Effects"
+
+(or, to just start it, do compiz --replace)
+
+Info here:
+http://forlong.blogage.de/article/2007/8/29/How-to-set-up-Compiz-Fusion
+
+13.) Smart monitor tools
+- Info:
+https://help.ubuntu.com/community/Smartmontools
+
+- You can then get smart monitor stuff from the hard drive w/ 
+
+smartctl
+
+- to check the load cycles from the drive, do:
+
+smartctl -a /dev/sda | grep Load_Cycle_Count
+
+- to talk to the 3ware controllers, use the -d 3ware,X where X is the
+  port number. As in:
+
+- start a long self test:
+
+sudo smartctl -t long -d 3ware,0 /dev/twe0
+
+- show the selft test log:
+
+sudo smartctl -l selftest -d 3ware,0 /dev/twe0
+
+- show the error log:
+
+sudo smartctl -l error -d 3ware,0 /dev/twe0
+
+- For normal drives, just use the device, ie:
+
+sudo smartctl -l error /dev/hda
+
+14.) Getting a list of packages (and their state)
+
+dpkg --get-selections > installed-software
+
+- You can then set the list of packages:
+
+dpkg --set-selections < installed-software
+
+- and install with:
+
+dselect
+
+15.) To shut up various programs' printing of the motd and last login:
+
+touch ~/.hushlogin
+
+16.) xrandr
+
+- Enable other outputs...
+
+xrandr --auto 
+
+- Show config
+
+xrandr -q
+
+17.) Hup the e1000 card when plugged in:
+
+sudo modprobe -r e1000
+sudo modprobe e1000
+
+18.) Add people to groups:
+
+usermod -a -G groupname username
+
+19.) copy stuff from one machine to another, preserving permissions
+and such by using tar...
+
+- on the DESTINATION MACHINE, as root, do:
+
+cd /destination/path
+ssh user@source_machine "cd /source/path && sudo tar -cf - ." | tar -xvf
+
+20.) To be able to help debug things, follow the instructions here:
+
+https://wiki.ubuntu.com/DebuggingProgramCrash
+
+21.) Munin
+
+A.) Install munin-node on all servers
+apt-get install munin-node
+- allow the monitoring server to connect, edit /etc/munin-node.conf
+allow ^192\.168\.9\.1$
+allow ^10\.0\.9\.1$
+
+- restart munin
+/etc/init.d/munin-node restart
+
+B.) Install munin on monitoring server
+apt-get install munin
+(remember, it needs apache installed too)
+- edit the config file to hit all machines
+- info:
+http://www.howtoforge.com/server_monitoring_monit_munin
+
+22.) LVM
+
+## For machines with new lvm groups:
+
+- create any partitions you want (I'm using /dev/sda1 here)
+vgscan
+pvcreate /dev/sda1
+vgcreate vg /dev/sda1
+
+- create bits with
+lvcreate -LsizeG -nname vg
+
+- where size is the size and name is the name these are now accessible
+- through /dev/vg/name file systems can be made through
+mke2fs -j -v /dev/vg/name
+tune2fs /dev/vg/name
+
+- 'vgs' can be used to show your volume groups 
+	(sizes and free and all that)
+- make mount points, add the bits to /etc/fstab and mount them
+
+## For machines with existing lvm groups:
+
+- generate the vg's
+vgscan
+
+- make sure all is okay (pv = physical volume, lv = logical volume)
+pvscan
+lvscan
+
+- if it looks okay, enable the lv's. For each one reported by lvscan:
+lvchange -a y /dev/vg/pathname
+
+- once all are active, do:
+vgmknodes
+
+## to resise:
+- lvdisplay and vgdisplay are useful to look at things
+lvextend /dev/vg/home -l+number_of_extents
+- or
+lvextend /dev/vg/home -L+sizeMGK
+- will resize
+- resize2fs to resize the fs...
+
+23.) So the UUID for a given drive
+
+sudo vol_id -u /dev/something
+
+24.) Doom3
+
+export LIBGL_DRIVERS_PATH=/usr/lib32/dri
+then run it
+
+25.) Gnome applets in xfce4 panel
+- Add items to panel
+- select XfApplet
+- select the gnome applet to use
+
+26.) Fix KDE single click
+emacs ~/.kde/share/config/kdeglobals
+- in the [KDE] section, add:
+SingleClick=false
+
+27.) PHP XML parsing
+
+http://us3.php.net/simplexml
+
+SimpleXMLElement.
+
+        $outXml = new SimpleXMLElement($result);
+
+        $successFlag = $outXml->Status->Success;
+
+Concannon's simple XML Parser:
+http://www.redbrick.dcu.ie/~shimoda/projects/xmlParser/
+
+(Ironically, it seems to be the best feature of PHP)

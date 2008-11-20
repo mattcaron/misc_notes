@@ -1,0 +1,933 @@
+Install Crib Sheet for Ubuntu 7.10 (Gutsy)
+
+NOTE - this is based on the Dapper->Edgy->Fiesty->Gutsy install and
+may not be 100% accurate.
+
+##################### UPGRADE SECTION #########################
+
+1.) Make sure you have the following installed
+
+sudo apt-get install ubuntu-desktop ubuntu-minimal ubuntu-standard
+
+(optional)
+
+sudo apt-get install kubuntu-desktop xubuntu-desktop
+
+2.) Remove old, incompatible, and non-optimal stuff:
+
+sudo apt-get remove linux-image-2.6.17-11-generic \
+linux-restricted-modules-2.6.17-11-generic \
+linux-headers-2.6.17-11 \
+linux-headers-2.6.17-11-generic \
+linux-image-2.6.20-15-generic \
+linux-restricted-modules-2.6.20-15-generic \
+linux-headers-2.6.20-15 \
+linux-headers-2.6.20-15-generic
+
+sudo apt-get remove wine libdvdcss2 w32codecs googleearth
+
+sudo apt-get autoclean
+
+- edit /etc/apt/sources.list and remove the midiabuntu and wine repos
+
+3.) Upgrading:
+
+sudo update-manager
+
+- then click "Upgrade" where it says "new distribution is available"
+
+4.) Remove old unused things:
+
+sudo apt-get remove mysql-server-5.0 phpmyadmin gaim-xmms-remote xmms gkrellmms xmms-defx xmms-modplug xmms-status-plugin xmms-xmmplayer xmms-jack scribus scribus-template gaim-autoprofile gaim-encryption gaim-extendedprefs gaim-guifications gaim-hotkeys gaim-irchelper gaim-otr gaim-themes gaim-thinklight tetex-base tetex-extra mozilla-thunderbird mozilla-thunderbird-enigmail mozilla-firefox-locale-en-gb gpdf aterm kinoplus digikamimageplugins ipodder banshee banshee-daap vnc-common bittornado bittornado-gui ipsec-tools ntp-server xpdf xpdf-utils xpdf-reader skippy libflash0c2 gnusound ardour ardour-gtk vcf-plugins glabels glabels-data inkscape gpaint gtk-gnutella ubuntustudio-audio ubuntustudio-audio-plugins ubuntustudio-graphics ubuntustudio-video ubuntustudiolauncher freecraft tdb-tools dar 
+
+##################### BASE INSTALL SECTION #########################
+
+1.) Boot the install cd and follow instructions to do the base install.
+Set up machine as desired. Fairly self-explanatory.
+
+## NOTE: All this stuff assumes that you're root, such as with "sudo -s"
+
+2.) After machine is up, run synaptic, go to settings->repositories and enable:
+- main
+- universe
+- restricted
+- multiverse
+- source code
+
+Select third party software tab and enable/add:
+
+http://archive.canonical.com/ubuntu gutsy partner
+
+Select updates tab and enable:
+- gutsy-security
+- gutsy-updates
+- gutsy-backports
+
+4.) Do:
+apt-get update
+apt-get dist-upgrade
+
+5.) Install lots of things - all machines
+
+apt-get install nmap amap gif2png cups-pdf units traceroute par2 emacs emacs-goodies-el tofrodos openssh-server gcc libc6-dev samba smbfs apt-show-versions symlinks sysstat ifstat dstat ssmtp mailx
+
+6.) Install lots of core desktop things - desktops only
+
+apt-get install ubuntu-desktop kubuntu-desktop xubuntu-desktop
+
+7.) Install more things - desktops only
+
+apt-get install gkrellm gkrellm-alltraxclock2 gkrellmapcupsd gkrellm-bfm gkrellmd gkrellm-hdplop gkrellm-ibam gkrellmitime gkrellm-leds gkrellm-mailwatch gkrellmoon gkrellm-radio gkrellm-reminder gkrellm-snmp gkrellmss gkrellm-volume gkrellmwho2 gkrellmwireless gkrellm-x86info xmms2 xmms2-plugin-all libsane-extras scribus scribus-template xfce4 xfce4-goodies xfce4-genmon-plugin xfce4-sensors-plugin xfce4-theme-brushedchrome xffm4 xfce4-cddrive-plugin xfce4-cpu-freq-plugin xfce4-datetime-plugin xfce4-governor-plugin xfce4-messenger-plugin xfce4-time-out-plugin xfce4-timer-plugin xfce4-volstatus-icon xfce4-xfapplet-plugin pidgin pidgin-blinklight pidgin-data pidgin-extprefs pidgin-guifications pidgin-hotkeys pidgin-libnotify pidgin-otr pidgin-plugin-pack texlive texlive-fonts-extra texlive-latex-extra latex2html gnuplot gnuplot-mode gxine xine-ui gxineplugin totem-xine libxine1-plugins xine-plugin gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse gstreamer0.10-ffmpeg gstreamer0.10-fluendo-mp3 gstreamer0.10-fluendo-mpegdemux gstreamer0.10-gl gstreamer0.10-gnonlin gstreamer0.10-pitfdll gstreamer0.10-plugins-farsight gstreamer0.10-schroedinger gstreamer0.10-sdl gstreamer-tools gv grip gdm-themes thunderbird thunderbird-quickfile thunderbird-gnome-support enigmail firefox firefox-dom-inspector firefox-gnome-support firefox-webdeveloper firefox-themes-ubuntu gftp-gtk gimp gimp-data gimp-data-extras gimp-dcraw gimp-dimage-color gimp-gap gimp-print gimp-python gimp-refocus gimp-resynthesizer gimp-texturize wmaker wmakerconf wmaker-data unison unison-gtk lame lame-extras  xfig xfig-libs kino dvgrab msttcorefonts audacity blop caps cmt swh-plugins tap-plugins portsentry xnest wpd2sxw digikam kipi-plugins meld pptp-linux easytag f-spot vnc4-common vnc4server xvnc4viewer bittorrent-gui wine ntp brag kcalc flashplugin-nonfree pitivi exiv2 acroread acroread-plugins make g++ unrar autossh php-mode jokosher stellarium openoffice.org openoffice.org-filter-binfilter openoffice.org-gnome openoffice.org-gtk openoffice.org-help-en-us openoffice.org-kde openoffice.org-thesaurus-en-us openoffice.org-style-andromeda openoffice.org-style-industrial openoffice.org-style-tango squashfs-tools transfig xmlstarlet sun-java6-bin sun-java6-demo sun-java6-fonts sun-java6-javadb sun-java6-jdk sun-java6-jre sun-java6-plugin sun-java6-source xaralx xaralx-svg hpodder dvdrtools cdrecord logjam poppler-utils libk3b2-mp3 libtk-gbarr-perl
+
+8.) Install some games
+
+apt-get install cgoban gnugo penguin-command xfrisk xbill prboom xmess-x xmess-sdl xmame-x xmame-sdl xmame-tools joystick jscalibrator stratagus-gl wesnoth-all boson boson-music craft wormux wormux-data dosbox lincity-ng
+ 
+9.) Remove annoying/broken network-manager stuff
+
+apt-get install network-manager network-manager-gnome network-manager-pptp network-manager-openvpn
+
+10.) Add proprietary things
+
+apt-get install kubuntu-restricted-extras ubuntu-restricted-extras xubuntu-restricted-extras
+
+11.) For work machines, set up subversion
+
+apt-get install esvn kdesvn subversion
+
+12.) (thinkpad laptop only) Scale down the CPU so it stops overheating:
+- etc /etc/default/acpi-support
+
+- edit /etc/laptop-mode/laptop-mode.conf and make the following changes:
+ENABLE_LAPTOP_MODE_ON_AC=1
+CONTROL_CPU_FREQUENCY=1
+LM_AC_CPU_MAXFREQ=1000000
+NOLM_AC_CPU_MAXFREQ=1000000
+NOLM_AC_CPU_GOVERNOR=ondemand
+
+- then do:
+sudo /etc/init.d/laptop-mode restart
+
+13.) Set up java6:
+sudo update-alternatives --config java
+(select java 6)
+
+14.) Set up useful proprietary things:
+From: https://help.ubuntu.com/community/Medibuntu
+
+IMPORTANT!!!!  - Update this wget to the right file...
+
+sudo wget http://www.medibuntu.org/sources.list.d/gutsy.list -O \ 
+/etc/apt/sources.list.d/medibuntu.list
+
+wget -q http://packages.medibuntu.org/medibuntu-key.gpg -O- | \
+sudo apt-key add - 
+
+sudo apt-get update
+
+sudo apt-get install libdvdcss2 w32codecs googleearth-data googleearth
+
+##################### PHASE 1 SET UP SECTION #########################
+
+1.) Set up static IP's (for machines with them)
+- edit /etc/network/interfaces, and add lines like:
+auto iface eth0 inet static
+	address 192.168.1.1
+        netmask 255.255.255.0
+	gateway 192.168.1.254
+
+- Comment out any extra useless lines
+- Reboot
+
+2.) Make ssh work:
+## For an old machine, use the old keys - you did save /etc, didn't you?
+
+## For a new machine, use the existing keys generated by the distro.
+
+## For both, tweak ssh_config/sshd_config as necessary
+- in sshd_config, set:
+	PermitRootLogin no
+- in ssh_config, set:
+	ForwardX11 yes
+	ForwardX11Trusted yes
+- You need to restart this for changes to take effect
+/etc/init.d/ssh restart
+
+3.) Set up /etc/hosts.allow and /etc/hosts.deny:
+- hosts.allow:
+----------------
+ALL: 127.0.0.1
+sshd: ALL
+-----------------
+
+- hosts.deny:
+----------------
+ALL:ALL
+-----------------
+
+##################### PHASE 2 SET UP SECTION #########################
+
+1.) bash
+- add the following to /etc/bash.bashrc
+
+# Add in my stuff
+if [ -f /usr/local/apps/bash/bash.bashrc ]; then
+    . /usr/local/apps/bash/bash.bashrc
+fi
+
+(this assumes that you've grabbed /usr/local/apps)
+
+2.) emacs
+- add the following to /etc/emacs/site-start.el
+
+(load "/usr/local/apps/emacs/site-start.el")
+
+Set it to use emacs21 (indenting is bad in emacs22)
+
+sudo update-alternatives --config emacs
+
+- do the following:
+cd /etc/emacs/site-start.d/
+sudo ln -s /usr/local/apps/emacs/csharp-mode.el ./50csharp-mode.el
+
+3.) Configure bootloader (GRUB)
+- edit /boot/grub/menu.lst
+- make sure hiddenmenu is commented out
+- uncomment the color line
+- set the timeout to 5
+- set up password by adding the line:
+	password --md5 PASSWORD
+- and PASSWORD is the output from:
+	grub-md5-crypt
+- then do:
+	chmod 600 /boot/grub/menu.lst
+- so that folks can't read the password
+
+4.) gimp:
+cd /usr/share/gimp/2.0/scripts
+ln -s /usr/local/apps/gimp/scripts/* .
+
+5.) latex
+cd /usr/share/texmf/tex/latex
+ln -s /usr/local/apps/latex/local .
+- then run texconfig and select "rehash"
+- Also, set the paper to US
+
+6.) gkrellm skins:
+cd /usr/share
+mkdir gkrellm2
+cd gkrellm2
+ln -s /usr/local/apps/gkrellm2/GKrellM-skins/ themes
+
+7.) Make portsentry work
+- edit /etc/portsentry/portsentry.ignore.static and add the line:
+
+192.168.9.0/24
+
+- edit /etc/default/portsentry and change the modes to:
+TCP_MODE="atcp"
+UDP_MODE="audp"
+- restart it
+/etc/init.d/portsentry restart
+
+8.) set up smbmount
+chmod u+s /usr/bin/smbmnt
+chmod u+s /usr/bin/smbumount
+
+9.) ntpd
+
+## for standalone (laptop):
+- do nothing
+
+## for server:
+- add ntpd to hosts.allow list
+ntpd: 192.168.9.0/24
+
+## for client
+- edit /etc/ntpd.conf and comment out the line:
+server ntp.ubuntu.com
+- and add the line:
+server 192.168.9.1
+
+10.) set up messages
+- edit /etc/issue to have a nice message
+rm issue.net
+ln -s issue issue.net
+
+11.) GDM 
+- Configure it safely with gdmsetup's "security" tab, turn off the annoying
+- sounds, don't show the actions menu, etc.
+
+12.) cups
+system-config-printer
+- add printers as appropriate
+- don't forget to add pdf printer support. It's a Generic PostScript Printer
+- prints go into ~/PDF/
+
+- Under "Basic Server Settings" select:
+  - Show printers shared by other systems
+
+13.) Remove gdm on servers to X doesn't start:
+update-rc.d -f gdm remove
+
+14.) Set up samba:
+cd /etc/samba
+sudo cp -a smb.conf smb.conf.old
+sudo cp -a /usr/local/apps/samba/smb.conf.machine_name ./smb.conf
+/etc/init.d/samba restart
+
+- Remember to turn it off on places you don't want it.
+sudo update-rc.d -f samba remove
+
+15.) Set up paper size
+- edit /etc/papersize
+- set it to: letter
+
+16.) Install doom wads
+
+cd /usr/share/games/doom
+sudo rm doom2.wad
+sudo ln -s /usr/share/games/freedoom/doom2.wad ./doom2f.wad
+sudo ln -s /usr/local/games/games/datafiles/doom/* .
+
+17.) Set up the automagic ssh tunnel:
+sudo cp /usr/local/apps/autossh/mail_tunnel /etc/init.d/.
+sudo update-rc.d mail_tunnel start 99 2 6 S .
+sudo /etc/init.d/mail_tunnel start
+
+18.) Install munin-node on all servers
+sudo apt-get install munin-node
+- allow the monitoring server to connect, edit /etc/munin-node.conf
+allow ^192\.168\.9\.1$
+allow ^10\.0\.9\.1$
+
+- restart munin
+sudo /etc/init.d/munin-node restart
+
+19.) Install munin on monitoring server
+sudo apt-get install munin
+(remember, it needs apache installed too)
+- edit the config file to hit all machines
+- info:
+http://www.howtoforge.com/server_monitoring_monit_munin
+
+20.) Install BOINC on appropriate machines
+sudo apt-get install boinc-client boinc-manager
+- Set it up using boincmgr
+- Follow instructions; it's easy.
+- You can see things in boincmgr (graphics, etc)
+
+21.) set up rsnapshot
+- edit /etc/cron.d and set the stuff to work like:
+# min hour   day month week    
+0 */4         * * *           root    /usr/bin/rsnapshot hourly
+30 3          * * *           root    /usr/bin/rsnapshot daily
+0  3          * * 1           root    /usr/bin/rsnapshot weekly
+30 2          1 * *           root    /usr/bin/rsnapshot monthly
+
+- (this assumes that rsnapshot is going to make a backup every 4
+- hours, and therefore hourly is set to something like 6.. I set up the
+- intervals to be):
+
+interval        hourly  6
+interval        daily   7
+interval        weekly  4
+interval        monthly 6
+
+22.) Set up ssmtp
+
+#
+# Config file for sSMTP sendmail
+#
+# The person who gets all mail for userids < 1000
+# Make this empty to disable rewriting.
+root=matt@mattcaron.net
+
+# The place where the mail goes. The actual machine name is required no
+# MX records are consulted. Commonly mailhosts are named mail.domain.com
+# mailhub=mail
+mailhub=mail63.csoft.net
+
+# Where will the mail seem to come from?
+rewriteDomain=mattcaron.net
+
+# Are users allowed to set their own From: address?
+# YES - Allow the user to specify their own From: address
+# NO - Use the system generated From: address
+# FromLineOverride=NO
+
+23.) Set up apache (if applicable)
+
+sudo apt-get install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt
+
+- edit /etc/apache2/mods-available/userdir.conf and add "Indexes" to the
+- AllowOverride line, so that it looks like:
+
+AllowOverride FileInfo AuthConfig Limit Indexes
+
+- edit /etc/apache2/ports.conf and change:
+
+Listen 80
+
+- to 
+
+Listen 127.0.0.1:80
+
+/etc/init.d/apache2 restart
+
+24.) Add hpodder to my cron
+
+crontab -e
+
+then make it look like:
+
+  0 6   *   *   *    /usr/bin/hpodder >& /pub/matt/podcasts/hpodder.log
+
+so it will run every morning at 6am and log to someplace nice
+
+26.) Mono
+
+apt-get install mono mono-devel monodevelop monodevelop-boo monodevelop-java monodevelop-nunit monodevelop-query monodevelop-versioncontrol monodoc glade mono-gmcs libmono-dev
+
+
+##################### MISC NOTES SECTION #########################
+
+1.) set up public key authentication
+- (note: this assumes that you don't already have an
+- authorized_keys file on the remote host.  If you do you'll
+- need to add the contents of id_dsa.pub to the end of it,
+- rather than replacing it with id_dsa.pub as I do below)
+
+- Generate a key:
+
+ssh-keygen -t dsa -f ~/.ssh/identity
+
+- (don't set a passphrase for passwordless auth)
+
+- SSH to your remote host, and add the identity.pub to that
+- machine's ~/.ssh/authorized_keys (or just copy it)
+
+2.) to set DVD region code (only necessary once, per drive, EVER!!!)
+- (indeed, most of them can only be set a few times before, they're
+- locked forever. Be honest)
+apt-get install regionset
+- MAKE SURE THERE IS A VIDEO DVD IN THE DRIVE and (as root) do:
+regionset
+- set it to region 1, and use the mask it calculates. It will
+- probably even tell you how many changes you have left
+
+3.) Default browser/mail/etc.
+- can set default browser by doing:
+gnome-control-center
+- then going to Advanced -> Preferred Applications
+	
+4.) Group admin
+gpasswd is used to administer /etc/group
+
+5.) you can dump the list of people in the samba db's by doing:
+sudo tdbdump /var/lib/samba/passdb.tdb
+- for what good it does you
+
+6.) dpkg-reconfigure is useful for reconfiguring stuff
+example:
+sudo dpkg-reconfigure -phigh xserver-xorg
+
+7.) update-alternatives is useful when playing with different
+alternative things - example:
+
+sudo update-alternatives --config usplash-artwork.so
+
+- Of course, in the above case, you need to rebuild the initramfs to make
+it all work:
+sudo dpkg-reconfigure linux-image-`uname -r`
+
+8.) Clean out cache periodically
+sudo apt-get autoclean
+sudo apt-get autoremove
+
+9.) How to get to single user mode
+
+Get there:
+telinit 1
+
+Get back:
+telinit 2
+
+(or currently set initdefault in /etc/inittab)
+
+the command:
+runlevel
+
+tells you where you are..
+
+############ OLD #####################
+
+XX.) Set up IPSec:
+
+apt-get install ipsec-tools
+
+- set up an /etc/ipsec-tools.conf which should contain sections like:
+
+---------------------------
+###### connections of 192.168.1.1 to 192.168.1.2 ######
+
+# AH SAs using 128 bit long keys
+add 192.168.1.1 192.168.1.2 ah 0x010 -A hmac-md5 
+       	0x8c4708518e279fa02362564358550777;
+add 192.168.1.2 192.168.1.1 ah 0x011 -A hmac-md5 
+        0x2e6893cd15b62788e6b0b70261ec4823;
+
+# ESP SAs using 192 bit long keys (168 + 24 parity)
+add 192.168.1.1 192.168.1.2 esp 0x012 -E 3des-cbc 
+       	0x6f719567a590b91de95bfa460f1576393ae0e6d6b5522c4c;
+add 192.168.1.2 192.168.1.1 esp 0x013 -E 3des-cbc 
+       	0x814c676ea62123fc1c818ff4270eaf254489fccf540ab24f;
+
+# Security policies
+spdadd 192.168.1.1 192.168.1.2 any -P in ipsec
+       	esp/transport//require
+        ah/transport//require;
+spdadd 192.168.1.2 192.168.1.1 any -P out ipsec
+       	esp/transport//require
+        ah/transport//require;
+---------------------------
+	
+- do this for each to/from pair. This needs to be set up on each side
+- of the connection, and you want to flip the in/out section of the
+- policy on one side.
+
+- to generate the AH key, do:
+	
+dd if=/dev/random count=16 bs=1| xxd -ps
+	
+- and take the output and use it for the key. Remember to stick the 0x
+- in front of it
+
+- to generate the ESP key, do:
+
+dd if=/dev/random count=24 bs=1| xxd -ps
+
+- and take the output and use it for the key. Remember to stick the 0x
+- in front of it
+
+- Change the permissions on the file to make it not world readable:
+chmod 700 ipsec-tools.conf
+
+- Fix stop order
+sudo update-rc.d -f setkey remove
+sudo update-rc.d setkey start 37 0 6 S .
+
+XX.) Optional, set up ATI binary drivers:
+IMPORTANT NOTE - this BREAKS software suspend in hoary!!!!
+ADDENDUM - and breezy!
+ADDENDUM - since there is opengl support in dapper, I didn't even try....
+
+apt-get install xorg-driver-fglrx fglrx-control
+
+- Add fglrx to /etc/modules
+- load it:
+depmod -a
+modprobe fglrx
+- edit /etc/X11/XF86Config-4 and change "ati" or "radeon" to "fglrx"
+- restart X and it should work
+
+XX.) Set up ieee1394 support for machines w/ firewire support
+- MC - DAPPER note - not sure if this is necessary, putting off
+- Info:
+http://www.ubuntulinux.org/wiki/HowToCaptureDigitalVideo
+- Add the following to /etc/init.d/bootmisc.sh, right at the end before 
+- the exit:
+mknod /dev/raw1394 c 171 0
+chown root:video /dev/raw1394
+chmod 660 /dev/raw1394
+- People have to be in the video group to do video things...
+
+XX.) xplanet
+
+xplanet -transparency -origin "moon" -projection "orthographic"
+
+More info (clouds, etc) here:
+http://www.number.ch/wiki/index.php/XplanetClouds
+
+This seems to be done automagically....
+XX.) Optional, set up lm sensors:
+
+- howto is here:
+http://www.ubuntuforums.org/showthread.php?t=2780
+
+- install sensor reading packages:
+sudo apt-get install lm-sensors
+
+- run the mkdev.sh script (look in /usr/local/apps/lm_sensors)
+
+- find your sensors; run sensors-detect and answer a lot of YES
+- questions to probe for sensors. This will generate a list of what you
+- need to do to make it work. Do that.
+
+- Reboot
+
+- Run sensors to test it. Gkrellm can read the sensors
+
+- config lives in /etc/sensors.conf. This can be used to modify the scales
+- and such
+
+This seems to be done automagically....
+XX.) Add important modules to /etc/modules
+vfat
+- for machines with 3ware cards
+3w-xxxx
+
+XX.) mysql and phpmyadmin
+
+sudo apt-get install mysql-server-5.0 phpmyadmin
+
+TODO - try ATI drivers w/ the new driver manager
+-- Beryl/compiz?
+-- Removed Beryl and install feisty version?
+
+XX.) Set up Xen
+https://wiki.ubuntu.com/XenOnEdgy
+
+- DOES NOT WORK ON LAPTOPS (no ACPI support)
+
+(a) install stuff
+
+sudo apt-get install xen-hypervisor-3.0-i386 xen-image-xen0-2.6.17-5-generic-xen0 xen-utils-3.0
+
+sudo mkinitramfs -o /boot/xen0-linux-2.6.17-5-generic-xen0.initrd.img 2.6.17-5-generic-xen0
+
+(b) edit /etc/initramfs-tools/hooks/xensupport and put in:
+
+#!/bin/sh -e
+. /usr/share/initramfs-tools/hook-functions
+force_load xenblk
+
+- then 
+
+sudo chmod u+x /etc/initramfs-tools/hooks/xensupport
+
+(c) add the following to /boot/grub/menu.lst, above the automagic section
+
+title XEN/2.6.17-5
+root (hd0,1)
+kernel /xen-3.0-i386.gz
+module /xen0-linux-2.6.17-5-generic-xen0 root=UUID=8a7e0bad-8914-4547-a1ba-b51c8c7ce22f ro quiet splash
+module /xen0-linux-2.6.17-5-generic-xen0.initrd.img
+
+(d) edit /etc/xen/xend-config.sxp and comment out:
+
+(network-script network-dummy)
+
+- and add:
+
+(network-script network-bridge)
+
+(f) Reboot
+
+XX.) Tar over an ssh connection
+
+tar -zvcf - ./hda1 | ssh matt@192.168.9.1 "cat - > jim_backup.tar.bz2" 
+
+XX.) Clear out symlinks
+
+sudo symlinks -rd .
+
+
+##################### DOMAIN MEMBER SET UP SECTION #########################
+
+1.) /etc/hosts
+- add hosts to /etc/hosts as appropriate
+- for machines with static IP's, use that IP and delete it from the localhost 
+- line
+- If using a multihomed host, you should probably use the private IP
+for the canonical hostname, so that NFSv4 clientaddr lookups are
+automatically resolved.
+
+2.) Set up lvm2 (for machines using it)
+
+## For machines with new lvm groups:
+
+- create any partitions you want (I'm using /dev/sda1 here)
+emerge lvm2
+mkdir /etc/lvm
+echo 'devices { filter=["r/cdrom/"] }' > /etc/lvm/lvm.conf
+vgscan
+pvcreate /dev/sda1
+vgcreate vg /dev/sda1
+
+- create bits with
+lvcreate -LsizeG -nname vg
+
+- where size is the size and name is the name these are now accessible
+- through /dev/vg/name file systems can be made through
+mke2fs -j -m0 -v /dev/vg/name
+tune2fs -c0 -i0 /dev/vg/name
+
+- 'vgs' can be used to show your volume groups 
+	(sizes and free and all that)
+- make mount points, add the bits to /etc/fstab and mount them
+
+## For machines with existing lvm groups:
+
+- generate the vg's
+vgscan
+
+- make sure all is okay (pv = physical volume, lv = logical volume)
+pvscan
+lvscan
+
+- if it looks okay, enable the lv's. For each one reported by lvscan:
+lvchange -a y /dev/vg/pathname
+
+- once all are active, do:
+vgmknodes
+
+## to resise:
+- lvdisplay and vgdisplay are useful to look at things
+lvextend /dev/vg/home -l+number_of_extents
+- or
+lvextend /dev/vg/home -L+sizeMGK
+- will resize
+- resize2fs to resize the fs...
+
+3.) Set up NIS server:
+
+### Add to hosts:
+- Make sure the server and all clients are in /etc/hosts. This means things
+- will still work if DNS dies or anything else bad happens.
+
+### Get the bits you need. When asked, enter the name of your domain:
+apt-get install nis
+
+### Set things up:
+
+- edit /etc/default/nis, and change the following:
+NISSERVER=master
+
+- edit /etc/yp.conf and add the line:
+domain fnord server yt
+
+- edit /etc/defaultdomain and add the line:
+fnord
+- (this is not necessary if you set it up when the package was installed)
+
+- edit /var/yp/Makefile set it up. It is well commented.
+- NOTES: 
+	- MINGID should be set to 1 in order to propagate the groups (cdrom,
+	- floppy, games, etc) correctly on all machines.
+	- All I changed was the MINGID, the rest was fine
+
+- edit /etc/ypserv.securenets and add lines to restrict to domain
+- members. I use lines like:
+host                    192.168.9.1
+host                    192.168.9.6
+- Make sure to comment out the 0.0.0.0 line
+
+- To build the DB for the first time, run:
+/usr/lib/yp/ypinit -m
+- and follow the instructions (the one server is fine)
+- This will throw some errors. It's okay.
+
+- restart portmap and nis
+/etc/init.d/portmap restart
+/etc/init.d/nis restart
+- NOTE: I had some problems with portmap stopping/releasing the IP
+- address. Try kill -9ing it. If that doesn't work, try rebooting.
+
+	
+- if you change people's passwords or something, do
+make -C /var/yp
+
+- To test do:
+ypcat passwd
+
+4.) Set up NIS client:
+
+### A note about administration:
+- Since there is no root user, make sure that whomever you want to be
+- able to admin the machine is in /etc/sudoers on the client
+- machine. It is also a good idea to have those users as local users on the
+- machine, with the SAME UID as is shared over NIS.
+
+### Add to hosts:
+- Make sure the server is in /etc/hosts. This means things
+- will still work if DNS dies or anything else bad happens.
+
+### Get the bits you need. When asked, enter the name of your domain:
+apt-get install nis
+
+### Set things up:
+- edit /etc/passwd and add the following line at the end:
++::::::
+
+- edit /etc/group and add the following line at the end:
++:::
+
+- edit /etc/shadow and add the following line at the end:
++::::::::
+
+- edit /etc/yp.conf and add the line:
+domain fnord server yt
+
+- edit /etc/defaultdomain and add the line:
+fnord
+
+- restart nis:
+/etc/init.d/nis restart
+
+- NOTE: sshd will have to be restarted to use the new authentication
+- scheme
+/etc/init.d/sshd restart
+
+
+5.) Set up NFS server:
+https://help.ubuntu.com/community/NFSv4Howto
+
+### Get the bits you need:
+apt-get install nfs-common nfs-kernel-server
+
+### Create the base share directory and mount points
+mkdir /export
+mkdir /export/home
+mkdir /export/pub
+mkdir /export/usr_local
+
+### Edit fstab and add the lines to bind to this directory
+/home           /export/home    none        bind            0       0
+/pub            /export/pub     none        bind            0       0
+/usr/local      /export/usr_local none      bind            0       0
+
+# mount those
+mount -a
+
+### Add to netgroups:
+- Edit /etc/netgroup and add a line like:
+boxen (yt,,) (case,,)
+- Do:
+make -C /var/yp
+
+### edit /etc/exports and add shares, like:
+
+/export       @boxen(ro,fsid=0,sync)
+/export/home  @boxen(rw,nohide,sync)
+/export/pub   @boxen(rw,nohide,sync)
+/export/usr_local @boxen(rw,nohide,sync)
+
+- Then do:
+exportfs -ra
+
+- Restart it:
+/etc/init.d/nfs-kernel-server restart
+
+- because of this bug:
+https://bugs.launchpad.net/ubuntu/+source/nfs-utils/+bug/87382
+
+Change /etc/init.d/nfs-common to be like this:
+	            log_progress_msg "idmapd"
+		    start-stop-daemon --start --oknodo --quiet \
+			    --pidfile /var/run/rpc.idmapd.pid  \
+			    --make-pidfile --exec /usr/sbin/rpc.idmapd
+
+and restart it:
+
+/etc/init.d/nfs-common restart
+
+6.) Set up NFS client:
+
+- in /etc/fstab
+# device   mountpoint  fs-type     options    dump fsckorder
+yt:/home        /home           nfs4    rw,hard,intr,rsize=32768,wsize=32768   \  0       0
+yt:/pub         /pub            nfs4    rw,hard,intr,rsize=32768,wsize=32768   \  0       0
+yt:/usr_local   /usr/local      nfs4    rw,hard,intr,rsize=32768,wsize=32768   \  0       0
+
+- Make the mount points
+
+- Mount them with: 
+mount -a
+
+- because of this bug:
+https://bugs.launchpad.net/ubuntu/+source/nfs-utils/+bug/87382
+
+Change /etc/init.d/nfs-common to be like this:
+	            log_progress_msg "idmapd"
+		    start-stop-daemon --start --oknodo --quiet \
+			    --pidfile /var/run/rpc.idmapd.pid  \
+			    --make-pidfile --exec /usr/sbin/rpc.idmapd
+
+and restart it:
+
+/etc/init.d/nfs-common restart
+
+- because of this bug:
+https://bugs.launchpad.net/ubuntu/+source/sysvinit/+bug/45842
+
+- edit /etc/init.d/mountall.sh and comment out the mount lines and make them:
+
+mount -a
+
+sudo update-rc.d -f mountall.sh remove
+sudo update-rc.d mountall.sh start 35 2 S .
+
+XX.) Set up /etc/iftab to force assignments of interface to MAC address
+
+eth0 mac 00:02:b3:98:df:65 arp 1
+eth1 mac 00:e0:81:20:90:f6 arp 1
+
+XX.) Set up compiz, if you want
+
+sudo apt-get install compiz compizconfig-settings-manager compiz-kde emerald 
+
+To config: Menu -> Settings -> Advanced Desktop Effects Manager
+(or run ccsm)
+
+To turn it on, do System -> Preferences -> Desktop Effects and click "Enable Desktop Effects"
+
+(or, to just start it, do compiz --replace)
+
+Info here:
+http://forlong.blogage.de/article/2007/8/29/How-to-set-up-Compiz-Fusion
+
+XX.) Smart monitor tools
+- Info:
+https://help.ubuntu.com/community/Smartmontools
+
+sudo apt-get install smartmontools
+
+- You can then get smart monitor stuff from the hard drive w/ 
+
+smartctl
+
+- to check the load cycles from the drive, do:
+
+smartctl -a /dev/sda | grep Load_Cycle_Count
+
+- to talk to the 3ware controllers, use the -d 3ware,X where X is the
+  port number. As in:
+
+- start a long self test:
+
+sudo smartctl -t long -d 3ware,0 /dev/twe0
+
+- show the selft test log:
+
+sudo smartctl -l selftest -d 3ware,0 /dev/twe0
+
+- show the error log:
+
+sudo smartctl -l error -d 3ware,0 /dev/twe0
+
+- For normal drives, just use the device, ie:
+
+sudo smartctl -l error /dev/hda
+
+XX.) Make google eath from package...
+- Download google earth from wherever and save it someplace
+- Go to that directory
+- Do:
+
+make-googleearch-package
+
+- It will make a deb file. Install the deb file with:
+
+dpkg -i <the name of the resulting file>.deb
+

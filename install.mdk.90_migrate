@@ -1,0 +1,32 @@
+1.) Remove all the shell config stuff in root's homedir
+
+2.) Consistify the following files from old etc:
+    /etc:
+	passwd
+	shadow
+	group
+	gshadow
+
+3.) Copy the following files from old etc:
+    /etc:
+	bashrc
+        csh.cshrc (delete csh.login)
+        profile 
+	hosts
+        issue
+        rm issue.net; ln -s issue issue.net
+	default/useradd
+    add /usr/local/lib to ld.so.conf
+
+    /etc/init.d:
+	ntp
+	portsentry
+	sshd.init
+
+4.) At some point, go through packages and decide what to install
+
+5.) in /etc/pam.d
+cp /usr/local/apps/openssh/openssh-3.1p1/contrib/sshd.pam.generic ./sshd
+
+
+

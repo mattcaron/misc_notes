@@ -1,0 +1,25 @@
+From:
+http://www.onlamp.com/pub/a/onlamp/2002/10/31/subversion.html
+
+Create base dir (only once):
+
+mkdir /home/matt/svn_repositories
+
+(1) Create the repository:
+
+cd /home/matt/svn_repositories
+svnadmin create shiptool
+
+(2) Import code into trunk (main bit repo)
+
+svn import /home/matt/gaming/minis/full_thrust/programs/shiptool_orig \
+   file:///home/matt/svn_repositories/shiptool/trunk \
+   -m 'Initial import of shiptools'
+
+(3) Check it out as normal. Note - you may have to remove the thing
+you just imported and then check it out. Or, move it to a backup place
+until you're sure it is okay.
+
+svn checkout file:///home/matt/svn_repositories/shiptool/trunk \
+    /home/matt/gaming/minis/full_thrust/programs/shiptool
+

@@ -1,0 +1,426 @@
+1.) Fix all the shell stuff
+	- delete all the shell files in root's account
+    In /etc:
+	- copy csh.cshrc, bashrc, profile 
+	- delete csh.login
+	- fix /etc/default/useradd
+	- change root's shell to tcsh
+
+2.) Install rpms:
+	for NIS server: ypserv - CD3
+	gv - CD2
+	enscript - CD2
+	e2fsprogs-devel - CD2
+	xosview - CD3
+	vnc-doc - CD3
+	vnc-server - CD3
+	symlinks - CD3
+	sharutils - CD3
+	itcl - CD3
+	xmms-devel - CD3
+
+	everything in /usr/local/apps/rpms
+	(for an NFS client, might want to wait for this)
+	for new programs: 
+		rpm -U *.rpm
+	for patches:
+		rpm -F *.rpm
+    Delete rpms:
+	rpm -qa | grep ssh and uninstall all of those
+		(for an brand new client, might want to wait for this. ssh
+		client tools are useful for getting files)
+
+	rpm -qa | grep samba and uninstall all of those
+
+	if there are config tools you want to keep, or other failed
+	dependencies, do:
+	rpm -e --nodeps <list of rpms to remove>
+
+3.) Add/configure services (not all of these will work yet; we'll get there)
+	in /etc/init.d, copy :
+		hdparm-mc (see note)
+		portsentry-mc
+		sshd.init-mc
+		samba-mc 
+		alsasound-mc
+	then run:
+		chkconfig --add <name>
+	on all of them
+
+	Note: hdparm might need to be tweaked for specific hardware, but 
+		I doubt it
+
+	- then run redhat-config-services and configure the services
+		you want
+	REMEMBER:
+	NIS server needs:
+		- time (disable=no, user=nobody)
+		- portmap
+		- ypbind
+		- yppasswd
+		- ypserv
+
+	NFS server needs (addl to above)
+		- nfs
+		- nfslock
+
+	NIS clients need:
+		- time (disable=no, user=nobody)
+		- portmap
+		- ypbind
+
+	NFS clients need:
+		- nfslock
+		- netfs
+
+4.) Set up networking:
+	- change it in /etc/sysconfig/network
+	- add its hostname in /etc/hosts (or copy /etc/hosts)
+	(NIS client - make sure server is in /etc/hosts too)
+	- edit/copy /etc/sysconfig/network-scripts/ifcfg-eth0
+	- edit/copy /etc/resolv.conf (not necessary for DHCP)
+
+	(if applicable)
+	- edit/copy /etc/pcmcia/wireless.opts
+	- edit/copy /etc/sysconfig/network-scripts/ifup-wireless
+	  replace all the redhat stuff with:
+		/etc/pcmcia/wireless start $DEVICE
+
+IMPORTANT: If you change the IP address, you might want to disable
+sendmail. It seems to get pissed off on reboot. I never use it and
+just turn it off, so I don't know why...
+
+5.) Set up /etc/hosts.*
+	hosts.deny:
+		----------------
+		ALL:ALL
+		-----------------
+	hosts.allow:
+		----------------
+		# only allow portmap entries in /etc/hosts
+		portmap: <see note below>
+		ntpd: @boxen
+		ypserv: @boxen
+		ypbind: @boxen
+		mountd: @boxen
+		nfsd: @boxen
+		statd: @boxen
+		sshd: ALL
+		-----------------
+		@boxen = access dictated by NIS netgroup
+		Note: unfortunately, portmap doesn't seem to support
+		NIS netgroups. So, this needs to be a list of each machine
+		needing to connect to it, which is:
+		1.) any NIS/NFS server it connects to
+		2.) any NIS/NFS client connecting to it.
+		So, on clients, it will be 
+		portmap: servername myname
+		and on the server it will be:
+		portmap: myname client1 client2 ....
+6.) Reboot
+
+7.) Accounts: 
+	NIS server:
+
+		Either:
+			- Make a "matt" account (UID 500)
+			- copy over desired account info for other accounts
+		or:
+			copy the following files in /etc
+			passwd
+			shadow
+			group
+			gshadow
+	to create maps initially:
+	/usr/lib/yp/ypinit -m
+
+	if you change anything:
+	make -C /var/yp
+
+	Make sure to set 
+	NISDOMAIN in /etc/sysconfig/network
+	It's set by authconfig, but the server needs to be UP first.
+
+	NIS client:
+		on server, make sure you're in hosts (for TCP wrappers)
+		on client run authconfig-gtk and set to auth against server
+
+8.) Filesystems:
+	NFS server:
+		/etc/exports example shares:
+			/read_only_sharename           @boxen(ro,sync)
+			/read_write_sharename          @boxen(rw,sync)
+
+		if you change anything, do
+		exportfs -ra 
+	NFS client:
+		/etc/fstab
+		# device   mountpoint  fs-type     options    dump fsckorder
+		case:/dir  /mntpoint    nfs     rw,hard,intr   0    0
+
+	
+
+9.) Setup GDM
+	- Install themes:
+		Either 
+			- install all the themes wherever you saved them
+		or
+			- tar up /usr/share/gdm/themes on one machine
+				and put it on another...
+	- Configure it safely
+		- remove system menu
+		- no autologin
+		- stuff like that
+	- edit /etc/X11/gdm/gdm.conf
+		- to the command= line under server-Standard, add
+			-nolisten tcp
+
+10.) Set up printing:  
+CUPS setup (server)
+redhat-config-printer-gui
+	- Add appropriate printers and stuff
+	- Under sharing, have it shared to:
+		192.168.1.0/255.255.255.0
+
+Clients will just see printers
+
+11.) in /etc/pam.d, remove the following:
+	poweroff
+	halt
+	reboot
+
+12.) in /etc:
+	- copy the following:
+		a2ps-site.cfg
+		issue
+		rm issue.net; ln -s issue issue.net
+	- add /usr/local/lib and /usr/lib to ld.so.conf
+	
+13.) Set up latex:
+
+	cd /usr/share/texmf/tex/latex
+	ln -s /usr/local/apps/latex/local .
+
+	then run texconfig and rebuild the ls-R database
+
+	also, change the dvips configuration to be letter papersize instead
+	of A4.
+	
+14.) Fix grub; edit /etc/grub.conf
+	change timeout to 1
+
+	(for regular CD-ROM drives):
+	add hdX=ide-scsi to the kernel string
+	rm /dev/cdrom
+	ln -s /dev/scd0 /dev/cdrom
+
+15.) Make the logfile readable by me.
+	chmod 640 messages
+	chgrp matt messages 
+
+16.) Make ntp work
+	cd /etc
+	mv ntp.conf ntp.conf.rhat
+	for NIS server:
+	ln -s /usr/local/apps/ntp/ntp.server.conf ./ntp.conf
+	for NIS client:
+	ln -s /usr/local/apps/ntp/ntp.client.conf ./ntp.conf
+	
+
+17.) Install Xaw3d
+   in /usr/X11R6/lib copy the libXaw3d stuff to their libXaw counterparts
+   WARNING: will crash all running xterms! 
+
+18.) Set up emacs
+ 	cd /usr/share/emacs/site-lisp
+	ln -s /usr/local/apps/emacs/site-start.el .
+
+19.) Add gimp scripts
+	cd /usr/share/gimp/1.2/scripts
+	ln -s /usr/local/apps/gimp/scripts/* .
+
+20.) Make portsentry work:
+	cp -a /usr/local/apps/portsentry/portsentry.etc /etc/portsentry
+
+	Note: THIS MAY FAIL for security reasons (we don't want it readable
+	to anyone except root on case. These .<machinename> dirs are 
+	for backups of all the keys anyway.
+
+21.) Make ssh work:
+	cp -a /usr/local/apps/openssh/etc.<machinename>/* /etc/ssh/
+
+	Note: THIS MAY FAIL for security reasons (we don't want it readable
+	to anyone except root on case. These .<machinename> dirs are 
+	for backups of all the keys anyway.
+
+	For a new machine, copy etc.skel.
+	a.) tweak ssh.conf/sshd.conf as necessary
+	b.) generate keys:
+		ssh-keygen -t rsa1 -f /etc/ssh/ssh_host_key -N ""
+		ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ""
+		ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ""
+	c.) do hostbased auth for localhost (for mail tunnelling)
+		I.) ssh to localhost.localdomain and log in 
+			(to get the public key).
+		II.) (should already be done)
+			 put localhost.localdomain in 
+			<openssh config dir>/etc/shosts.equiv
+		III.) put localhost.localdomain's public key in 
+			<openssh config dir>/ssh_known_hosts2. You can get 
+			this by looking in ~/.ssh/known_hosts, since you 
+			got it when you ssh-ed to localhost.
+		IV.) (should already be done)
+		     In <openssh>/etc/ssh_config, make sure:
+			HostbasedAuthentication yes
+			PreferredAuthentications hostbased,publickey,password
+		V.) (should already be done)
+		     In <openssh>/etc/sshd_config, make sure
+			HostbasedAuthentication yes
+	
+		     There may be an option
+			HostbasedUsesNameFromPacketOnly yes
+			set. Delete it, or set it to no.
+		VI.) (shouldn't need to do this, because 5 should be done)
+			restart sshd if you made change 5.
+
+22.) Make samba work
+	mkdir /etc/samba
+	cp /usr/local/apps/samba/etc.skel/* .	
+	edit /etc/samba/smb.conf so your machine works right
+	mkdir /etc/samba/private ; chmod 700 /etc/samba/private
+	mkdir /var/samba
+
+
+23.) (optional) Compile the kernel with the shit that you want in it 
+	(including visor stuff)
+	NOTE: only do this AFTER all the patches are installed, so
+	that you get the latest version, or just get it from kernel.org)
+	
+	CASE: Make sure to compile sidewinder and the sblive gameport as 
+	modules
+
+24.) Set up alsa: IMPORTANT - DO KERNEL FIRST. Doing a make_modules in kernel
+	build deletes extra modules, INCLUDING ALSA MODULES!!!
+
+	- copy the alsa dir out of /usr/local/apps/alsa in to
+	  /usr/src on each client.
+
+	- for the alsa-drivers, do:
+	   make clean
+   	   ./configure --with-sequencer=yes --with-oss=yes --with-cards=all
+	   make
+	   make install
+	(you have to do this each kernel recompile)
+	the first time you set up alsa do: ./snddevices in the above dir too.
+
+	- for the rest of the utils, do:
+		make clean
+		./configure
+		make
+		make install
+	- for each soundcard put a lines like:
+		alias snd-card-0 snd-maestro3
+	  in modules.conf
+	- for OSS compatibility, put in:
+		alias sound-slot-0 snd-card-0
+		alias sound-service-0-0 snd-mixer-oss
+		alias sound-service-0-1 snd-seq-oss
+		alias sound-service-0-3 snd-pcm-oss
+		alias sound-service-0-8 snd-seq-oss
+		alias sound-service-0-12 snd-pcm-oss
+	  as well
+
+25.) Make sure to make any appropriate dvd devices.
+
+26.) For joystick support, add the line:
+
+	post-install snd-emu10k1 modprobe emu10k1-gp; modprobe joydev; modprobe sidewinder
+
+	to /etc/modules.conf (the joydev line us unnecessary if compiled in; 
+	the other two MUST be modules in order to load after ALSA)x
+
+
+27.) for support for the i8k buttons, do a 'make', 'make install' as root and
+	then copy the i8kbuttons script into /etc/init.d. Link it to where
+	it should be.
+	- ln -s /usr/local/apps/i8kutils/i8kmon.conf /etc/i8kmon
+
+28.) For cdrom support:
+	- chmod 4755 /usr/bin/cdrecord
+	- chmod 666 /dev/sg0
+
+26.) For bittorrent support:
+	add the following line to /etc/mailcap
+
+application/x-bittorrent; /usr/local/apps/bittorrent/BitTorrent-current/btdownloadgui.py %s; test=test -n "$DISPLAY"
+
+
+29.) For a nice music directory, do:
+	mkdir /music 
+	then add:
+	mount --bind /usr/local/music /music
+	to rc.local
+
+30.) Get rid of the stupid rhn panel applets:
+	KDE: /usr/share/config/ksmserverrc 
+	GNOME: /usr/share/gnome/default.session 
+	The file formats should be self explanatory. Edit them smartly.
+
+31.) Make lots of media formats work
+	ln -s /usr/local/apps/win32dlls/dlls ./win32
+
+32.) Set up ipsec:
+	(note: Don't forget to make install the alsa stuff!!)
+	cp -a /usr/local/apps/freeswan /usr/src/.
+	cd /usr/src/freeswan
+	make xgo
+	(under "Networking options" choose the IPSEC stuff)
+
+	let it compile, then do:
+	make kinstall
+	create a key
+	
+	ipsec newhostkey --output /etc/ipsec.secrets --hostname xy.example.com
+	chmod 600 /etc/ipsec.secrets	
+
+	reboot
+	run 'ipsec verify' as root to test that it is working
+	NOTE: the first four checks are the important ones. The others
+	don't matter
+33.) Fix the hotplug scripts for the scanner:
+	add the line:
+usbscanner           0x0003      0x05d8   0x4002    0x0000       0x0000       0x
+ff         0xff            0xff            0xff            0xff               0x
+ff               0x00000000
+
+	to /etc/hotplug/usb.usermap
+
+	and copy the usbscanner script from /usr/local/apps/sane/my_stuff
+	to /etc/hotplug/usb.
+
+
+
+
+
+################### Deprecated ##############################
+- I don't use MythTV, so this isn't necessary, but it's useful to
+  keep the instructions around
+XX.) Update perl:
+	do the following:
+
+		perl -MCPAN -e shell
+	
+	follow above prompts. When done, do:
+	
+		install Bundle::CPAN
+
+	when that finishes, do:
+
+		reload cpan
+
+	then get the modules you need; currently:
+	
+		install Date::Manip XML::Writer Lingua::EN::Numbers::Ordinate Lingua::Preferred Term::ProgressBar Unicode::String
+
+	these are needed for xmltv, needed for MythTV. These may change later..
+###############################################################

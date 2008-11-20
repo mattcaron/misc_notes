@@ -1,0 +1,7 @@
+Convert mp3 to wav:
+
+mpg123 -w output.wav input.mp3
+
+Resample wav files into redbook audio (stereo, 44kHz sampling)
+
+sox -V input.wav -c 2 -r 44100 output.wav

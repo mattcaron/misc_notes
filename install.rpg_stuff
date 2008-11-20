@@ -1,0 +1,10 @@
+sudo apt-get install ia32-sun-java6-bin
+
+make the following to run it:
+
+/usr/lib/jvm/ia32-java-6-sun-1.6.0.06/bin/java -Xmx512M -jar maptool-*.jar run
+
+
+sudo ufw allow port 51234
+
+

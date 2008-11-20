@@ -1,0 +1,986 @@
+Install Crib Sheet:
+
+1.) Boot the LiveCD. The default kernel should be fine.
+
+2.) do:
+	hdparm -d1 -A1 -m16 -u1 -a64 -c1 /dev/hda
+
+3.) do:
+	passwd
+	to set root's password for the install
+
+4.) Network:
+	Assume DHCP will work for network. If not, consult the book
+
+5.) If remote access is desired, start ssh with:
+	/etc/init.d/sshd start
+
+6.) Partitions:
+	- use fdisk/cfdisk
+	- if the dos disklabel is all nastied up, you can create new
+		one with 'o'
+	- do partitions like:
+
+	a.) mandatory partitions:
+
+	/boot ~=100MB	
+	swap   = 2xRAM, or appropriate
+	/      = large, at least 10GB (possibly the rest of drive)
+
+	b.) optional partitions, or put on RAID array
+	/home  = at least 5GB
+	/usr/local = at least 5GB
+	/var/spool/mail = if mailserver, dependant on number of people
+	/opt = if gaming server, dependant on number of servers
+
+7.) Filesystems:
+	- ext3
+	- for root, do:
+		mke2fs -j -v /dev/whatever
+	- for other parts, do
+		mke2fs -j -m0 -v /dev/whatever
+	- then tune it
+		tune2fs -c100 -i0 /dev/whatever
+
+	if you want to check for bad blocks, do -c, or -c -c for a better test
+
+	
+8.) Swap:
+	mkswap device
+	swapon device
+
+9.) Mount stuff
+	mount root /mnt/gentoo
+	mkdir /mnt/gentoo/boot
+	mount boot /mnt/gentoo/boot
+	mkdir /mnt/gentoo/proc
+	mount -t proc none /mnt/gentoo/proc
+	- mount all the others too
+	- if tmp is separate partition, make sure to chmod 1777 it
+	- same with /var/tmp
+
+10.) Install a stage from a LiveCD
+	- to see stages, do:
+		ls /mnt/cdrom/stages
+	
+	- to install, do:
+		cd /mnt/gentoo
+		tar xvjpf /mnt/cdrom/stages/stage-whatever
+
+11.) Install a Portage snapshot:
+	- to see snapshots, do:
+		ls /mnt/cdrom/snapshots
+
+	- to install, do:
+	tar xvjf /mnt/cdrom/snapshots/portage-version -C /mnt/gentoo/usr
+	mkdir /mnt/gentoo/usr/portage/distfiles
+	cp -a /mnt/cdrom/distfiles/* /mnt/gentoo/usr/portage/distfiles/
+
+12.) Configure make.conf flags:
+	nano /mnt/gentoo/etc/make.conf
+
+	CHOST: do not change
+	CFLAGS: 
+	- generic i586:
+		-O3 -march=i586 -pipe -fomit-frame-pointer
+	- generic i686:
+		-O3 -march=i686 -pipe -fomit-frame-pointer
+	- pentium 2:
+		-O3 -march=pentium2 -pipe -fomit-frame-pointer
+	- pentium 3:
+		-O3 -march=pentium3 -pipe -fomit-frame-pointer
+	- athlon mp:
+		-O3 -march=athlon-mp -pipe -fomit-frame-pointer
+	- athlon xp:
+		-O3 -march=athlon-xp -pipe -fomit-frame-pointer
+	MAKEOPTS:
+	- uniprocessor:
+		MAKEOPTS="-j2"
+	-smp
+		MAKEOPTS="-j3"
+
+13.) Copy over DNS info:
+	cp /etc/resolv.conf /mnt/gentoo/etc/.
+
+14.) chroot:
+	chroot /mnt/gentoo /bin/bash
+	env-update
+	source /etc/profile
+
+15.) Set timezone
+	ln -sf /usr/share/zoneinfo/EST5EDT /etc/localtime
+
+16.) Install kernel 
+	emerge =vanilla-sources-2.4.24
+
+	do the normal:
+	cd /usr/src/linux
+	make menuconfig
+	
+	configure with minimal stuff - we'll replace it later
+
+	make sure to select /dev file sustem support
+
+	make dep clean modules modules_install install
+
+	(make install will complain, ignore it)
+
+
+17.) Configure any modules:
+	- list the modules you want loaded in:
+		/etc/modules.autoload.d/kernel-2.4
+
+	- to find all the modules you installed, do:
+		find /lib/modules/<kernel-version>/ -type f -iname '*.o' -or \
+		-iname '*.ko'
+
+	- then run:
+		modules.update
+
+18.) Edit /etc/fstab:
+	- add all the filesystems
+	- MAKE SURE TO CREATE THE MOUNT POINTS
+	- make sure to add:
+		none 	/proc/bus/usb	usbfs	defaults 	0 0	
+
+19.) Networking:
+	echo my_machine > /etc/hostname
+	echo my_network > /etc/dnsdomainname
+	rc-update add domainname default
+	
+	- edit /etc/conf.d/net and follow the instructions in the file
+	rc-update add net.eth0 default
+
+	- edit /etc/hosts to add hosts
+
+20.) PCMCIA (optional, for laptops)
+	USE="-X" emerge pcmcia-cs
+	rc-update add pcmcia default
+
+	- the -X stops pcmcia-cs from doing X stuff, and therefore installing 
+		X. We'll have to change this later.
+
+21.) System Info:
+	- edit /etc/rc.conf and set it up intelligently
+	- set CLOCK to "local"
+	- set EDITOR to emacs
+	- set DISPLAYMANAGER to "gdm"
+	- set XSESSION="kde-3.2.0" or whatever the current version is
+
+	## deprecated
+	- set DISPLAYMANAGER to "gdm"
+
+22.) Configure bootloader (GRUB)
+	emerge --usepkg grub
+
+	- once it's done, start grub with:
+	grub --no-floppy
+
+	once in the shell, do:
+	root (hd0,0)
+	setup (hd0)
+	quit
+
+	- (hda0,0) is for hda1 as /boot. If something else, change it.
+
+	cp /boot/grub/grub.conf.sample /boot/grub/grub.conf
+
+	- edit up the grub.conf to do stuff that makes sense
+	- make sure to add:
+		splashimage=(hd0,0)/grub/splash.xpm.gz
+
+23.) Install system tools
+	emerge --usepkg syslog-ng vixie-cron
+	rc-update add syslog-ng default
+	rc-update add vixie-cron default
+
+24.) Final configuration:
+	- set root password
+	- add some users: (optional)
+		- use the mc-useradd script
+		### deprecated
+		useradd matt -m -G users,niswheel,audio,games,cdrw,cdrom,scanner
+		passwd matt
+		- (wheel membership is needed to su)
+
+25.) Reboot
+	exit
+	cd /
+	umount all the things mounted off /mnt/gentoo
+	reboot
+
+26.) Install GRP packages
+	- mount the packages cdrom
+
+	export PKGDIR="/mnt/cdrom"
+	cd /mnt/cdrom/All
+	USE="bindist" emerge --usepkg *
+
+	- (The bindist stops XFree from downloading of MS core fonts)
+
+XX.) Make ssh work:
+	For a new machine, copy ssh_skel.tar and untar to /etc/ssh
+	a.) tweak ssh_config/sshd_config as necessary
+	b.) generate keys:
+		ssh-keygen -t rsa1 -f /etc/ssh/ssh_host_key -N ""
+		ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ""
+		ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ""
+
+	Note:
+		when setting up a new machine, it might be convenient to
+		set PermitRootLogin to yes in /etc/ssh/sshd_config Make sure
+		to unset it later
+
+	rc-update add sshd default
+	/etc/init.d/sshd start
+
+28.) Set up USE in /etc/make.conf
+	- full descriptions live in /usr/portage/profiles/use.desc
+	- I added:
+
+mmx sse gtk2 gnome kde qt alsa oss aim apm arts avi cdr crypt cups dvd dvdr emacs encode esd ethereal evo flac foomaticdb gb gd	gphoto2 gpm gstreamer icq imap imagemagick imlib jabber	java jikes jpeg ladccalcms ldap libwww mad mcal motif lesstif mpeg mpi msn mysql nas ncurses nls oggvorbis opengl oscar oss pam pcmcia pda ppds pdflib perl plotutils png pnp python quicktime readline samba scanner sdl spell ssl svga tcltk tcpd tetex theora tiff truetype unicode usb videos wmf wxwindows	X Xaw3d xinerama xosd xml2 xmms xv yahoo zlib
+
+29.) Update emerge:
+	### For GROUP machines ###
+	- edit /etc/make.conf and add the following lines:
+	PORTDIR=/usr/portage
+	DISTDIR=${PORTDIR}/distfiles
+	SYNC=rsync://yt/gentoo-portage
+	FETCHCOMMAND="rsync rsync://yt/gentoo-packages/\${FILE} ${DISTDIR}"
+
+	- then do all the standalone stuff below
+
+	### For STANDALONE machines ###
+		(that will go directly to gentoo servers)
+
+	emerge sync
+
+	- if it yells at you that portage has changed:
+	emerge portage
+
+30.) (STANDALONE ONLY!!!!) Select mirrors 
+	emerge mirrorselect
+	mirrorselect -a -s3
+
+31.) emerge 2.6 kernel and stuff
+	emerge gentoo-dev-sources udev baselayout
+
+	cd /usr/src
+	rm linux ; ln -s linux-2.6.5-gentoo-r1 linux
+	- then configure the kernel
+	make clean all modules_install install
+
+	- make sure to update all config files
+	 	(etc-update is useful for this)
+		(also find . -iname '._cfg*' in /etc/)
+
+	Configure any modules:
+	- list the modules you want loaded in:
+		/etc/modules.autoload.d/kernel-2.4
+
+	- to find all the modules you installed, do:
+		find /lib/modules/<kernel-version>/ -type f -iname '*.o' -or \
+		-iname '*.ko'
+
+	- then run:
+		modules.update
+
+	- reboot
+
+32.) Set up ALSA:
+
+	emerge alsa-utils
+
+	- edit /etc/modules.d/alsa
+	- in the ALSA section, do:
+	alias snd-card-0 snd-whatever
+	- where whatever is the card:
+		snd-maestro3 for 8100
+	-in the OSS section, do:
+	alias sound-slot-0 snd-card-0
+
+	- run:
+	update-modules
+	rc-update add alsasound boot
+	
+	- start manually, if you wish:
+	/etc/init.d/alsasound start
+
+	- NOTE: Stuff will be unmuted. Run a mixer to take care of this
+
+	- once ALSA is installed, add
+	jack
+	- to the USE flags in /etc/make.conf
+
+33.) Set up hdparm
+	- edit /etc/conf.d/hdparm and add the lines
+
+		disc0_args="-d1 -A1 -m16 -u1 -a64 -c1"
+		cdrom0_args="-d1 -c1 -u1"
+
+	- then:
+	rc-update add hdparm boot
+	/etc/init.d/hdparm start
+
+XX.) Set up lvm2 (for machines using it)
+	- create any partitions you want (I'm using /dev/sda1 here)
+	emerge lvm2
+	mkdir /etc/lvm
+	echo 'devices { filter=["r/cdrom/"] }' > /etc/lvm/lvm.conf
+	vgscan
+	pvcreate /dev/sda1
+	vgcreate vg /dev/sda1
+	- create bits with
+	lvcreate -LsizeG -nname vg
+	- where size is the size and name is the name
+	- these are now accessible through /dev/vg/name
+	- file systems can be made through
+	mke2fs -j -m0 -v /dev/vg/name
+	tune2fs -c100 -i0 /dev/vg/name
+	- 'vgs' can be used to show your volume groups 
+		(sizes and free and all that)
+	- add the bits to /etc/fstab
+
+34.) Set up various programs and bits:
+
+### i8kutils (optional)
+	emerge i8kutils
+	- cp old /etc/i8kon to new
+	- add the following to /etc/conf.d/local.start:
+	i8kmon -d &
+	i8kbuttons -u "aumix -v +10" -d "aumix -v  -10" -r 100 &
+
+### all kinds of mounts
+	- MAKE SURE THE MOUNTPOINTS EXIST
+	- add things like 
+	/mnt/raid_array/local   /usr/local      none    bind            0 0
+	- to /etc/fstab
+
+35.) emerge lots of things:
+	- because some are masked add the following to 
+		/etc/portage/package.keywords
+
+mail-client/kbiff ~x86
+media-fonts/corefonts ~x86
+app-emulation/wine ~x86
+app-arch/kdar ~x86
+mail-client/mozilla-thunderbird ~x86
+net-www/mozilla-firefox ~x86
+media-tv/kdetv ~x86
+x11-themes/gdm-themes ~x86
+x11-terms/xterm ~x86
+x11-base/xorg-x11 ~x86
+x11-base/opengl-update ~x86
+media-libs/xine-lib ~x86
+media-video/gxine ~x86
+media-video/xine-ui ~x86
+dev-dotnet/mono ~x86
+dev-util/mono-debugger ~x86
+dev-util/monodevelop ~x86
+dev-util/monodoc ~x86
+dev-dotnet/gtksourceview-sharp ~x86
+dev-dotnet/gtk-sharp ~x86
+dev-dotnet/gecko-sharp ~x86
+dev-libs/icu ~x86
+net-misc/howl ~x86
+x11-misc/ttmkfdir ~x86
+app-arch/par2cmdline ~x86
+
+	- (I have no idea why xterm is masked)
+
+	- emerge java
+	###### deprecated ######
+	- This required a seperate download:
+	sun-jre-bin
+
+ 	* Please download j2re-1_4_2_04-linux-i586.bin from:
+	* http://java.sun.com/j2se/1.4.2/download.html
+	* (select the "Linux self-extracting file" package format of the JRE
+	* and move it to /usr/portage/distfiles
+	###### end deprecated ######
+
+	- emerge the blackdown-jdk
+emerge blackdown-jdk
+java-config --set-system-vm=blackdown-jdk-<VERSION>
+env-update
+source /etc/profile
+
+	- emerge some of the GRP packages (they're already installed,
+	- but not in the world file; this will put them there, so that
+	- they are upgraded properly and all that):
+
+app-xemacs/apel app-xemacs/efs gnome-extra/gucharmap app-cdr/xcdroast app-xemacs/edebug app-editors/xemacs x11-libs/gtksourceview gnome-extra/gnome-games app-xemacs/cc-mode dev-perl/gtk-perl app-cdr/cdlabelgen media-libs/sdl-ttf dev-python/pyserial gnome-base/eel app-admin/addpatches gnome-base/libgtop app-office/abiword gnome-extra/gnome2-user-docs dev-libs/libunicode kde-base/kdemultimedia dev-perl/XML-Writer dev-python/twisted mail-client/evolution sys-apps/gradm dev-perl/Digest-MD5 app-xemacs/mail-lib app-xemacs/eterm dev-util/ctags gnome-base/gail app-editors/gedit media-sound/mpg123 kde-base/kdepim app-xemacs/cookie dev-libs/nss media-libs/taglib gnome-extra/nautilus-cd-burner net-misc/tsocks dev-python/Imaging x11-wm/enlightenment gnome-extra/gconf-editor app-xemacs/mh-e app-xemacs/prog-modes gnome-extra/gal app-xemacs/pcl-cvs gnome-base/nautilus app-xemacs/edit-utils dev-python/numeric x11-wm/metacity media-video/xanim sys-apps/chpax gnome-base/control-center dev-libs/fribidi app-crypt/gpgme gnome-base/gnome kde-base/kdeedu app-xemacs/xemacs-devel net-libs/libsoup dev-perl/Test-Harness sys-apps/acl app-xemacs/emerge gnome-base/libgnomeprint x11-libs/libwnck dev-python/pyOpenSSL kde-base/kdenetwork kde-base/kdegames gnome-extra/nautilus-media gnome-extra/zenity media-sound/aumix gnome-base/gnome-applets sys-apps/partimage gnome-base/gnome-session kde-base/kdeutils net-analyzer/nmap gnome-base/libgnomeprintui app-xemacs/mailcrypt net-print/gnome-cups-manager app-text/xpdf gnome-base/gnome-panel mail-client/sylpheed app-text/ggv net-misc/dante app-editors/vim dev-perl/Text-Balanced gnome-extra/gnome-media gnome-extra/gnome-system-monitor net-www/mozilla-firefox dev-python/pycrypto app-xemacs/vm media-gfx/eog app-xemacs/ediff net-print/libgnomecups net-www/epiphany kde-base/kdegraphics app-xemacs/vc app-admin/chkrootkit app-xemacs/elib sys-apps/apmd app-arch/file-roller dev-perl/PDL dev-libs/fftw media-plugins/gst-plugins-libpng dev-perl/ExtUtils-F77 net-im/gaim-encryption kde-base/kdeaddons gnome-extra/gcalctool net-im/gaim kde-base/kde app-xemacs/xemacs-base media-libs/libcdaudio sys-apps/modutils net-analyzer/netcat media-libs/t1lib app-text/gpdf x11-wm/fluxbox dev-perl/digest-base dev-perl/Parse-RecDescent kde-base/kdeaccessibility dev-python/pygame gnome-extra/bug-buddy net-misc/rdate app-crypt/cryptplug kde-base/kdeadmin app-text/wv sys-apps/attr app-xemacs/w3 app-editors/vim-core dev-perl/Filter app-xemacs/ilisp app-xemacs/sh-script app-xemacs/ecrypto app-xemacs/speedbar media-libs/sdl-image sys-apps/parted app-xemacs/tm x11-themes/gtk-engines-thinice media-libs/mpeg-lib dev-perl/Inline x11-wm/openbox net-analyzer/ettercap net-misc/whois dev-util/glade net-www/mozilla dev-libs/newt kde-base/kdetoys app-xemacs/xemacs-ispell x11-terms/gnome-terminal app-xemacs/fsf-compat sys-apps/utempter dev-perl/File-Spec app-xemacs/dired dev-python/pyxml app-text/gnome-spell x11-terms/xterm app-xemacs/rmail media-libs/fnlib app-xemacs/gnus net-irc/xchat app-shells/tcsh net-analyzer/tcpdump dev-libs/nspr gnome-extra/gnome-utils app-office/openoffice
+
+- emerge the remaining apps:
+(audacity doesn't like wxGTK to have unicode support, so add the following to
+/etc/portage/package.use:
+	x11-libs/wxGTK -unicode
+
+gentoolkit wireless-tools xosview xdaliclock logjam netkit-telnetd alsa-utils k3b i8kutils tk kmplayer mplayer mplayerplug-in mplayer-skins netscape-flash bittorrent cmatrix gif2png gimp gimp-print cups-pdf tetex latex2html ntp portsentry rhythmbox sane-backends sane-frontends xsane scribus unrtf xearth xine-lib gxine xine-ui xlockmore xv gv itcl cgoban gnugo penguin-command xpenguins lincity kino grip kalbum wm-icons fvwm_icons gqview bind-tools wolfgl xscreensaver rss-glx fortune-mod-all ethereal largorecipes sudo prosper tightvnc dosfstools mime-types nfs-utils yp-tools gnome-alsamixer strace freefonts gnu-gs-fonts-other gnu-gs-fonts-std lfpfonts-fix lfpfonts-var sharefonts urw-fonts x11fonts-jmk traceroute logrotate sound-juicer symlinks fetchmail dos2unix unix2dos quake1 quake2-icculus quakeforge doomlegacy freedoom lsdldoom rott duke3d xfce4-artwork xfce4-clipman xfce4-datetime xfce4-diskperf xfce4-fsguard xfce4-menueditor xfce4-notes gkrellm gkrellm-alltraxclock gkrellm-bfm gkrellm-console gkrellm-giFT gkrellm-gnome gkrellm-hddtemp gkrellm-leds gkrellm-logwatch gkrellm-mailwatch gkrellm-newsticker gkrellm-plugins gkrellm-reminder gkrellm-seti gkrellm-volume gkrellmitime gkrellmlaunch gkrellmms gkrellmoon gkrellmouse gkrellmwho gkrellmwireless gkrellm-themes tvtime xawtv windowmaker windowmaker-themes aterm multi-aterm ipsec-tools glabels kbarcode mono mailx xmms xmms-themes units unison xorg-x11 skippy peacock quanta emacs slocate dhcpcd libcap acroread acroread-asianfonts figlet gnome-audio audacity monodevelop monodoc xfrisk
+
+	NB - mono-debugger is currently masked because it's broken, but it
+	should be up later
+
+	for NIS/NFS servers, emerge:
+	ypserv	
+
+	for NIS/NFS clients and servers, emerge:
+	ypbind
+
+	- in order to emerge brag, I had to do:
+	FEATURES="keeptemp keepwork" WANT_AUTOCONF="2.5" emerge metamail
+	- (you may have to run the above twice)
+	emerge brag
+	- because there is a bug in metamail
+	- Might want to check this, bug has likely been fixed
+
+	- to install the following:
+kbiff corefonts wine kdar mozilla-thunderbird mozilla-firefox kdetv gdm-themes
+	- we'll do sun-jre-bin later
+
+	- I also needed to add the following to /etc/portage/package.unmask
+	realone
+
+	- I had to do a special:
+	setenv CXXFLAGS "-O3 -march=whatever_the_arch_is -pipe -fomit-frame-pointer -fpermissive" ; emerge kcdlabel ; unsetenv CXXFLAGS
+	- to get kcdlabel to compile
+
+	- for slave machines, do:
+	rsync rsync://yt/gentoo-packages/j2re-1_4_2_04-linux-i586.bin /usr/portage/distfiles/.
+	- then emerge it
+
+	- for prelinking:
+		emerge --unmerge libelf ; emerge prelink
+
+36.) Set up more programs:
+
+### grub
+	- /boot/grub/grub.conf
+	- set it up intelligently
+	- set up password by adding the line:
+	password --md5 PASSWORD
+	- and PASSWORD is the output from:
+	grub-md5-crypt
+	- then do:
+	chmod 600 /boot/grub/grub.conf
+
+	- for the laptop's S2D, add:
+	title Restore S2D
+		rootnoverify (hd0,3)
+        	chainloader +1
+
+	- set up an /etc/ipsec.conf which should contain sections like:
+
+	---------------------------
+	###### connections of 192.168.1.1 to 192.168.1.2 ######
+
+	# AH SAs using 128 bit long keys
+	add 192.168.1.1 192.168.1.2 ah 0x010 -A hmac-md5 
+        	0x8c4708518e279fa02362564358550777;
+	add 192.168.1.2 192.168.1.1 ah 0x011 -A hmac-md5 
+	        0x2e6893cd15b62788e6b0b70261ec4823;
+
+	# ESP SAs using 192 bit long keys (168 + 24 parity)
+	add 192.168.1.1 192.168.1.2 esp 0x012 -E 3des-cbc 
+        	0x6f719567a590b91de95bfa460f1576393ae0e6d6b5522c4c;
+	add 192.168.1.2 192.168.1.1 esp 0x013 -E 3des-cbc 
+        	0x814c676ea62123fc1c818ff4270eaf254489fccf540ab24f;
+
+	# Security policies
+	spdadd 192.168.1.1 192.168.1.2 any -P in ipsec
+        	esp/transport//require
+	        ah/transport//require;
+	spdadd 192.168.1.2 192.168.1.1 any -P out ipsec
+        	esp/transport//require
+	        ah/transport//require;
+	---------------------------
+	
+	- do this for each to/from pair. This needs to be set up on
+	- each side of the connection, and you want to flip the in/out
+	- section of the policy on one side.
+
+	- to generate the AH key, do:
+	
+	dd if=/dev/random count=16 bs=1| xxd -ps
+	
+	- and take the output and use it for the key. Remember to stick
+	- the 0x in front of it
+
+	- to generate the ESP key, do:
+
+	dd if=/dev/random count=24 bs=1| xxd -ps
+
+	- and take the output and use it for the key. Remember to stick
+	- the 0x in front of it
+
+	- Then copy over my custom ipsec.init.d and ipsec.conf.d to
+	- /etc/init.d and /etc/conf.d, respectively
+	
+	rc-update add ipsec default
+	/etc/init.d/ipsec start
+
+### NIS server:
+	(do all the client stuff too, and maybe first. Be smart about it.)
+	- edit the following and set to sane values
+	/var/yp/Makefile
+	- NOTE: MINGID should be set to 1 in order to propagate the group
+	- list
+	/var/yp/securenets
+	/var/yp/ypservers (add the name of the yp server)
+	/etc/conf.d/ypserv (and set)
+		YP_DOMAIN=fnord
+	rc-update add ypserv default
+	/etc/init.d/ypserv start
+
+	- once this is all set up, run
+	/usr/lib/yp/ypinit -m
+	- to build the db
+	
+	rc-update add rpc.yppasswdd default
+	/etc/init.d/rpc.yppasswdd start
+
+	- if you change people's passwords or something, do
+	make -C /var/yp
+
+	- add all your boxen to /etc/netgroup
+
+### NFS server:
+	rc-update add nfs default
+	/etc/init.d/nfs start
+	- edit /etc/exports and add shares, then do 
+	exportfs -ra
+
+
+### NIS client:
+	- edit /etc/nsswitch.conf and change the lines to match:
+		passwd:    files nis
+		shadow:    files nis
+		group:     files nis
+		services:    files nis
+		protocols:   files nis
+		netgroup:    files nis
+
+	- edit /etc/yp.conf and add the line:
+		domain fnord server yt
+	- edit /etc/nisdomainname and add the line:
+		fnord
+	- edit /etc/pam.d/su and change the pam_wheel line to:
+		auth required /lib/security/pam_wheel.so group=niswheel use_uid
+
+	rc-update add portmap default
+	/etc/init.d/portmap start
+
+	rc-update add ypbind default
+	/etc/init.d/ypbind start
+
+	- NOTE: sshd will have to be restarted to use this...
+	/etc/init.d/sshd restart
+
+### NFS client:
+	- in /etc/fstab
+	# device   mountpoint  fs-type     options    dump fsckorder
+	yt:/dir  /mntpoint    nfs     rw,hard,intr   0    0
+
+	mkdir /pub
+
+	rc-update add nfsmount default
+	/etc/init.d/nfsmount start
+
+### Set up /etc/hosts.deny and hosts.allow
+	hosts.allow:
+		----------------
+		ALL: 127.0.0.1
+		sshd: ALL
+		# everything below here is only needed by NIS/NFS users
+		# only allow portmap entries in /etc/hosts
+		portmap: <see note below>
+		ntpd: <see note below>	
+		ypserv: <see note below>
+		ypbind: <see note below>
+		mountd: <see note below>
+		nfsd: <see note below>
+		statd: <see note below>
+		-----------------
+		@boxen = access dictated by NIS netgroup
+		Note: unfortunately, portmap doesn't seem to support
+		NIS netgroups. So, this needs to be a list of each machine
+		needing to connect to it, which is:
+		1.) any NIS/NFS server it connects to
+		2.) any NIS/NFS client connecting to it.
+		So, on clients, it will be 
+		portmap: servername myname other_clients
+		and on the server it will be:
+		portmap: myname client1 client2 ....
+
+	hosts.deny:
+		----------------
+		ALL:ALL
+		-----------------
+### tcsh
+	cd /etc/profile.d
+	ln -s /usr/local/apps/tcsh/local.csh .
+	- edit /etc/csh.login and comment out the stty line
+
+### bash
+	cd /etc
+	mv profile profile.orig
+	mv inputrc inputrc.orig
+	cp -a /usr/local/apps/bash/profile .
+	cp -a /usr/local/apps/bash/inputrc .
+
+### emacs:
+	cd /usr/share/emacs/site-lisp
+	ln -s /usr/local/apps/emacs/site-start.el .
+
+### gimp:
+	cd /usr/share/gimp/1.2/scripts
+	ln -s /usr/local/apps/gimp/scripts/* .
+
+### latex
+	cd /usr/share/texmf/tex/latex
+	ln -s /usr/local/apps/latex/local .
+
+	then run texconfig and rebuild the ls-R database
+
+	also, change the xdvi,dvips,dvipdfm,pdftex configurations to be letter
+	papersize instead of A4.
+
+### ntp
+	## for the client side:
+	cd /etc
+	mv ntp.conf ntp.conf.save
+	ln -s /usr/local/apps/ntp/ntp.client.conf ./ntp.conf
+
+	## for the server side:
+	- either
+	cd /etc
+	mv ntp.conf ntp.conf.save
+	ln -s /usr/local/apps/ntp/ntp.server.conf ./ntp.conf
+	
+	- or create the following /etc/ntp.conf
+
+	# uncomment the following for standalone systems
+	# restrict default noquery notrust nomodify
+	# restrict 127.0.0.1
+	
+	server 131.128.51.64 
+	server 131.128.51.8 
+
+	driftfile /var/lib/ntp/ntp.drift
+	logfile /var/log/ntp.log
+
+	## for both, do
+		rc-update add ntpd default
+
+	## before you start any new clients, do:
+	ntpdate -d 192.168.1.3
+	(or whatever the server is)
+
+	## make sure to add any ntp servers to your portsentry.ignore file
+	## for some reason they can send data back, which makes it angry
+
+### a2ps
+	cd /etc/a2ps
+	mv a2ps-site.cfg a2ps-site.cfg.save
+	ln -s /usr/local/apps/a2ps/a2ps-site.cfg .
+
+### set up logfile to be readable by people who can su
+	- replace the destination messages line with the following in
+		 /etc/syslog-ng/syslog-ng.conf
+	destination messages { file("/var/log/messages" perm(0640) group(wheel)); };
+	- then do 
+	/etc/init.d/syslog-ng restart
+
+### Make portsentry work:
+	cp -a /usr/local/apps/portsentry/* /etc/portsentry/.
+	- edit /etc/conf.d/portsentry and add the line:
+	PORTSENTRY_MODES="atcp audp"
+
+	rc-update add portsentry default
+
+### for cd burning support:
+	chgrp cdrw /usr/bin/cdrecord
+	chmod 4710 /usr/bin/cdrecord
+	
+	chmod 660 /dev/hdc
+	chgrp cdrw /dev/hdc
+
+	chmod 660 /dev/sg0
+	chgrp cdrw /dev/sg0
+	
+	
+
+###     deprecated, don't need this for direct ATAPI stuff in 2.6.x
+###	chmod 666 /dev/sg0
+
+### Set up /dev
+	cd /dev
+	ln -s /cdrom/cdrom0 cdrom
+
+### Set up X stuff
+	- Make an XF86Config file; run:
+	/usr/X11R6/bin/xf86config
+	- and follow the prompts
+
+	rc-update add xdm default
+	/etc/init.d/xdm start
+
+	- for DRI
+		- uncomment the "Load GLX and Load DRI" sections in XF86Config
+		- uncomment the DRI section in XF86Config
+	- for happier fonts
+		- uncomment the "Load freetype" section
+	- for scrolly mice, something like:
+	    	Identifier  "Mouse1"
+		Driver      "mouse"
+    		Option "Protocol"    "imps/2"
+    		Option "Device"      "/dev/input/mice"
+    		Option "ZAxisMapping" "4 5"
+	- is useful.
+
+	- radeon options:
+	Option "AGPMode" "integer"
+	Option "AGPFastWrite" "boolean"
+	Option "MonitorLayout" "string"
+	Option "EnablePageFlip" "boolean"
+	- there are more, google for radeon options
+
+	- switch to xorg-x11 OpenGL interface
+		opengl-update xorg-x11
+
+### set up fonts:
+	- add the following to /etc/X11/XF86Config:
+	      	FontPath "/usr/X11R6/lib/X11/fonts/TTF/"
+		FontPath "/usr/X11R6/lib/X11/fonts/misc/"
+        	FontPath "/usr/X11R6/lib/X11/fonts/lfp-fix/"
+       		FontPath "/usr/X11R6/lib/X11/fonts/lfp-var/"
+        	FontPath "/usr/X11R6/lib/X11/fonts/sharefont/"
+        	FontPath "/usr/X11R6/lib/X11/fonts/jmk/"
+        	FontPath "/usr/share/fonts/default/Type1"
+        	FontPath "/usr/share/fonts/default/ghostscript"
+        	FontPath "/usr/share/fonts/freefont"
+        	FontPath "/usr/share/fonts/corefonts"
+	- add the following to /etc/fonts/local.conf
+		<dir>/usr/X11R6/lib/X11/fonts/local/</dir>
+		<dir>/usr/X11R6/lib/X11/fonts/misc/</dir>
+        	<dir>/usr/X11R6/lib/X11/fonts/Speedo/</dir>
+        	<dir>/usr/X11R6/lib/X11/fonts/TTF/</dir>
+        	<dir>/usr/X11R6/lib/X11/fonts/misc/</dir>
+        	<dir>/usr/X11R6/lib/X11/fonts/lfp-fix/</dir>
+        	<dir>/usr/X11R6/lib/X11/fonts/lfp-var/</dir>
+        	<dir>/usr/X11R6/lib/X11/fonts/sharefont/</dir>
+        	<dir>/usr/X11R6/lib/X11/fonts/jmk/</dir>
+        	<dir>/usr/share/fonts/default/Type1</dir>
+        	<dir>/usr/share/fonts/default/ghostscript</dir>
+        	<dir>/usr/share/fonts/freefont</dir>
+        	<dir>/usr/share/fonts/corefonts</dir>
+
+### GDM 
+	- Themes should have been emerged above
+	- Configure it safely with gdmconfig's "security" tab
+
+### cups
+	rc-update add cupsd default
+	/etc/init.d/cupsd start
+	- add & configure printers with a combintion of 
+	gnome-cups-manager
+	- or
+	http://localhost:631/
+	- (the web based config is probably better, and it would probably be
+		a good idea to re-learn how to do cups)
+	- you may need to download ppd files for the printer you want to
+	- support and put the ppd in /usr/share/cups/model/
+
+	- to share printers, do:
+	        - Add appropriate printers and stuff
+
+        - in /etc/cups/cupsd.conf, for the printer you want to share, do:
+	- in the <Location /> section, do:
+	        Allow From 192.168.1.*
+        - and to have it broadcast, do:
+		BrowseAddress @LOCAL
+
+### for pdf printer support
+	- add a cups printer using the Virtual PDF backend. It's a raw queue
+	- prints go into /var/spool/cups-pdf/username
+	- I've been naming it pdf
+	- it is Postscript printer
+
+### update everything:
+	- NOTE: for clients, you may need to shutdown nfs so that it can
+	- write data to /usr/local...
+	emerge -uDv world
+	
+
+### set up wolfgl
+  cp -a /usr/local/games/games/datafiles/wolfenstein/* /usr/share/games/wolfgl/
+
+### set up quake2
+  cp -a /usr/local/games/games/datafiles/quake2/* /usr/games/lib/quake2-icculus
+
+### set up doomlegacy
+  cp /usr/local/games/games/datafiles/doom /usr/share/games/doom-data/.
+  chmod g+w /usr/share/games/doom-data
+
+### set up lsdldoom
+  cd /usr/share/doom 
+  ln -s /usr/share/games/doom-data/* .
+
+### set up rott
+  cp -a /usr/local/games/games/datafiles/rott/* /usr/share/games/rott/.
+
+### set up duke3d
+	- untested, need datafiles
+  cp -a /usr/local/games/games/datafiles/duke3d/* /usr/share/games/duke3d/.
+
+### set up digital camera
+	- add the following to /etc/fstab
+	/dev/sda1	/mnt/card	auto	noauto,user	0 0
+
+### set up scanner:
+
+###### DEPRECATED (scanner group is now used) ######
+	- edit /etc/hotplug/usb.usermap and add the line:
+usbscanner           0x0003      0x05d8   0x4002    0x0000       0x0000       0x
+ff         0xff            0xff            0xff            0xff               0x
+ff               0x00000000
+
+	cd /etc/hotplug/usb
+	ln -s /usr/local/apps/sane/scripts/usbscanner .
+####################################################
+
+	cd /usr/share/sane/gt68xx
+	ln -s /usr/local/apps/sane/firmware/* .
+
+	- edit /etc/sane.d/gt68xx.conf
+	- add the following aftert the Ultima 2000 entry 
+		# GoogleGear 2000
+		override "artec-ultima-2000" 
+		firmware "gt680xfw.usb" 
+
+	- as root, do:
+	sane-find-scanner
+	- note where the scanner is (something like libusb:001:007), then do:
+	chgrp scanner /proc/bus/usb/XXX/YYY
+	chmod 664 /proc/bus/usb/XXX/YYY
+	- where XXX is the first number above and YYY is the second
+
+### fix ssh
+	- set PermitRootLogin to no in /etc/ssh/sshd_config
+	- for backup server, make it without-password
+	/etc/init.d/sshd restart
+
+### set up sudo
+	edit /etc/sudoers and add people
+
+### set up vnc
+	ln -s /usr/local/apps/vnc/vnc.init.d /etc/init.d/vnc
+	ln -s /usr/local/apps/vnc/vnc.conf.d /etc/conf.d/vnc
+	rc-update add vnc default
+
+### set up ssmtp
+	- edit /etc/ssmtp/ssmtp.conf
+	- set the mailhub=localhost:2525 
+		(this will only work for folks with a tunnel like mine)
+	- set rewriteDomain=mattcaron.net
+
+### set up public key authentication
+
+	- (note: this assumes that you don't already have an
+	- authorized_keys file on the remote host.  If you do you'll
+	- need to add the contents of id_dsa.pub to the end of it,
+	- rather than replacing it with id_dsa.pub as I do below)
+
+	- Generate a key:
+
+	ssh-keygen -t dsa -f ~/.ssh/identity
+
+	- (don't set a passphrase for passwordless auth)
+
+	- SSH to your remote host, and add the identity.pub to that
+	- machine's ~/.ssh/authorized_keys (or just copy it)
+
+### make sure to update all config files
+	- etc-update is useful for this
+
+### prelink everything:
+	- make the file /etc/env.d/99prelink with the contents (otherwise it
+	  will try and prelink everything in /opt):
+		PRELINK_PATH_MASK="/opt"
+		- this is supposed to be a colon separated list
+	- prelink -vafmR
+	- need to prelink whenever you update prelinked libs (such as after
+	  an update world
+	- In /etc/env.d/99kde-env add the line:
+		KDE_IS_PRELINKED=1
+
+
+### to update, do:
+	- all the -p's are for "pretend"
+
+	emerge sync
+	emerge -uDvp world
+	emerge -uDv world
+	etc-update (or manual diff)
+	emerge -vp depclean
+	emerge -v depclean 
+	revdep-rebuild -pv
+	revdep-rebuild -v
+	env-update
+	prelink -vafmR
+	
+
+
+37.) Set up rsync mirror (optional)
+	emerge app-admin/gentoo-rsync-mirror
+	- edit /etc/rsync/rsyncd.conf and add in:
+--------------------------
+	#uid = nobody
+	#gid = nobody
+	uid = nobody
+	gid = nobody
+	# use chroot = no
+	use chroot = true
+	max connections = 10
+	pid file = /var/run/rsyncd.pid
+	motd file = /etc/rsync/rsyncd.motd
+	transfer logging = yes
+	log format = %t %a %m %f %b
+	syslog facility = local3
+	timeout = 300
+
+	#hosts allow = <your list>
+
+	hosts allow = 192.168.1.0/255.255.255.0
+
+	[gentoo-portage]
+	#For replicating the Portage tree to internal clients
+	path = /usr/portage
+	comment = Gentoo Linux Portage tree mirror
+	exclude = distfiles
+
+	[gentoo-packages]
+	#For distributing Portage packages (distfiles) to internal clients
+	path = /usr/portage/distfiles
+	comment = Gentoo Linux Packages mirror
+--------------------------
+	rc-update add rsyncd default
+	/etc/init.d/rsyncd start
+
+NOTES:
+	- qpkg can be used to query packages
+	- masked packages are either:
+		1. listed in /usr/portage/profiles/package.mask
+		- or -
+		2. masked because you're using ARCH and it's in ~ARCH. 
+		
+		- If 1, you can add it to /etc/portage/package.unmask
+		- If 2, you can add it to /etc/portage/package.keywords
+
+	- can set default browser by doing:
+	gnome-control-center
+	- then going to Advanced -> Preferred Applications
+	
+	etc-update is cool
+	dispatch-conf is supposedly better
+	gpasswd is used to administer /etc/group

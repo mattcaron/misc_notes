@@ -1,0 +1,9 @@
+- add to synaptic
+deb http://quozl.netrek.org/pptp/pptpconfig ./
+
+sudo apt-get update
+sudo apt-get install pptpconfig pptp-linux
+
+sudo pptpconfig
+
+should be self explanatory

@@ -1,0 +1,28 @@
+Hey folks, I finally got my Sidewinder 3D Pro working on the SBLive
+gameport. Here is what I did:
+
+1.) Nothing worked under the 2.4.18 kernel source that came with redhat
+7.3, so I got the 2.4.19 source from kernel.org
+
+2.) compiling all the joystick-y stuff as modules and loading them all
+after boot worked.
+
+3.) compiling them all into the kernel did NOT work
+
+4.) however, compiling all but the joystick driver into the kernel and
+then installing the joystick driver in a boot time script did work. I
+suspect that, because the SBLive port isn't a "standard" port, the
+joystick driver has to be loaded after all the soundcard driver
+initialization is done. So, this works.
+
+If anyone else needs help, let me know.
+
+~~~~~~~~~~~~~~~
+
+1.) Compile kernel with:
+	Gameport Joysticks [Y]
+	Support for SBLive! Gameport [Y]
+
+	Sidewinder [M]
+
+modprobe sidewinder

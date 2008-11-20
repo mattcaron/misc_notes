@@ -1,0 +1,37 @@
+warty -> hoary migration:
+
+1.) Remove backports stuff:
+sudo bash
+apt-get install apt-show-versions
+- run this to remove backports
+apt-show-versions -b | grep warty-backports | cut -d ' ' -f 1 | awk -F/ '{print $1;}' |grep -v grepmap | grep -v wine | xargs --replace="{}" apt-get install {}/warty -y --force-yes
+
+2.) Fix /etc/apt/sources.list:
+- change all instances of "warty" to "hoary"
+- remove old backports from sources.list and replace with:
+deb http://backports.ubuntuforums.org/backports hoary-backports main universe multiverse restricted
+deb http://backports.ubuntuforums.org/backports hoary-extras main universe multiverse restricted
+- change the java source to:
+deb http://jrfonseca.dyndns.org/debian/ ./
+
+3.) Get stuff
+apt-get update
+apt-get dist-upgrade
+
+4.) Make sure you have everything Ubuntu says you should:
+- install core ubuntu metapackages to catch any stragglers:
+apt-get install ubuntu-base ubuntu-desktop
+
+5.) Make sure you have everything you want (see the other stuff)
+
+
+5.) For machines using it, uninstall the fglrx-driver packages and be sure to
+fix xorg.conf...
+
+6.) For machines not using it, uninstall portmap
+sudo apt-get remove portmap
+
+7.) Housekeeping:
+- remove linux-image-2.6.8.1-x packages
+- run:
+update-grub.conf

@@ -1,0 +1,31 @@
+Initial setup:
+
+git config --global user.name "Matthew Caron"
+git config --global user.email matt@mattcaron.net
+git config --global core.editor /usr/bin/emacs
+
+Go to dir and create initial bits:
+
+git init
+
+Add files:
+
+git add 
+
+- apparently adds are for both new and changes... commit with:
+
+git commit
+
+- or add and commit in one shot with:
+
+git commit -a
+
+
+More info:
+
+http://www.kernel.org/pub/software/scm/git/docs/tutorial.html
+
+Everyday usage
+http://www.kernel.org/pub/software/scm/git/docs/everyday.html
+
+http://git.or.cz/

@@ -1,0 +1,54 @@
+1.) Set stuff up (usb):
+	Kernel (roll your own):
+		USB Support
+		Visor Support
+		usbdevfs support
+		usbdevfs must be mounted. The following line in /etc/fstab 
+			should work:
+		none	/proc/bus/usb	usbdevfs  defaults  0 0
+
+	Kernel (from a vendor):
+		modprobe usbcore*
+		modprobe usbserial*
+		modprobe visor
+
+	* chances are, these are compiled in. After a fresh reboot, do
+	  a dmesg | grep usb. If you see a bunch of usb.c and
+	  usbserial.c messages, then they are compuled in.
+
+If you have a serial cradle, no real setup is required, as the serial
+driver is almost always in the kernel, and talking over it is done by
+user-space programs.
+
+Palm-HOWTO: http://www.linux.org/docs/ldp/howto/PalmOS-HOWTO/
+
+2.) Configure apps. These are accessible through the Gnome Control
+Center. However, since I do not use Gnome, I want to configure this
+directly. 
+
+gpilotd-control-applet 
+	- configures gpilotd
+
+gpilotd-control-applet --cap-id=1
+	- configures conduits. I turned them all on. 
+
+3.) gpilotd must be run before pushing hotsync button. If you use
+gnome, this is done automatically (I think). I put it in my window
+manager's startup script, but putting it in .Xsession or .Xclients
+should work as well.
+
+4.) How it works:
+	gpilotd is watching the /proc/bus/usb filesystem, which has
+info on connected USB devices. When the cradle button is pressed, the
+cradle attaches to the USB bus, and the driver is loaded. gpilotd sees
+this, and begins a syncronize operation, using the configured conduits
+to determine what to do. Sweet, eh?
+
+5.) Additional conduits:
+	go to: http://www.eskil.org/gnome-pilot/
+	I installed the new gnome-pilot-conduits, which adds time
+syncronization, expense, memo, and sending mail conduits.
+
+6.) As of right now, there does not appear to be a recieving mail
+conduit for evolution. If anoyone knows of one, please let me know.
+

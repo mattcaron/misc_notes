@@ -1,0 +1,48 @@
+Packages:
+
+apt-get install apache2 libapache2-mod-perl2 libapache2-mod-php4 libapache2-mod-python libapache2-mod-jk2 mysql-client mysql-server mysql-navigator phpmyadmin apache2-prefork-dev g++ rubybook ruby-elisp libapache2-mod-ruby libapache2-mod-fastcgi
+
+- get mod_mono
+- untar it
+sh ./configure --prefix=/usr
+make
+sudo make install - DOESN'T WORK!
+cd src
+sudo apxs2 -S LIBEXECDIR="/usr/lib/apache2/modules" -i -n mono mod_mono.la
+
+- edit /etc/apache2/ports.conf and change to be as follows:
+# Listen 80
+Listen 127.0.0.1:80
+
+- Yell specific stuff:
+
+- untar-ed the Yell stuff
+
+- Compiling resin
+- Needed to do:
+cd /usr/sbin
+ln -s apache2 httpd
+cd /usr/include/apache2
+ln -s /usr/include/apr-0/* .
+- because otherwise the build gets pissed off.
+- Run resin's install:
+./configure --with-apache=/usr --with-apache-include=/usr/include/apache2/ --with-apxs=/usr/bin/apxs2
+make
+make install
+
+- for reference, it looks like the install:
+- puts mod_caucho.so module in /usr/lib/apache2/modules
+- adds some lines to /etc/apache2/httpd.conf
+
+- reload apache config:
+/etc/init.d/apache2 force-reload
+
+- start resin:
+cd to the resin bin dir
+./httpd.sh start
+
+- check http://localhost/caucho-status for info. There should be stuff
+- active. If not, something went wrong.
+
+- set up the apache config to use the cgi-bin from the apache tarball
+- (wherever you put it)

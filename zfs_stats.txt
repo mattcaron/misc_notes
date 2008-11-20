@@ -1,0 +1,102 @@
+### Underlying disk ###
+
+cd /usr/local/zfs
+tiobench --size 512
+
+Unit information
+================
+File size = megabytes
+Blk Size  = bytes
+Rate      = megabytes per second
+CPU%      = percentage of CPU used during the test
+Latency   = milliseconds
+Lat%      = percent of requests that took longer than X seconds
+CPU Eff   = Rate divided by CPU% - throughput per cpu load
+
+Sequential Reads
+                              File  Blk   Num                   Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size  Size  Thr   Rate  (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ----- ---  ------ ------ --------- -----------  -------- -------- -----
+2.6.20-15-generic             512   4096    1   25.41 6.491%     0.152       76.53   0.00000  0.00000   391
+2.6.20-15-generic             512   4096    2   21.74 11.28%     0.357      218.56   0.00000  0.00000   193
+2.6.20-15-generic             512   4096    4   23.02 22.24%     0.661      446.19   0.00000  0.00000   103
+2.6.20-15-generic             512   4096    8   22.49 45.46%     1.342      868.38   0.00000  0.00000    49
+
+Random Reads
+                              File  Blk   Num                   Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size  Size  Thr   Rate  (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ----- ---  ------ ------ --------- -----------  -------- -------- -----
+2.6.20-15-generic             512   4096    1    0.55 0.766%     7.042       70.47   0.00000  0.00000    72
+2.6.20-15-generic             512   4096    2    0.55 1.723%    14.030      135.84   0.00000  0.00000    32
+2.6.20-15-generic             512   4096    4    0.60 3.494%    25.025      329.42   0.00000  0.00000    17
+2.6.20-15-generic             512   4096    8    0.58 8.324%    51.598      739.01   0.00000  0.00000     7
+
+Sequential Writes
+                              File  Blk   Num                   Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size  Size  Thr   Rate  (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ----- ---  ------ ------ --------- -----------  -------- -------- -----
+2.6.20-15-generic             512   4096    1   13.56 8.445%     0.237     1194.28   0.00000  0.00000   161
+2.6.20-15-generic             512   4096    2   15.07 16.47%     0.393     4207.23   0.00381  0.00000    91
+2.6.20-15-generic             512   4096    4   18.67 39.88%     0.581     5378.27   0.00687  0.00000    47
+2.6.20-15-generic             512   4096    8   17.70 78.60%     1.125    11737.54   0.01526  0.00153    23
+
+Random Writes
+                              File  Blk   Num                   Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size  Size  Thr   Rate  (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ----- ---  ------ ------ --------- -----------  -------- -------- -----
+2.6.20-15-generic             512   4096    1    0.87 0.424%     0.075      219.45   0.00000  0.00000   206
+2.6.20-15-generic             512   4096    2    1.01 0.773%     0.022       25.44   0.00000  0.00000   130
+2.6.20-15-generic             512   4096    4    1.14 2.101%     0.027       38.07   0.00000  0.00000    54
+2.6.20-15-generic             512   4096    8    1.15 3.263%     0.036       54.85   0.00000  0.00000    35
+
+
+### ZFS pool ###
+
+cd /mypool
+tiobench --size 512
+
+Unit information
+================
+File size = megabytes
+Blk Size  = bytes
+Rate      = megabytes per second
+CPU%      = percentage of CPU used during the test
+Latency   = milliseconds
+Lat%      = percent of requests that took longer than X seconds
+CPU Eff   = Rate divided by CPU% - throughput per cpu load
+
+Sequential Reads
+                              File  Blk   Num                   Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size  Size  Thr   Rate  (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ----- ---  ------ ------ --------- -----------  -------- -------- -----
+2.6.20-15-generic             512   4096    1    3.09 0.721%     1.263     4966.00   0.01526  0.00000   428
+2.6.20-15-generic             512   4096    2    1.12 0.498%     6.522    10322.32   0.11826  0.00076   224
+2.6.20-15-generic             512   4096    4    1.25 1.269%    11.912    12695.24   0.19608  0.00305    99
+2.6.20-15-generic             512   4096    8    1.01 1.816%    30.080    20900.23   0.66605  0.00763    56
+
+Random Reads
+                              File  Blk   Num                   Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size  Size  Thr   Rate  (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ----- ---  ------ ------ --------- -----------  -------- -------- -----
+2.6.20-15-generic             512   4096    1    0.23 0.169%    17.066      860.38   0.00000  0.00000   135
+2.6.20-15-generic             512   4096    2    0.26 0.409%    29.808     1042.39   0.00000  0.00000    63
+2.6.20-15-generic             512   4096    4    0.31 0.837%    50.355      311.93   0.00000  0.00000    37
+2.6.20-15-generic             512   4096    8    0.36 2.583%    80.368      457.45   0.00000  0.00000    14
+
+Sequential Writes
+                              File  Blk   Num                   Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size  Size  Thr   Rate  (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ----- ---  ------ ------ --------- -----------  -------- -------- -----
+2.6.20-15-generic             512   4096    1    4.18 1.596%     0.882     7004.74   0.01068  0.00000   262
+2.6.20-15-generic             512   4096    2    5.85 3.755%     1.160     9684.88   0.01831  0.00000   156
+2.6.20-15-generic             512   4096    4    4.22 5.660%     2.918    10506.91   0.04807  0.00153    75
+2.6.20-15-generic             512   4096    8    4.97 10.01%     4.406    19588.17   0.06180  0.00763    50
+
+Random Writes
+                              File  Blk   Num                   Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size  Size  Thr   Rate  (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ----- ---  ------ ------ --------- -----------  -------- -------- -----
+2.6.20-15-generic             512   4096    1    0.08 0.068%    49.678     9196.47   0.35000  0.00000   115
+2.6.20-15-generic             512   4096    2    0.08 0.154%    88.677    18109.78   0.55000  0.12500    53
+2.6.20-15-generic             512   4096    4    0.08 0.327%   180.620    20559.62   1.22500  0.22500    24
+2.6.20-15-generic             512   4096    8    0.10 0.619%   285.413    13163.73   2.90000  0.40000    16

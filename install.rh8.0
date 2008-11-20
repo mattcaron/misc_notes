@@ -1,0 +1,150 @@
+1.) Fix all the shell stuff
+	- delete all the shell files in root's account
+    In /etc:
+	- copy csh.cshrc, bashrc, profile 
+	- delete csh.login
+	- fix /etc/defaul/useradd
+
+2.) Accounts: 
+	Either:
+		- Make a "matt" account (UID 500)
+		- copy over desired account info for other accounts
+	or:
+		copy the following files in /etc
+		passwd
+		shadow
+		group
+		gshadow
+
+3.) Set the hostname:
+	- change it in /etc/sysconfig/network
+	- add it in /etc/hosts (or copy /etc/hosts)
+
+4.) Reboot
+
+5 .) Setup GDM
+	- Install themes:
+		Either 
+			- install all the themes wherever you saved them
+		or
+			- tar up /usr/share/gdm/themes on one machine
+				and put it on another...
+	- Configure it safely
+		- remove system menu
+		- no autologin
+		- stuff like that
+	- edit /etc/X11/gdm/gdm.conf
+		- to the command= line under server-Standard, add
+			-nolisten tcp
+
+6.) Set up printing:  
+	redhat-config-printer-gui
+		- Add appropriate printers and stuff
+
+	if you want to let others besides localhost print, change the:
+	REJECT SERVICE=X NOT SERVER
+	line to be
+	REJECT SERVICE=X NOT REMOTEIP 192.168.1.0/255.255.255.0
+
+	this will restrict it to local subnet
+
+7.) in /etc/pam.d, remove the following:
+	poweroff
+	halt
+	reboot
+
+    and copy:
+<< deprecated. ssh 3.5 doesn't seem to use it >>
+  cp /usr/local/apps/openssh/openssh-3.4p1/contrib/redhat/sshd.pam ./sshd
+
+8.) in /etc:
+	- copy the following:
+		a2ps-site.cfg
+		issue
+		rm issue.net; ln -s issue issue.net
+	- add /usr/local/lib and /usr/lib to ld.so.conf
+	
+9.) Add/configure services:
+	in /etc/init.d, copy :
+		portsentry-mc
+		sshd.init-mc 
+	then run:
+		chkconfig add <name>
+	on all of them
+
+	- then run redhat-config-services and configure the services
+		you want
+
+10.) Install rpms:
+	xosview - CD3
+	xloadimage - CD3
+	gv - CD3
+	vnc-doc - CD3
+	vnc-server - CD3
+	wine - CD3
+	wine-devel - CD3
+	symlinks - CD3
+	sharutils - CD3
+	itcl - CD3
+	enscript - CD2
+	everything in /usr/local/apps/rpms
+
+    Delete rpms:
+	rpm -qa | grep ssh and uninstall all of those
+	rpm -qa | grep samba and uninstall all of those
+
+
+11.) Set up latex:
+
+	cd /usr/share/texmf/tex/latex
+	ln -s /usr/local/apps/latex/local/ .
+
+	then run texconfig and rebuild the ls-R database
+
+	also, change the dvips configuration to be letter papersize instead
+	of A4.
+	
+12.) Fix grub; edit /etc/grub.conf
+	change timeout to 1
+	add hdc=ide-scsi to the kernel string
+	rm /dev/cdrom
+	ln -s /dev/scd0 /dev/cdrom
+
+13.) Make the logfile readable by me.
+
+14.) Make ntp work
+	cd /etc
+	mv ntp.conf ntp.conf.rhat
+	ln -s /usr/local/apps/ntp/* .
+
+15.) Install Xaw3d
+   in /usr/X11R6/lib copy the libXaw3d stuff to their libXaw counterparts
+   WARNING: will crash all running xterms! 
+
+16.) Set up emacs
+ 	cd /usr/share/emacs/site-lisp
+	ln -s /usr/local/apps/emacs/site-start.el .
+
+17.) Add gimp scripts
+	cd /usr/share/gimp/1.2/scripts
+	ln -s /usr/local/apps/gimp/scripts/* .
+
+18.) (optional) Compile the kernel with the shit that you want in it 
+	(including visor stuff)
+	NOTE: only do this AFTER all the patches are installed, so
+	that you get the latest version, or just get it from kernel.org)
+	
+	CASE: Make sure to compile sidewinder as a module
+
+19.) For joystick support, add 'modprobe sidewinder' in rc.local.
+
+20.) for support for the i8k buttons, do a 'make', 'make install' as root and
+	then copy the i8kbuttons script into /etc/init.d. Link it to where
+	it should be.
+
+21.) For cdrom support:
+	- chmod 4755 /usr/bin/cdrecord
+	- chmod 666 /dev/sg0
+
+
+

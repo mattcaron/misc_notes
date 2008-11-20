@@ -1,0 +1,8 @@
+- untar it
+- copy src/htdocs/* to the document root
+- copy src/phplib to document_root/.
+- edit dacode.php3 and change the ../phplib/ line to ./phplib/
+- in the phplib dir, copy config.sample to confif.php3
+- edit config.php3 and follow instructions
+- create tables  with:
+mysql -u user -p password database < sql/dacode.mysql
