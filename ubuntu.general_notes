@@ -262,3 +262,44 @@ Concannon's simple XML Parser:
 http://www.redbrick.dcu.ie/~shimoda/projects/xmlParser/
 
 (Ironically, it seems to be the best feature of PHP)
+
+28.) Multiple monitor support:
+
+- Set up the virtual screen size so that it can be bigger than the
+  autodetected version.
+
+  In /etc/X11/xorg.conf, add the following to the "Screen" Section
+
+        SubSection      "Display"
+           Virtual      3360 1050
+        EndSubSection
+
+- The numbers should be the horizontal and vertial dimensions of the aggregate screen. So, two 1680 x 1050 monitors give you 3360 x 1050
+
+- then you can use xrandr to set up the screens nicely:
+
+xrandr --output DVI-0 --auto --right-of VGA-0
+
+- presuming one DVI and one VGA screen.. Your mileage may vary, and
+  you need to see what X does to autodetect things. A useful commands
+  for this is:
+
+xrandr --prop
+
+28.) ReplayGain normalization of audio.
+
+This uses two programs - mp3gain and vorbisgain. It runs ahead of time
+and writes modified tags which are then used by the programs to sound
+good. It is probably good to script this...
+
+vorbisgain -arfs ~/Music/*
+find -type d -exec sh -c "mp3gain "{}"~/Music/*.mp3" ;
+
+29.) Useful raid/md commands
+
+- Show devices
+mdadm --detail --scan
+
+- Info:
+mdadm --detail /dev/md0
+mdadm --detail /dev/md1

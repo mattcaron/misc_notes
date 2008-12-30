@@ -15,6 +15,7 @@ Pysical Partitions:
 1	1GB	/boot
 2	Rest	physical volume for LVM*
 
+
 * = Alernatively, do volume for encryption, containing a single LVM
 partition.
 
@@ -24,10 +25,12 @@ partition.
   partition on each drive) and then define it to be whatever it is
   above, and continue on as normal from there.
 
+- These should represent MINIMUM sizes. More is often better.
+
 LVM Partitions
 swap		2*RAM
-usr_local	20GB	/usr/local
-tmp		1GB	/tmp
+usr_local	10GB	/usr/local
+tmp		5GB	/tmp
 var		5GB	/var
 root		10GB	/
 home		Rest	/home
@@ -71,7 +74,7 @@ apt-get install nmap traceroute emacs emacs-goodies-el php-mode css-mode openssh
 
 6.) Install general purpose things
 
-apt-get install gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs gkrellm gkrellmwireless libsane-extras xsane scribus scribus-template xfce4 xfce4-goodies xfce4-xfapplet-plugin texlive texlive-fonts-extra texlive-latex-extra latex2html gnuplot gnuplot-mode thunderbird lightning-extension enigmail firefox firefox-dom-inspector firefox-webdeveloper firebug unison unison-gtk digikam kipi-plugins meld wine ntp brag exiv2 unrar autossh openoffice.org xmlstarlet hpodder dvdrtools cdrskin logjam mesa-utils gnash flashplugin-nonfree okular okular-extra-backends k3b libk3b3-extracodecs libtk-gbarr-perl subversion mono-common mono-2.0-devel monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc glade mono-gmcs libmono-dev smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse vnc4server xvnc4viewer aspell aspell-en openvpn pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jdk openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk ia32-sun-java6-bin xchat xserver-xephyr myspell-en-us gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox linux-backports-modules-intrepid openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz audacity hfsplus xfce4-timer-plugin normalize-audio audacity libsox-fmt-all input-utils mysql-client mercurial nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup p2kmoto moto4lin dia-gnome gsfonts-x11 kate powertop latencytop python-pycurl python-paramiko regexxer apt-show-versions fast-user-switch-applet gdm-guest-session git gitk
+apt-get install gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs gkrellm gkrellmwireless libsane-extras xsane scribus scribus-template xfce4 xfce4-goodies xfce4-xfapplet-plugin texlive texlive-fonts-extra texlive-latex-extra latex2html gnuplot gnuplot-mode thunderbird lightning-extension enigmail firefox firefox-dom-inspector firefox-webdeveloper firebug unison unison-gtk digikam kipi-plugins meld wine ntp brag exiv2 unrar autossh openoffice.org xmlstarlet hpodder dvdrtools cdrskin logjam mesa-utils gnash flashplugin-nonfree okular okular-extra-backends k3b libk3b3-extracodecs libtk-gbarr-perl subversion mono-common mono-2.0-devel monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc glade mono-gmcs libmono-dev smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse vnc4server xvnc4viewer aspell aspell-en openvpn pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jdk openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk ia32-sun-java6-bin xchat xserver-xephyr myspell-en-us gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox linux-backports-modules-intrepid openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz audacity hfsplus xfce4-timer-plugin normalize-audio audacity libsox-fmt-all input-utils mysql-client mercurial nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup p2kmoto moto4lin dia-gnome gsfonts-x11 kate powertop latencytop python-pycurl python-paramiko regexxer apt-show-versions fast-user-switch-applet gdm-guest-session git gitk bittornado bittornado-gui speedcrunch mp3gain vorbisgain amarok kmail
 
 7.) Install things for laptop/mobile systems
 apt-get install resolvconf
@@ -86,6 +89,30 @@ apt-get update && apt-get install medibuntu-keyring && apt-get update
 apt-get upgrade
 
 apt-get install libdvdcss2 non-free-codecs acroread acroread-plugins googleearth
+
+8.) (RAID ONLY) Set up grub to be on all RAID disks
+
+sudo grub
+find /grub/stage1
+
+- the output will be something like:
+
+(hd0,0)
+(hd1,0)
+
+- for each do:
+
+root(hdX,Y)
+setup(hdX)
+
+- so, for the above, it would be:
+
+root (hd0,0)
+setup (hd0)
+root (hd1,0)
+setup (hd1)
+
+- and that will do it.
 
 ##################### PHASE 1 SET UP SECTION #########################
 
@@ -500,3 +527,8 @@ apt-get install boswars freecol lincity-ng warzone2100 freeciv-sound-standard fr
 
 - edit `which freecol`
 - change the JAVA= line for the sun jre to just be "java"
+
+31.) Make bittorrent work
+
+sudo ufw allow proto tcp from any to any port 10000:60000
+sudo ufw allow proto udp from any to any port 10000:60000
