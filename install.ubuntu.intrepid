@@ -30,7 +30,7 @@ partition.
 LVM Partitions
 swap		2*RAM
 usr_local	10GB	/usr/local
-tmp		5GB	/tmp
+tmp		2GB	/tmp
 var		5GB	/var
 root		10GB	/
 home		Rest	/home
@@ -532,3 +532,13 @@ apt-get install boswars freecol lincity-ng warzone2100 freeciv-sound-standard fr
 
 sudo ufw allow proto tcp from any to any port 10000:60000
 sudo ufw allow proto udp from any to any port 10000:60000
+
+32.) Set up email backups
+
+crontab -e
+
+then make it look like:
+
+ 0 1   2   *   *    /home/matt/bin/backup_email > /dev/null
+
+so it will on the second of the month at 1am and log to nowhere
