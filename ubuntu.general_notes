@@ -304,7 +304,17 @@ mdadm --detail --scan
 mdadm --detail /dev/md0
 mdadm --detail /dev/md1
 
-- Add a new drive:
+- useful
+pvs
+pvscan
+pvdisplay
+
+lvs
+lvscan
+lvdisplay
+
+
+30.) Add a new drive to a raid array:
 
 We will assume the new drive is /dev/sde
 
@@ -330,3 +340,42 @@ array has 2 drives. This will change it to have three:
 mdadm /dev/md0 --grow -n 3
 mdadm /dev/md1 --grow -n 3
 
+31.) Replace a hard drive with a bigger one
+
+- pull the drive out of the laptop and attach to a machine with space
+
+dd if=/dev/sdd of=./laptop_drive bs=1m
+
+- put the new drive in and copy it back
+
+dd if=./laptop_drive of=/dev/sdd bs=1m
+
+- use fdisk or parted and extend the partition
+
+- fill the partition with the crypt volume
+
+cryptsetup resize sda3_crypt
+
+- resize the physical volume
+
+pvresize /dev/mapper/sda3_crypt
+
+- resize the logical volume
+
+lvresize -L 20G /dev/mapper/drives-root
+
+- resize the filesystem
+
+resize2fs /dev/mapper/drives-root
+
+32.) Rename a crypt volume
+
+- rename the running instance
+
+setup rename sda3_crypt sda2_crypt
+
+- edit /etc/crypttab and change the name there as well
+- rebuild the initrd. The above had to be set up in order for the
+- system to be in the correct state for it to read and emulate in ram.
+sudo dpkg-reconfigure linux-image-`uname -r`
+- reboot
