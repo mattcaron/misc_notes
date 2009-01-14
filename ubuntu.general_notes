@@ -303,3 +303,30 @@ mdadm --detail --scan
 - Info:
 mdadm --detail /dev/md0
 mdadm --detail /dev/md1
+
+- Add a new drive:
+
+We will assume the new drive is /dev/sde
+
+a.) Make sure the drive is decent and not defective by running badblocks on it.
+
+sudo badblocks -v -w -s /dev/sde
+
+b.) Set up the partition based off the existing drive partition
+
+- Assume the drive we want to pull the partition table from is
+  /dev/sda and the new drive is /dev/sde
+
+sfdisk -d /dev/sda | sfdisk /dev/sde
+
+c.) Add the new partitions to existing md devices
+
+mdadm /dev/md0 --add /dev/sde1
+mdadm /dev/md1 --add /dev/sde2
+
+d.) By default, they will be set as hot spares, since the initial
+array has 2 drives. This will change it to have three:
+
+mdadm /dev/md0 --grow -n 3
+mdadm /dev/md1 --grow -n 3
+
