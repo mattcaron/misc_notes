@@ -1,0 +1,72 @@
+### Get your airport express to work with Linux ###
+
+http://raop-play.sourceforge.net/
+
+- Get source, untar, etc.
+
+- Install deps
+
+sudo apt-get install libsamplerate0 libsamplerate0-dev libssl libssl-dev libfltk1.1 libfltk1.1-dev libid3tag0 libid3tag0-dev mpg321 faad fluid
+
+- Compile it
+
+./configure --prefix=/usr/local/apps/raop_play
+make
+make install 
+
+- Make the ALSA driver. It is a little out of date, so you need to
+  patch it. Ge the patch here:
+
+http://www.jroller.com/nwinkler/entry/raop_play_and_kernel_2
+
+copy it to the base source dir (eg raop_play-0.5.1) and then run it:
+
+patch -p0 < fix-typedefs.patch
+
+- and then you need to edit drivers/alsa_raoppcm.c and delete:
+
+#include <linux/config.h>
+
+- then
+
+cd drivers
+make 
+make install
+
+- Copy the driver_start script to the bin dir:
+
+sudo cp ./driver_start /usr/local/apps/raop_play/bin/driver_start
+
+- Various things need to be in the path, so link it:
+ln -d /usr/local/apps/raop_play/bin/* /usr/local/bin/.
+
+- Copy the alsadev.pls file...
+
+cd ../raop_play
+sudo cp alsadev.pls /usr/local/apps/raop_play/bin/.
+
+## TO RUN ##
+
+- Run it
+
+sudo /usr/local/apps/raop_play/bin/driver_start
+
+- Then run "aexcl_play" and play "alsadev.pls" which should be linked 
+  in /usr/local/bin
+
+- MC - TODO - script the above....
+
+- Then just fire up an audio app.
+
+Notes:
+- the input volume is controlled from the aexcl_play app. Crank it up.
+
+
+- now, the problem is that it is a kernel module, so it will die every
+  time you upgrade the kernel. For this, look at:
+
+http://www.jroller.com/nwinkler/entry/raop_play_and_dkms
+
+MC - TODO - this
+
+- MC - this doesn't work very well. It's slow and annoying.
