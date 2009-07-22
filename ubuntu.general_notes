@@ -6,9 +6,13 @@
 
 - Generate a key:
 
-ssh-keygen -t dsa -f ~/.ssh/identity
+ssh-keygen -t dsa -f ~/.ssh/id_dsa
 
 - (don't set a passphrase for passwordless auth)
+- note that this is a bit dangerous
+
+cat .ssh/id_dsa.pub | ssh server "cat - >> .ssh/authorized_keys"
+ssh server "chmod go-rwx .ssh/authorized_keys"
 
 - SSH to your remote host, and add the identity.pub to that
 - machine's ~/.ssh/authorized_keys (or just copy it)
@@ -120,6 +124,10 @@ sudo smartctl -l error -d 3ware,0 /dev/twe0
 
 sudo smartctl -l error /dev/hda
 
+- Get a list of drive info
+
+smartctl -a /dev/sda
+
 14.) Getting a list of packages (and their state)
 
 dpkg --get-selections > installed-software
@@ -161,7 +169,7 @@ and such by using tar...
 - on the DESTINATION MACHINE, as root, do:
 
 cd /destination/path
-ssh user@source_machine "cd /source/path && sudo tar -cf - ." | tar -xvf
+ssh user@source_machine "cd /source/path && sudo tar -cf - ." | tar -xvf -
 
 20.) To be able to help debug things, follow the instructions here:
 
@@ -340,6 +348,17 @@ array has 2 drives. This will change it to have three:
 mdadm /dev/md0 --grow -n 3
 mdadm /dev/md1 --grow -n 3
 
+e.) update /etc/mdadm/mdadm.conf
+
+- change the lines describing the ARRAY devices to have the correct
+  num-devices. FAILURE TO DO THIS WILL MAKE IT NOT BOOT!!!
+
+f.) regenerate the initramfs
+
+sudo dpkg-reconfigure linux-image-`uname -r`
+
+- FAILURE TO DO THIS WILL MAKE IT NOT BOOT!!!
+
 31.) Replace a hard drive with a bigger one
 
 - pull the drive out of the laptop and attach to a machine with space
@@ -379,3 +398,255 @@ setup rename sda3_crypt sda2_crypt
 - system to be in the correct state for it to read and emulate in ram.
 sudo dpkg-reconfigure linux-image-`uname -r`
 - reboot
+
+33.) Advanced SSH techniques:
+
+Dynamic Forwarding:
+- Sets up an SSH proxy on your local machine which proxies traffic to
+  an outside machine
+http://blog.electricjellyfish.net/2006/03/dynamicforward-where-have-you-been-all.html
+
+- start up the proxy:
+ssh -o 'DynamicForward 8080' leary.csoft.net -N
+
+- create a firefox proxy (PAC) file
+function FindProxyForURL(url, host)
+{
+    switch(host)
+    {
+        case "wordpress.mattcaron.net":
+        case "wordpress.fishhousefishandgame.com":
+            return "SOCKS localhost:8080; DIRECT";
+            break;
+        default:
+            return "DIRECT";
+            break
+    }
+}
+
+- and then set preferences->advanced->network tab->settings->
+  automatic proxy configuration URL to:
+  file:///home/matt/.mozilla/leary_proxy
+
+- Of course, this doesn't work because it doesn't get sent to
+  mattcaron.net, so that doesn't work.
+
+Proxying about:
+- SSH to a machine via other machines. This is very useful when
+  hitting machines through the one machine with port 22 forwarded to
+  it. Sure, you can specify an alternate port, but this would allow
+  you to set up convenient aliases ahead of time, which is nice.
+http://blog.ganneff.de/blog/2007/12/15/using-a-ssh-jumphost.html
+
+Triggers:
+- Set up a public key without a password, but limit it to do specific
+  things, giving a modicum of security.
+http://blog.ganneff.de/blog/2007/12/29/ssh-triggers.html
+
+(1) generate the key:
+
+ssh-keygen -t dsa -f ~/.ssh/id_dsa_cmd
+
+(and don't enter a passphrase)
+
+echo -n "command=\"command\" "| cat - .ssh/id_dsa_cmd.pub | \
+ssh server cat - >> .ssh/authorized_keys
+
+- where server is the server and command is the command you want to run
+
+
+Set up pam_ssh - login automatically unlocks your key (which is,
+likely not a good idea).
+http://www.clasohm.com/blog/one-entry?entry_id=12085 
+
+SSH ControlMaster:
+- Vastly accelerates things like sshfs, and also makes things like
+  opening multiple windows much nicer.
+http://www.linux.com/feature/54498
+
+# ssh multiplexing - multiplex subsequent connections through the
+# first. Huge speed increase on some things, convenience on others.
+ControlMaster auto
+ControlPath ~/.ssh/master-%r@%h:%p
+
+
+XX.) SSH VPN
+
+- this will likely be useful here
+
+Add nice domains to be automatically added to resolv.conf (for
+     laptop/mobile systems)
+
+apt-get install resolvconf
+
+- edit /etc/resolvconf/resolv.conf.d/base and add what you
+  like. Additional searches will be added to this by DHCP as
+  appropriate.
+
+
+34.) The stupid gnome keypass crap needs to be turned off.
+
+gconftool-2 --set -t bool /apps/gnome-keyring/daemon-components/ssh false
+
+25.) radeon 3d
+
+1.) apt-get install devscripts
+
+2.) dget http://ppa.launchpad.net/xorg-edgers/ubuntu/pool/main/libd/libdrm/libdrm_2.4.0~git20080926.2db8e0c8-0ubuntu0tormod.dsc && dpkg-source -x libdrm_2.4.0~git20080926.2db8e0c8-0ubuntu0tormod.dsc 
+
+
+3.) run the easy-drm-modules-installer script. Don't get the thing from git, just use that version. The 915 stuff tends to bomb out, and we only care about radeon, so build just that with:
+
+./easy-drm-modules-installer radeon
+
+(4) Add the following to package list:
+deb http://ppa.launchpad.net/xorg-edgers/ubuntu hardy main
+deb-src http://ppa.launchpad.net/xorg-edgers/ubuntu hardy main
+deb http://ppa.launchpad.net/tormodvolden/ubuntu hardy main
+deb-src http://ppa.launchpad.net/tormodvolden/ubuntu hardy main
+
+And let it ride. More resources here:
+https://wiki.ubuntu.com/XorgOnTheEdge
+
+=== deprecated ===
+
+Add the following to package list:
+deb http://ppa.launchpad.net/xorg-edgers/ubuntu hardy main
+deb-src http://ppa.launchpad.net/xorg-edgers/ubuntu hardy main
+
+And let it ride. More resources here:
+===
+Need lots of stuff:
+http://www.x.org/wiki/radeonhd%3ADRI
+
+Which can be gotten here:
+https://launchpad.net/~tormodvolden/+archive
+
+Add to repos and hope for best?
+
+Sign up as a tester?
+https://launchpad.net/~xorg-edgers
+
+More info:
+https://wiki.ubuntu.com/XorgOnTheEdge
+http://www.x.org/wiki/radeonhd:packages
+
+Real instructions:
+https://launchpad.net/~xorg-edgers/+archive
+
+1.) download the drm source package and update kernel modules using
+the easy-drm-modules-installer script. It installs a pile of git stuff
+plus what it needs to build things... Of course, this fails, because the last commit is bad, so I need to:
+
+cd drm-20080716
+git-revert dfd441cf964f20e4a761cb8490d7cd82cf32e7b9
+
+and then run it again.
+
+2.) Add the archive to /etc/apt/sources.list and upgrade.
+
+
+===
+It upgrades the following:
+  libdrm2 libgl1-mesa-dri libgl1-mesa-glx libglu1-mesa libpixman-1-0
+  libxkbfile1 mesa-utils xserver-xephyr xserver-xorg-core
+  xserver-xorg-input-kbd xserver-xorg-input-mouse xserver-xorg-input-synaptics
+  xserver-xorg-video-ati xserver-xorg-video-i810 xserver-xorg-video-intel
+  xserver-xorg-video-savage xserver-xorg-video-vesa
+
+And then we need to install:
+  xserver-xorg-video-radeonhd
+
+Note. It removes a bunch of the core packages...:
+
+The following packages will be REMOVED:
+  xserver-xorg xserver-xorg-input-all xserver-xorg-input-evdev
+  xserver-xorg-input-vmmouse xserver-xorg-input-wacom xserver-xorg-video-all
+  xserver-xorg-video-apm xserver-xorg-video-ark xserver-xorg-video-chips
+  xserver-xorg-video-cirrus xserver-xorg-video-cyrix xserver-xorg-video-dummy
+  xserver-xorg-video-fbdev xserver-xorg-video-glint xserver-xorg-video-i128
+  xserver-xorg-video-mga xserver-xorg-video-neomagic xserver-xorg-video-nv
+  xserver-xorg-video-openchrome xserver-xorg-video-rendition
+  xserver-xorg-video-s3 xserver-xorg-video-s3virge
+  xserver-xorg-video-siliconmotion xserver-xorg-video-sis
+  xserver-xorg-video-sisusb xserver-xorg-video-tdfx xserver-xorg-video-tga
+  xserver-xorg-video-trident xserver-xorg-video-tseng xserver-xorg-video-v4l
+  xserver-xorg-video-vga xserver-xorg-video-via xserver-xorg-video-vmware
+  xserver-xorg-video-voodoo
+
+====================
+
+Okay, so the above broke.. trying again, because Tormod says
+
+http://mattcaron.livejournal.com/170901.html?view=443029
+
+1.) apt-get install devscripts
+
+2.) dget http://ppa.launchpad.net/xorg-edgers/ubuntu/pool/main/libd/libdrm/libdrm_2.3.1+git20080729.90b90c65-0ubuntu0tormod.dsc && dpkg-source -x libdrm_2.3.1+git20080729.90b90c65-0ubuntu0tormod.dsc
+
+3.) run the easy-drm-modules-installer script. Don't get the thing from git, just use that version. The 915 stuff tends to bomb out, and we only care about radeon, so build just that with:
+
+./easy-drm-modules-installer radeon
+
+4.) Add the archive to /etc/apt/sources.list and upgrade.
+
+5.) Clean up the mess
+apt-get autoremove
+apt-get install xserver-xorg-core xserver-xorg-input-synaptics xserver-xorg-input-kbd xserver-xorg-input-mouse xserver-xorg-video-ati
+
+26.) Second Life
+From:
+http://www.byteme.org.uk/secondlife-amd64/apt-get-a-secondlife.html
+
+Stable release track:
+deb http://apt.byteme.org.uk unstable main
+deb-src http://apt.byteme.org.uk unstable main
+
+Join the in world "Secondlife Debian Package Testers"
+
+GPG Key (can't seem to get it from keyserver)
+gpg --keyserver http://subkeys.pgp.net --recv-key 0x3b7ee764
+gpg --export 0x3b7ee764 | sudo apt-key add -
+
+Install:
+apt-get install slviewer
+
+The bleeding edge is renamed:
+apt-get install omvviewer 
+
+27.) ufw
+https://wiki.ubuntu.com/UbuntuFirewall
+
+ufw enable
+ufw default deny
+
+- If you have kept up with all the firewall stuff above, the rules
+  should already be set up.
+
+- If you want way too much info, do:
+ufw logging on
+
+- To show the status, do
+ufw status
+
+28.) Custom terminal login message:
+
+/etc/issue
+/etc/issue.net
+
+
+29.) ufw
+https://wiki.ubuntu.com/UbuntuFirewall
+
+ufw enable
+ufw default deny
+
+- If you have kept up with all the firewall stuff above, the rules
+  should already be set up.
+
+- If you want way too much info, do:
+ufw logging on
+
+- To show the status, do
+ufw status
+

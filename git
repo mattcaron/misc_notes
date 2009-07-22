@@ -3,6 +3,7 @@ Initial setup:
 git config --global user.name "Matthew Caron"
 git config --global user.email matt@mattcaron.net
 git config --global core.editor /usr/bin/emacs
+git config --global --add merge.tool meld
 
 Go to dir and create initial bits:
 
@@ -29,3 +30,31 @@ Everyday usage
 http://www.kernel.org/pub/software/scm/git/docs/everyday.html
 
 http://git.or.cz/
+
+
+- Trim a subdirectory of a repository into its own repository.
+
+   1. Clone a copy of the existing code.
+
+      git clone ~/workspace/code/linuxppc_2_4
+
+   2. cd into it, and remove all the other code. In this case, we want to keep util and blow away the rest.
+
+      git filter-branch --subdirectory-filter util -- --all
+
+   3. Now that all we want is the master branch from our original, export it:
+
+      git-fast-export master > ../import
+
+   4. Make your new repository directory and run
+
+      git init
+
+      on it.
+   5. Import the exported branch into it:
+
+      cat ../import | git-fast-import
+
+   6. Reset the branch to a reasonable state
+
+      git reset --hard
