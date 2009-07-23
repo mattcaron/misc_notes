@@ -1,0 +1,55 @@
+
+THIS DOES NOT WORK!!!
+
+- it looks like port 5 is an internal port (aka wireless) and port 0 is the 
+  wan port
+
+- the switch is vlan 0 and the wan/internal is vlan 1
+
+http://forum.openwrt.org/viewtopic.php?id=2711
+
+- ssh in
+
+- pull port 4 off vlan 0
+
+nvram set vlan0ports="1 2 3 5*"
+
+- set up the new vlan
+
+nvram set vlan2hwname="et0"
+nvram set vlan2ports="4 5"
+
+- add it to the list of lans
+
+nvram set script_fire="brctl addbr br1
+brctl addif br1 eth0
+brctl addif br1 vlan2
+brctl stp br1 0
+ifconfig br1 192.168.42.254 netmask 255.255.255.0
+"
+
+nvram commit
+
+
+
+
+
+- reboot
+
+- TODO
+1. Fix the above IPs to match what we need for Ron
+2. Set up the port forwarding
+3. Allow w/ iptables? Even necessary?
+
+
+nvram set rc_firewall="iptables -I INPUT 2 -i vlan2 -j ACCEPT"
+
+
+
+-- some resources:
+
+http://www.linksysinfo.org/forums/showthread.php?s=369222b1625897560214a3dd56c3761d&t=39576&page=1
+
+http://forum.openwrt.org/viewtopic.php?id=2711
+
+http://wiki.openwrt.org/OpenWrtDocs/NetworkInterfaces

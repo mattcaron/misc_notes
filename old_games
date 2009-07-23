@@ -1,0 +1,21 @@
+# Dosbox
+
+- Ripping full CD's
+
+cdrdao read-cd --datafile image.bin --driver generic-mmc:0x20000 --device /dev/cdrom --read-raw image.toc
+toc2cue image.toc image.cue
+
+- And then mount it:
+
+IMGMOUNT <drive letter> <cue file> -t iso
+
+- You can mount multiple ones
+
+IMGMOUNT <drive letter> <cue file 1> <cue file 2> ... <cue file n> -t iso
+
+and then use CTRL-F4 to switch them
+
+
+# ScummVM
+
+apt-get install scummvm beneath-a-steel-sky flight-of-the-amazon-queen

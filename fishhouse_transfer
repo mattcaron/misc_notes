@@ -1,0 +1,10 @@
+EPP Code: 4905FFD76C6F4048
+
+The EPP Code is a password that must be given to a registrar to initiate a transfer. A transfer to another registrar cannot be started without the correct EPP code.
+
+The domain fishhousefishandgame.com domain is currently NOT pending transfer. 
+
+CSoft CNS servers
+
+mattcaron.net.          1800    IN      NS      ns310.csoft.net.
+mattcaron.net.          1800    IN      NS      ns371.csoft.net.

@@ -1,0 +1,5 @@
+(Not virtualbox, it has its own thing)
+
+apt-get install libvirt-bin ubuntu-vm-builder vde2 virt-viewer virt-goodies python-virtinst virt-manager
+
+apt-get install ubuntu-virt-server
