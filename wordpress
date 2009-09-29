@@ -279,3 +279,15 @@ Caching:
 http://wordpress.org/extend/plugins/wp-super-cache/
 http://ibloggedthis.com/2006/05/20/wordpress-caching-how-to/
 http://www.arnebrachhold.de/2007/02/16/four-plus-one-ways-to-speed-up-the-performance-of-wordpress-with-caching/
+
+
+--- In place upgrade:
+
+(1) Click the button
+
+-- doesn't work. Needs FTP or FTPS, neither of which I want to support.
+
+Prep:
+(1) Fix perms so that the webserver can write
+(2) security concerns?
+(3) facebook integration?

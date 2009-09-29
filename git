@@ -58,3 +58,8 @@ http://git.or.cz/
    6. Reset the branch to a reasonable state
 
       git reset --hard
+
+
+git-svn
+
+git svn clone <url> -s

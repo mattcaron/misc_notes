@@ -1,4 +1,4 @@
-Install Crib Sheet for Ubuntu 8.10 (Intrepid)
+cdInstall Crib Sheet for Ubuntu 8.10 (Intrepid)
 - Note - these may not be 100% accurate, since they are based off an
   upgrade from Hardy->intrepid.
 
@@ -70,7 +70,7 @@ apt-get dist-upgrade
 
 5.) Install applications
 
-apt-get install nmap traceroute emacs emacs-goodies-el php-mode css-mode openssh-server symlinks sysstat ifstat dstat ssmtp mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs gkrellm gkrellmwireless libsane-extras xsane scribus scribus-template xfce4 xfce4-goodies xfce4-xfapplet-plugin texlive texlive-fonts-extra texlive-latex-extra latex2html gnuplot gnuplot-mode thunderbird lightning-extension enigmail firefox firefox-dom-inspector firefox-webdeveloper firebug unison unison-gtk digikam kipi-plugins meld wine ntp brag exiv2 unrar autossh openoffice.org xmlstarlet hpodder dvdrtools cdrskin logjam mesa-utils gnash flashplugin-nonfree okular okular-extra-backends k3b libk3b3-extracodecs libtk-gbarr-perl subversion mono-common mono-2.0-devel monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc glade mono-gmcs libmono-dev smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk ia32-sun-java6-bin xserver-xephyr myspell-en-us gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox linux-backports-modules-jaunty openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup p2kmoto moto4lin dia-gnome gsfonts-x11 kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions fast-user-switch-applet gdm-guest-session git gitk git-svn bittornado bittornado-gui speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita krita-plugins dosbox apt-file keepassx picocom
+apt-get install nmap traceroute emacs emacs-goodies-el php-mode css-mode openssh-server symlinks sysstat ifstat dstat ssmtp mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs gkrellm gkrellmwireless libsane-extras xsane scribus scribus-template xfce4 xfce4-goodies xfce4-xfapplet-plugin texlive texlive-fonts-extra texlive-latex-extra latex2html gnuplot gnuplot-mode thunderbird lightning-extension enigmail firefox firefox-dom-inspector firefox-webdeveloper firebug unison unison-gtk digikam kipi-plugins meld wine ntp brag exiv2 unrar autossh openoffice.org xmlstarlet hpodder dvdrtools cdrskin logjam mesa-utils gnash flashplugin-nonfree okular okular-extra-backends k3b libk3b3-extracodecs libtk-gbarr-perl subversion mono-common mono-2.0-devel monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc glade mono-gmcs libmono-dev smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk ia32-sun-java6-bin xserver-xephyr myspell-en-us gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox linux-backports-modules-jaunty openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup p2kmoto moto4lin dia-gnome gsfonts-x11 kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions fast-user-switch-applet gdm-guest-session git gitk git-svn bittornado bittornado-gui speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita krita-plugins dosbox apt-file keepassx picocom qbrew
 
 6.) Set up useful proprietary things (Medibuntu)
 From: https://help.ubuntu.com/community/Medibuntu
@@ -317,13 +317,14 @@ so it will on the second of the month at 1am and log to nowhere
 
 33.) Virtualbox:
 
-- Add to repositories:
+- Add to /etc/apt/sources_list.d/virtualbox_ppa.list
 
-deb http://download.virtualbox.org/virtualbox/debian jaunty non-free
+deb http://ppa.launchpad.net/debfx/virtualbox/ubuntu jaunty main 
+deb-src http://ppa.launchpad.net/debfx/virtualbox/ubuntu jaunty main 
 
 - Import the key:
 
-wget -q http://download.virtualbox.org/virtualbox/debian/sun_vbox.asc -O- | sudo apt-key add -
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 62F1201A
 
 - update
 
@@ -331,7 +332,7 @@ sudo apt-get update
 
 - install:
 
-sudo apt-get install virtualbox-3.0
+sudo apt-get install virtualbox-ose virtualbox-guest-additions
 
 - Add appropriate users to the vboxusers group
 
@@ -395,3 +396,29 @@ apt-get install sun-java6-jdk
 
 update-alternatives --config java
 
+36.) add firefox 3.5
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 247510BE
+
+# add to /etc/apt/sources.list
+
+- Add to /etc/apt/sources_list.d/ff_ppa.list
+
+deb http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu jaunty main 
+deb-src http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu jaunty main
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+
+37.) Set up sensors (if not set up automagically) for case
+
+sudo apt-get install lm-sensors
+sudo sensors-detect
+
+- follow prompts they will tell you want modules to use.
+- For case / Gigabyte X48-DQ6 board
+- add the following to /etc/modules:
+it87
+coretemp
+
+# FIXME - edit the conf file to fix scaling, etc.
