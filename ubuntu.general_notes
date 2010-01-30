@@ -246,6 +246,12 @@ sudo vol_id -u /dev/something
 export LIBGL_DRIVERS_PATH=/usr/lib32/dri
 then run it
 
+Wolfsp..
+
+sudo sh -c "echo 'wolfsp.x86 0 0 disable' > /proc/asound/card0/pcm0c/oss"
+sudo sh -c "echo 'wolfsp.x86 0 0 direct' > /proc/asound/card0/pcm0p/oss"
+
+
 25.) Gnome applets in xfce4 panel
 - Add items to panel
 - select XfApplet
@@ -650,3 +656,14 @@ ufw logging on
 - To show the status, do
 ufw status
 
+30.) change luks (full disk encryption) passphrase
+
+sudo cryptsetup luksAddKey /dev/sda2
+
+- reboot to make sure the new key works
+
+sudo cryptsetup luksKillSlot /dev/sda2 <old slot number>
+
+31.) Changing ssh passphrases:
+
+ssh-keygen -f id_dsa -p
