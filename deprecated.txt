@@ -1,0 +1,37 @@
+34.) Boinc (servers/desktop and at low priority)
+
+- Reference: https://wiki.ubuntu.com/BOINC
+
+apt-get install boinc-client boinc-manager
+
+- test install with:
+
+boinccmd --get_state
+
+- should output projects, applications, etc.
+
+- edit /etc/boinc-client/gui_rpc_auth.cfg 
+- it is an empty file. Set a password in it.
+
+- run
+
+boincmgr
+
+- and select a project (you need to have at least one)
+- list of projects here:
+
+http://boinc.berkeley.edu/projects.php
+
+I attached to:
+
+Rosetta@home
+The Lattice Project
+Superlink@Technion
+SETI@home
+
+- Then you can run benchmarks, etc.
+
+- choose "Advanced View", then Advanced -> Select Computer. Select
+  Localhost, and enter the password above. Then configure based on
+  machine's usage and all that.
+
