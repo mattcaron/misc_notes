@@ -1,0 +1,426 @@
+Install Crib Sheet for Ubuntu 9.10 (Karmic)
+- Note - these may not be 100% accurate, since they are based off an
+  upgrade from Hardy->intrepid->jaunty->karmic
+
+
+##################### BASE INSTALL SECTION #########################
+
+1.) Boot the install cd and follow instructions to do the base
+install.  Set up machine as desired. Fairly
+self-explanatory. Partitioning should be roughly as follows, adjusted
+for available disk size as appropriate (including for RAID). Disk
+labels should be representative of the mount point.
+
+Pysical Partitions:
+1	1GB	/boot
+2	Rest	physical volume for LVM*
+
+
+* = Alernatively, do volume for encryption, containing a single LVM
+partition.
+
+- If you are doing RAID, then you want the above physical partition
+  scheme across multiple drives, with each one set up for "Physical
+  volume for RAID". Then you create MD devices for each pairing (same
+  partition on each drive) and then define it to be whatever it is
+  above, and continue on as normal from there.
+
+- These should represent MINIMUM sizes. More is often better.
+
+LVM Partitions
+swap		2*RAM
+usr_local	10GB	/usr/local
+tmp		2GB	/tmp
+var		5GB	/var
+root		10GB	/
+home		Rest	/home
+
+(For some machines, a common area of /pub, or /shared, might be
+appropriate, and should be taken out of /home)
+
+## NOTE: All this stuff assumes that you're root, such as with "sudo -s"
+
+2.) After machine is up, run synaptic, go to settings->repositories and enable:
+- main
+- universe
+- restricted
+- multiverse
+- source code
+
+Select Download From, then choose "other" and select best server. Let
+it run the speed tests and you're good.
+
+Select other software tab and enable/add:
+- partner
+- partner (Source Code)
+
+Select updates tab and enable:
+- karmic-security
+- karmic-updates
+- karmic-backports
+
+(or just grab sources.list from some reasonable machine)
+
+Select Statistics and enable:
+- submit statistical information
+
+4.) Do:
+apt-get update
+apt-get dist-upgrade
+
+5.) Install applications
+
+apt-get install phonon-backend-xine nmap traceroute emacs emacs-goodies-el php-mode css-mode openssh-server symlinks sysstat ifstat dstat mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html gnuplot gnuplot-mode thunderbird lightning-extension enigmail firefox firefox-dom-inspector firefox-webdeveloper firebug unison unison-gtk digikam kipi-plugins meld wine ntp brag exiv2 unrar autossh openoffice.org xmlstarlet hpodder dvdrtools cdrskin logjam mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime mono-2.0-devel monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs libmono-dev smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk ia32-sun-java6-bin xserver-xephyr myspell-en-us gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup p2kmoto moto4lin dia-gnome gsfonts-x11 kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions gdm-guest-session git gitk git-svn bittornado bittornado-gui speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita krita-plugins dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference prism greasemonkey ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse
+
+6.) Set up useful proprietary things (Medibuntu)
+From: https://help.ubuntu.com/community/Medibuntu
+
+wget http://www.medibuntu.org/sources.list.d/karmic.list \--output-document=/etc/apt/sources.list.d/medibuntu.list
+
+apt-get update && apt-get install medibuntu-keyring && apt-get update
+
+apt-get dist-upgrade
+
+apt-get install libdvdcss2 non-free-codecs googleearth
+
+7.) (RAID ONLY) Set up grub to be on all RAID disks
+
+sudo grub
+find /grub/stage1
+
+- the output will be something like:
+
+(hd0,0)
+(hd1,0)
+
+- for each do:
+
+root(hdX,Y)
+setup(hdX)
+
+- so, for the above, it would be:
+
+root (hd0,0)
+setup (hd0)
+root (hd1,0)
+setup (hd1)
+
+- and that will do it.
+
+##################### PHASE 1 SET UP SECTION #########################
+
+1.) Set up static IP's (for machines with them)
+- edit /etc/network/interfaces, and add lines like:
+auto iface eth0 inet static
+	address 192.168.9.1
+        netmask 255.255.255.0
+	gateway 192.168.9.254
+
+ifdown eth0
+ifup eth0
+
+2.) Make ssh work:
+## For an old machine, use the old keys - you did save /etc, didn't you?
+
+## For a new machine, use the new keys generated by the distro.
+
+- make sure to add to the firewall
+ufw allow ssh
+
+Note on X11 and agent forwarding
+- This used to be in the system defaults, but is now in per-user
+  defaults, and only for specific machines. The forwarding channel
+  could be used to back-hack to the original machine.
+
+- once you've set up public key auth, turn off password access. edit
+
+/etc/ssh/sshd_config
+
+and set
+
+PermitEmptyPasswords no
+
+
+3.) Turn on the firewall.
+
+ufw enable
+
+4.) Set up /etc/hosts.allow and /etc/hosts.deny:
+- hosts.allow:
+----------------
+ALL: 127.0.0.1
+sshd: ALL
+-----------------
+
+- hosts.deny:
+----------------
+ALL:ALL
+-----------------
+
+##################### PHASE 2 SET UP SECTION #########################
+
+(Many of these assumes that you've grabbed /usr/local/apps)
+
+1.) Configure bootloader (GRUB)
+- edit /boot/grub/menu.lst
+- make sure hiddenmenu is commented out
+- uncomment the color line
+- set the timeout to 2
+
+
+5.) latex
+cd /usr/share/texmf/tex/latex
+ln -s /usr/local/apps/latex/local .
+- then run texconfig and select "rehash"
+- Also, set the paper to US
+
+8.) ntpd (fixed machines only, for mobile, the default is fine).
+
+## for server:
+- add ntpd to hosts.allow list
+ntpd: 192.168.9.0/24
+
+## for server, make sure to add to ufw
+ufw allow ntp
+
+## for client
+- edit /etc/ntpd.conf and comment out the line:
+server ntp.ubuntu.com
+- and add the line:
+server 192.168.9.98
+
+11.) cups
+system-config-printer
+- add printers as appropriate
+
+- Under "Server Settings" select:
+  - Show printers shared by other systems
+
+- make sure to enable it in the ufw
+
+ufw allow ipp
+
+12.)  Set up samba:
+(Servers)
+cd /etc/samba
+mv smb.conf smb.conf.old
+ln -s /usr/local/apps/samba/smb.conf.machine_name ./smb.conf
+/etc/init.d/samba restart
+
+- make sure to add a ufw rules for it
+ufw allow netbios-ssn
+ufw allow microsoft-ds
+
+(Other machines)
+- Remember to turn it off on places you don't want it.
+update-rc.d -f samba remove
+/etc/init.d/samba stop
+ufw deny netbios-ssn
+ufw deny microsoft-ds
+
+14.) Set up nullmailer
+
+apt-get install nullmailer
+
+- it will have configuration screens
+- accept the default hostname
+- mailname is:
+mail63.csoft.net
+
+- once installed, do:
+
+echo matt@mattcaron.net > /etc/nullmailer/adminaddr
+
+15.) Set up apache (if applicable)
+
+apt-get install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt mysql-server
+
+- edit /etc/apache2/ports.conf and change:
+
+Listen 80
+
+- to 
+
+Listen 127.0.0.1:80
+
+- and
+
+Listen *:443
+
+- to
+
+Listen 127.0.0.1:443
+
+- enable the userdir and rewrite modules
+
+a2enmod userdir
+a2enmod rewrite
+
+/etc/init.d/apache2 restart
+
+- for dev machines, you may not want it to start at boot
+update-rc.d -f apache2 remove
+update-rc.d -f mysql remove
+
+16.) Add hpodder to my cron (one machine only)
+
+crontab -e
+
+then make it look like:
+
+  0 6   *   *   *    /usr/bin/hpodder > /dev/null
+
+so it will run every morning at 6am and log to nowhere
+
+17.) set up rsnapshot
+apt-get install rsnapshot
+
+cd /etc/
+mv rsnapshot.conf rsnapshot.conf.old
+ln -s /usr/local/apps/rsnapshot/rsnapshot.conf .
+
+- edit /etc/cron.d/rsnapshot and set the stuff to work like:
+# min hour   day month week    
+0 */4         * * *           root    /usr/bin/rsnapshot hourly
+30 3          * * *           root    /usr/bin/rsnapshot daily
+0  3          * * 1           root    /usr/bin/rsnapshot weekly
+30 2          1 * *           root    /usr/bin/rsnapshot monthly
+
+18.) /etc/hosts
+- add hosts to /etc/hosts as appropriate
+- for machines with static IP's, use that IP and delete it from the localhost 
+  line
+- If using a multihomed host, you should probably use the private IP
+  for the canonical hostname, so that NFSv4 clientaddr lookups are
+  automatically resolved.
+
+21.) Remove gdm on servers to X doesn't start:
+update-rc.d -f gdm remove
+
+22.) Set up virtualbox
+
+- Add the following to a virtualbox_ppa.list in /etc/apt/sources.d
+
+# Virtualbox PPA
+deb http://ppa.launchpad.net/dnjl/virtualization/ubuntu karmic main 
+deb-src http://ppa.launchpad.net/dnjl/virtualization/ubuntu karmic main
+
+- make sure to make it readable
+
+- get the key
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F6E6BED2
+
+- install stuff:
+
+virtualbox-ose-dkms virtualbox-ose virtualbox-guest-additions
+
+23.) Set up wine ppa
+
+- Add the following to wine_ppa.list in /etc/apt/sources.d
+
+deb http://ppa.launchpad.net/ubuntu-wine/ppa/ubuntu karmic main 
+deb-src http://ppa.launchpad.net/ubuntu-wine/ppa/ubuntu karmic main 
+
+- make sure to make it readable
+
+- get the key
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F9CB8DB0   
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+
+24.) Set up CDEmu ppa
+
+- Add the following to cdemu_ppa.list in /etc/apt/sources.d
+
+deb http://ppa.launchpad.net/cdemu/ppa/ubuntu karmic main 
+deb-src http://ppa.launchpad.net/cdemu/ppa/ubuntu karmic main 
+
+- make sure to make it readable
+
+- get the key:
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D782A00F
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get install gcdemu cdemu-client
+
+30.) Install some games:
+apt-get install boswars freecol lincity-ng warzone2100 freeciv-sound-standard freeciv-client-gtk
+
+31.) Make bittorrent work
+
+sudo ufw allow proto tcp from any to any port 10000:60000
+sudo ufw allow proto udp from any to any port 10000:60000
+
+32.) Set up email backups (case only)
+
+crontab -e
+
+then make it look like:
+
+ 0 1   2   *   *    /home/matt/bin/backup_email > /dev/null
+
+so it will on the second of the month at 1am and log to nowhere
+
+35.) Set the java look and feel to not suck
+
+- edit /usr/lib/jvm/java-6-openjdk/jre/lib/swing.properties
+
+- uncomment the GTKLookAndFeel line
+
+-- Installed for skunkwerks
+
+apt-get install netbeans sun-java6-jdk
+
+update-alternatives --config java
+
+37.) Set up sensors (if not set up automagically) for case
+
+sudo apt-get install lm-sensors
+sudo sensors-detect
+
+- follow prompts they will tell you want modules to use.
+- For case / Gigabyte X48-DQ6 board
+- add the following to /etc/modules:
+it87
+coretemp
+
+# FIXME - edit the conf file to fix scaling, etc.
+
+38.) scummvm and supporting bits
+
+sudo apt-get install scummvm beneath-a-steel-sky flight-of-the-amazon-queen fluidsynth
+
+39.) Make tcl not ugly
+
+sudo update-alternatives --config wish
+
+and then set for wish8.5
+
+40.) Fix volume hotkeys
+
+sudo cp /sys/devices/platform/thinkpad_acpi/hotkey_all_mask /sys/devices/platform/thinkpad_acpi/hotkey_mask
+
+41.) Set up logcheck
+- edit /etc/cron.d/logcheck and set it to @daily and not every 2 hours
+- edit /etc/logcheck/logcheck.conf and set the email address to you.
+
+42.) Install mail-notification applet from repos
+
+From:
+https://launchpad.net/~mail-notification-ssl/+archive/ppa
+
+- add the follwing to /etc/apt/sources.list.d/mail-notification-ssl_ppa.list
+
+deb http://ppa.launchpad.net/mail-notification-ssl/ppa/ubuntu karmic main 
+deb-src http://ppa.launchpad.net/mail-notification-ssl/ppa/ubuntu karmic main 
+
+- get the key
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7335A157   
+
+sudo apt-get install mail-notification
