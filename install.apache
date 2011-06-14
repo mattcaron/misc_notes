@@ -1,0 +1,36 @@
+aptitude install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt mysql-server
+
+- edit /etc/apache2/ports.conf and change:
+
+Listen 80
+
+- to 
+
+Listen 127.0.0.1:80
+
+- and
+
+Listen *:443
+
+- to
+
+Listen 127.0.0.1:443
+
+- enable the userdir and rewrite modules
+
+a2enmod userdir
+a2enmod rewrite
+
+- fix up the php configuration by editing /etc/apache2/mods-enabled/php5.conf and commenting out this bit:
+#    <IfModule mod_userdir.c>
+#        <Directory /home/*/public_html>
+#            php_admin_value engine Off
+#        </Directory>
+#    </IfModule>
+
+
+/etc/init.d/apache2 restart
+
+- for dev machines, you may not want it to start at boot
+update-rc.d -f apache2 remove
+update-rc.d -f mysql remove

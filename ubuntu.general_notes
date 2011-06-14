@@ -667,3 +667,28 @@ sudo cryptsetup luksKillSlot /dev/sda2 <old slot number>
 31.) Changing ssh passphrases:
 
 ssh-keygen -f id_dsa -p
+
+32.) Bootsplash reconfigure on 11.04
+
+sudo update-alternatives --config default.plymouth
+sudo update-alternatives --config text.plymouth
+
+sudo dpkg-reconfigure linux-image-`uname -r`
+
+33.) To configure KDE from inside gnome:
+
+systemsettings (and confiure)
+
+(except it doesn't work on 11.04)
+
+34.) Set up the compose key:
+
+https://help.ubuntu.com/community/ComposeKey 
+
+System->Preferences->Keyboard
+Layouts tab
+Options
+Compose Key Position
+Set it to left windows.
+Close
+Apply System-Wide

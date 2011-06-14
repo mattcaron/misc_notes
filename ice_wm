@@ -1,0 +1,31 @@
+IceWM
+
+copy /usr/share/xsessions/e16-gnome.desktop to icewm-gnome.desktop
+
+[Desktop Entry]
+Encoding=UTF-8
+Type=XSession
+Name=IceWM-GNOME
+Comment=This session starts GNOME using enlightenment (IceWM) as window manager
+Comment[it]=Questo avvia GNOME usando Enlightenment (IceWM) come window manager
+Exec=/usr/share/icewm/misc/start_icewm-gnome
+Icon=icewm.xpm
+
+create /usr/share/icewm/misc/start_icewm-gnome
+
+test -x /usr/bin/gconftool-2 && gconftool-2 --set /desktop/gnome/session/required_components/windowmanager --type string icewm
+WINDOW_MANAGER=icewm
+export WINDOW_MANAGER
+exec gnome-session
+
+create /usr/share/applications/IceWM.desktop
+
+[Desktop Entry]
+Encoding=UTF-8
+# The names/descriptions should really be better
+Name=IceWM
+Comment=This is the window manager IceWM
+Comment[de]=Dies ist der Fenstermanager IceWM
+Exec=/usr/bin/icewm
+Icon=icewm.xpm
+Type=Application

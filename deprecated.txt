@@ -35,3 +35,38 @@ SETI@home
   Localhost, and enter the password above. Then configure based on
   machine's usage and all that.
 
+
+22.) Set up virtualbox
+
+- Add the following to a virtualbox_ppa.list in /etc/apt/sources.d
+
+# Virtualbox PPA
+deb http://ppa.launchpad.net/dnjl/virtualization/ubuntu karmic main 
+deb-src http://ppa.launchpad.net/dnjl/virtualization/ubuntu karmic main
+
+- make sure to make it readable
+
+- get the key
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F6E6BED2
+
+- install stuff:
+
+virtualbox-ose-dkms virtualbox-ose virtualbox-guest-additions
+
+23.) Set up wine ppa
+
+- Add the following to wine_ppa.list in /etc/apt/sources.d
+
+deb http://ppa.launchpad.net/ubuntu-wine/ppa/ubuntu karmic main 
+deb-src http://ppa.launchpad.net/ubuntu-wine/ppa/ubuntu karmic main 
+
+- make sure to make it readable
+
+- get the key
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F9CB8DB0   
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+

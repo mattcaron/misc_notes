@@ -1,0 +1,13 @@
+Buy:
+Fallout: Tactics
+Interstate '76
+King's Quest 4-6
+Civ CTP II
+
+
+Wine stuff:
+http://wiki.winehq.org/winetricks
+(this is installed by the wine ppa)
+
+Needed for Raptor:
+winetricks mono26

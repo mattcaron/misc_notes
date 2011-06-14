@@ -65,23 +65,23 @@ Select Statistics and enable:
 - submit statistical information
 
 4.) Do:
-apt-get update
-apt-get dist-upgrade
+aptitude update
+aptitude dist-upgrade
 
 5.) Install applications
 
-apt-get install phonon-backend-xine nmap traceroute emacs emacs-goodies-el php-mode css-mode openssh-server symlinks sysstat ifstat dstat mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html gnuplot gnuplot-mode thunderbird lightning-extension enigmail firefox firefox-dom-inspector firefox-webdeveloper firebug unison unison-gtk digikam kipi-plugins meld wine ntp brag exiv2 unrar autossh openoffice.org xmlstarlet hpodder dvdrtools cdrskin logjam mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime mono-2.0-devel monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs libmono-dev smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk ia32-sun-java6-bin xserver-xephyr myspell-en-us gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup p2kmoto moto4lin dia-gnome gsfonts-x11 kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions gdm-guest-session git gitk git-svn bittornado bittornado-gui speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita krita-plugins dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference prism greasemonkey ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse
+aptitude install phonon-backend-xine nmap traceroute emacs emacs-goodies-el php-mode css-mode openssh-server symlinks sysstat ifstat dstat ssmtp mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html gnuplot gnuplot-mode thunderbird lightning-extension thunderbird-quickfile thunderbird-beagle enigmail firefox firefox-dom-inspector firefox-webdeveloper firebug unison unison-gtk digikam kipi-plugins meld wine ntp brag exiv2 unrar autossh openoffice.org xmlstarlet hpodder dvdrtools cdrskin logjam mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime mono-2.0-devel monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs libmono-dev smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk ia32-sun-java6-bin xserver-xephyr myspell-en-us gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup p2kmoto moto4lin dia-gnome gsfonts-x11 kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions gdm-guest-session git gitk git-svn bittornado bittornado-gui speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita krita-plugins dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference prism greasemonkey ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh beagle mozilla-beagle acroread
 
 6.) Set up useful proprietary things (Medibuntu)
 From: https://help.ubuntu.com/community/Medibuntu
 
 wget http://www.medibuntu.org/sources.list.d/karmic.list \--output-document=/etc/apt/sources.list.d/medibuntu.list
 
-apt-get update && apt-get install medibuntu-keyring && apt-get update
+aptitude update && aptitude install medibuntu-keyring && aptitude update
 
-apt-get dist-upgrade
+aptitude dist-upgrade
 
-apt-get install libdvdcss2 non-free-codecs googleearth
+aptitude install libdvdcss2 non-free-codecs googleearth
 
 7.) (RAID ONLY) Set up grub to be on all RAID disks
 
@@ -167,6 +167,13 @@ ALL:ALL
 - uncomment the color line
 - set the timeout to 2
 
+2.) Get rid of the stupid GUI boot thingy (new installs, in the old
+ones, this will be in menu.lst)
+
+- edit /etc/default/grub
+- change the _DEFAULT line to be "text"
+
+sudo update-grub
 
 5.) latex
 cd /usr/share/texmf/tex/latex
@@ -218,22 +225,15 @@ update-rc.d -f samba remove
 ufw deny netbios-ssn
 ufw deny microsoft-ds
 
-14.) Set up nullmailer
+14.) Set up ssmtp
 
-apt-get install nullmailer
-
-- it will have configuration screens
-- accept the default hostname
-- mailname is:
-mail63.csoft.net
-
-- once installed, do:
-
-echo matt@mattcaron.net > /etc/nullmailer/adminaddr
+cd /etc/ssmtp
+mv ssmtp.conf ssmtp.conf.old
+ln -s /usr/local/apps/ssmtp/ssmtp.conf .
 
 15.) Set up apache (if applicable)
 
-apt-get install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt mysql-server
+aptitude install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt mysql-server
 
 - edit /etc/apache2/ports.conf and change:
 
@@ -273,7 +273,7 @@ then make it look like:
 so it will run every morning at 6am and log to nowhere
 
 17.) set up rsnapshot
-apt-get install rsnapshot
+aptitude install rsnapshot
 
 cd /etc/
 mv rsnapshot.conf rsnapshot.conf.old
@@ -297,40 +297,6 @@ ln -s /usr/local/apps/rsnapshot/rsnapshot.conf .
 21.) Remove gdm on servers to X doesn't start:
 update-rc.d -f gdm remove
 
-22.) Set up virtualbox
-
-- Add the following to a virtualbox_ppa.list in /etc/apt/sources.d
-
-# Virtualbox PPA
-deb http://ppa.launchpad.net/dnjl/virtualization/ubuntu karmic main 
-deb-src http://ppa.launchpad.net/dnjl/virtualization/ubuntu karmic main
-
-- make sure to make it readable
-
-- get the key
-
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F6E6BED2
-
-- install stuff:
-
-virtualbox-ose-dkms virtualbox-ose virtualbox-guest-additions
-
-23.) Set up wine ppa
-
-- Add the following to wine_ppa.list in /etc/apt/sources.d
-
-deb http://ppa.launchpad.net/ubuntu-wine/ppa/ubuntu karmic main 
-deb-src http://ppa.launchpad.net/ubuntu-wine/ppa/ubuntu karmic main 
-
-- make sure to make it readable
-
-- get the key
-
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F9CB8DB0   
-
-sudo apt-get update
-sudo apt-get dist-upgrade
-
 24.) Set up CDEmu ppa
 
 - Add the following to cdemu_ppa.list in /etc/apt/sources.d
@@ -344,12 +310,12 @@ deb-src http://ppa.launchpad.net/cdemu/ppa/ubuntu karmic main
 
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D782A00F
 
-sudo apt-get update
-sudo apt-get dist-upgrade
-sudo apt-get install gcdemu cdemu-client
+sudo aptitude update
+sudo aptitude dist-upgrade
+sudo aptitude install gcdemu cdemu-client
 
 30.) Install some games:
-apt-get install boswars freecol lincity-ng warzone2100 freeciv-sound-standard freeciv-client-gtk
+aptitude install boswars freecol lincity-ng warzone2100 freeciv-sound-standard freeciv-client-gtk
 
 31.) Make bittorrent work
 
@@ -374,13 +340,13 @@ so it will on the second of the month at 1am and log to nowhere
 
 -- Installed for skunkwerks
 
-apt-get install netbeans sun-java6-jdk
+aptitude install netbeans sun-java6-jdk
 
 update-alternatives --config java
 
 37.) Set up sensors (if not set up automagically) for case
 
-sudo apt-get install lm-sensors
+sudo aptitude install lm-sensors
 sudo sensors-detect
 
 - follow prompts they will tell you want modules to use.
@@ -393,7 +359,7 @@ coretemp
 
 38.) scummvm and supporting bits
 
-sudo apt-get install scummvm beneath-a-steel-sky flight-of-the-amazon-queen fluidsynth
+sudo aptitude install scummvm beneath-a-steel-sky flight-of-the-amazon-queen fluidsynth
 
 39.) Make tcl not ugly
 
@@ -423,4 +389,25 @@ deb-src http://ppa.launchpad.net/mail-notification-ssl/ppa/ubuntu karmic main
 
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7335A157   
 
-sudo apt-get install mail-notification
+sudo aptitude install mail-notification
+
+43.) Flash is broken workaround:
+
+sudo -e /usr/lib/nspluginwrapper/i386/linux/npviewer
+
+Then add: export GDK_NATIVE_WINDOWS=1 before the last line of text
+
+44.) Install chromium
+
+sudo add-apt-repository ppa:chromium-daily/beta
+sudo aptitude update
+sudo aptitude install chromium-browser chromium-browser-inspector \
+chromium-codecs-ffmpeg
+
+45.) Install Gummi
+
+Download from:
+
+http://gummi.midnightcoding.org/?page_id=6
+
+and install.

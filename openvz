@@ -1,0 +1,21 @@
+OpenVZ
+
+(openvz seems to be kind of on the way out. Look at lxc)
+
+0. Note that on an OpenVZ server, you want /var to be a separate partition with plenty of space.
+
+(largely from https://help.ubuntu.com/community/OpenVZ)
+
+1. apt-get install vzctl vzdump virt-manager debootstrap
+
+2. Apparently, vz tools prefer things in /vz:
+sudo ln -s /var/lib/vz /vz
+
+3. Bootstrap a basic system
+cd /vz/private
+mkdir trac
+sudo debootstrap --arch i386 karmic trac
+
+4. Set initial config
+sudo vzctl set XXX --applyconfig vps.basic --save
+(where XXX is a number)

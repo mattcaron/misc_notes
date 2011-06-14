@@ -70,6 +70,10 @@ apt-get dist-upgrade
 
 apt-get install libdvdcss2 non-free-codecs
 
+10.) Remove a bunch of crap which we don't need:
+
+sudo aptitude remove evolution evolution-common empathy tomboy f-spot abiword gnome-games aisleriot bluetooth cdparanoia compiz compiz-core dcraw dvd+rw-tools eog erlang-base gdb glchess glines gnect gnibbles gnobots2 gnome-blackjack gnome-bluetooth gnometris gnomine gnotravex gnotski gtali cheese rhythmbox iagno mtr-tiny gnome-mahjongg gnome-sudoku gnome-games same-gnome firefox firefox-3.5 firefox-3.5-gnome-support firefox-gnome-support xserver-xorg-video-all xserver-xorg-video-apm xserver-xorg-video-ark xserver-xorg-video-ati xserver-xorg-video-chips xserver-xorg-video-cirrus xserver-xorg-video-geode xserver-xorg-video-i128 xserver-xorg-video-i740 xserver-xorg-video-mach64 xserver-xorg-video-mga xserver-xorg-video-neomagic xserver-xorg-video-nv xserver-xorg-video-openchrome xserver-xorg-video-r128 xserver-xorg-video-radeon xserver-xorg-video-rendition xserver-xorg-video-s3 xserver-xorg-video-s3virge xserver-xorg-video-savage xserver-xorg-video-siliconmotion xserver-xorg-video-sis xserver-xorg-video-sisusb xserver-xorg-video-tdfx xserver-xorg-video-trident xserver-xorg-video-tseng xserver-xorg-video-vmware xserver-xorg-video-voodoo transmission-gtk transmission-common gedit-common gedit gnome-terminal openoffice.org-base-core openoffice.org-calc openoffice.org-common openoffice.org-core openoffice.org-draw openoffice.org-emailmerge openoffice.org-gnome openoffice.org-gtk openoffice.org-help-en-us openoffice.org-hyphenation openoffice.org-hyphenation-en-us openoffice.org-impress openoffice.org-math openoffice.org-style-human openoffice.org-thesaurus-en-au openoffice.org-thesaurus-en-us openoffice.org-writer
+
 ##################### PHASE 1 SET UP SECTION #########################
 
 2.) Turn on the firewall.
@@ -132,3 +136,9 @@ ufw enable
 - If you have kept up with all the firewall stuff above, the rules
   should already be set up.
 
+44.) Install chromium
+
+sudo add-apt-repository ppa:chromium-daily/beta
+sudo apt-get update
+sudo apt-get install chromium-browser chromium-browser-inspector \
+chromium-codecs-ffmpeg

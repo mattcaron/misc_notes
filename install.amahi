@@ -1,0 +1,193 @@
+*** VM INSTALL ****
+
+VM install:
+- Set up a VM
+- Install Fedora to it
+- Partitioning scheme:
+ Swap: 8GB
+ Rest: Root
+
+- Uncheck the "Office and Productivity" group
+
+- Check the following repos:
+  Installation Repo
+  Fedora 12 - i386
+  Fedora 12 - i386 Updates
+
+(adding the repo will end up asking for network stuff. Configure for static IP
+ - Addr/Mask: 192.168.9.51 / 255.255.255.0
+ - Gateway  : 192.168.9.254
+ - Server   : 192.168.9.254
+
+- Add another repository:
+ Amahi
+ http://f12.amahi.org
+
+- Follow all the normal instructions
+
+- Run the installer from the desktop and put in the install code: L93SEYN
+
+- Until DNS/DHCP is all changed over, it can be accessed with:
+http://192.168.9.51/
+
+- For right now, I turned off the DHCP server, so as to not conflict
+  with the WRT54G
+
+- Edit /etc/initdefault and chane it to boot to runlevel 3, so it
+  doesn't start X.
+
+- Fix sudo and lock root:
+su -
+visudo
+- uncomment wheel
+usermod -a -G wheel matt
+usermod -L root
+
+Installed the following apps:
+
+Games:
+ArcademSX - log in as admin admin and change..
+ArcademSX Game Pack 1
+ArcademSX Game Pack 2
+
+DLNA: Amahi DLNA server (DLNA)
+
+Torrents: Transmission
+
+iTunes: AmahiTunes
+
+generic streaming: Ampache
+
+sysadminny:
+PHPSysInfo
+
+REPOS:
+RPM Fusion Free
+RPM Fusion Non Free
+(installed automatically)
+
+Wiki: MediaWiki
+
+WebCalendar
+
+Home Inventory
+
+The Address Book
+
+
+Look in wiki:
+- Calendar and address book - is it even necessary to have frontends,
+  or does it just work?
+
+
+**** HOST INSTALL ****
+
+- Install Ubuntu 10.04 alternate
+- disable the gui by editing /etc/default/grub and setting:
+  GRUB_CMDLINE_LINUX_DEFAULT="text"
+- then:
+  sudo update-grub
+
+- Install virtualbox:
+  sudo aptitude install virtualbox-ose 
+
+- Stuff will run as me now, that's fine.
+
+- Make sure to set up virtualbox to use /opt/VirtualBox as the
+  store. Create that directory and make it owned by me. 
+  Machines are: /opt/VirtualBox/Machines
+  HardDisks are: /opt/VirtualBox/HardDisks
+  (Note that a .VirtualBox directory will still exist in my homedir)
+
+- It can be started with:
+
+VBoxManage startvm Amahi --type headless & 
+
+- Useful commands:
+
+VBoxManage list runningvms
+
+VBoxManage controlvm savestate
+
+
+
+
+NOTE: This is not being used, as it requires a lot of insecure
+scariness. Best to set it up/manage it via SSH. Of course, another
+option is to not use the vboxweb service and instead just shell out to
+the command line utils from the web interface.
+
+== Set up Apache ==
+
+- Install apache:
+sudo aptitude install apache2 libapache2-mod-php5 
+
+- Enable the SSL module
+sudo a2enmod ssl
+
+- Disable the default site
+sudo a2dissite default
+
+- Add a "loki" file in /etc/apache2/sites-available and
+- set it to just redirect to https:
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+
+        Redirect permanent / https://loki/
+</VirtualHost>
+
+- Add a loki-ssl file in /etc/apache2/sites-available and
+- set it up as follows:
+<IfModule mod_ssl.c>
+<VirtualHost _default_:443>
+        ServerAdmin matt@mattcaron.net
+
+        DocumentRoot /var/www
+        <Directory /var/www/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+        <Location />
+                AuthType Digest
+                AuthName "Password Required"
+                AuthDigestProvider file
+                AuthUserFile /etc/apache2/user_auth
+                Require valid-user
+        </Location>
+
+        ErrorLog /var/log/apache2/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog /var/log/apache2/ssl_access.log combined
+
+        SSLEngine on
+        SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+        SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+</VirtualHost>
+</IfModule>
+
+- Turn on the two sites
+sudo a2ensite loki loki-ssl
+
+- Turn on authentication:
+sudo a2enmod auth_digest
+
+- Set up the digest file with an initial user. WARNING - do NOT use
+  the -c on an existing file!!!
+sudo htdigest -c /etc/apache2/user_auth "Password Required" <user>
+- then chown it:
+sudo chown www-data /etc/apache2/user_auth
+
+- Copy the phpvirtualbox files to /var/www, then change the ownership
+  correctly:
+sudo chown -R www-data:www-data *
+
+- To add users to the user file with htdigest:
+sudo htdigest /etc/apache2/user_auth "Password Required" <user>
+
+
