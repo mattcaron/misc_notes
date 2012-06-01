@@ -1,0 +1,388 @@
+$ sudo add-apt-repository ppa:gnome3-team/gnome3
+$ sudo apt-get update
+$ sudo apt-get dist-upgrade
+$ sudo apt-get install gnome-shell
+
+sudo ppa-purge ppa:gnome3-team/gnome3
+
+when it asks to leave the following dependencies unresolved, add:
+
+- gnome-control-center-data
+
+(note the - in front)
+
+hit enter, and then it shouldn't have any unresolved.
+
+Of course, it still didn't work, so I had to do:
+    sudo apt-get install -f
+
+And then that left extra packages, so I did:
+    sudo apt-get autoremove
+
+
+but that removed xubuntu-desktop, so I had to:
+
+sudo apt-get install xubuntu-desktop
+
+but that's broken because of python-gmenu, so I had to:
+
+sudo aptitude remove python-gmenu
+sudo aptitude install python-gmenu
+sudo aptitude install xubuntu-desktop
+
+and then I had to re-apply my "xscreensaver is ugly" fix:
+
+sudo aptitude remove xscreensaver
+
+# more fixes
+sudo aptitude remove libcamel-1.2-23 libavahi-client3
+
+deskbar-applet
+
+  deskbar-applet{a} empathy{a} evolution{a} evolution-data-server{a} 
+  evolution-exchange{a} evolution-indicator{a} evolution-plugins{a} 
+  gnome-dictionary{u} indicator-datetime{a} libcamel-1.2-23 
+  libebook1.2-10{a} libedata-book-1.2-9{a} libedata-book1.2-8{a} 
+  libedataserverui-3.0-0{a} libedataserverui1.2-11{a} libevolution{a} 
+  libgdict-1.0-6{u} python-gnomeapplet{u} python-gnomedesktop{u} 
+  tracker-miner-evolution{a} 
+
+  abiword{a} abiword-common{u} abiword-plugin-grammar{a} 
+  abiword-plugin-mathview{a} adobereader-deu{a} aisleriot{a} ant{u} 
+  ant-optional{u} appmenu-gtk{a} apport-gtk{a} apturl{a} at-spi{a} 
+  audacity{a} audacity-data{u} avahi-utils{a} bamfdaemon{a} banshee{a} 
+  banshee-extension-soundmenu{a} baobab{a} bluez-cups{a} brasero{a} 
+  brasero-cdrkit{a} browser-plugin-parole{a} catfish{a} checkbox-gtk{a} 
+  chromium-browser{a} chromium-browser-l10n{a} 
+  chromium-codecs-ffmpeg-extra{a} compiz{a} compiz-gnome{a} cups{a} 
+  cups-bsd{a} cups-client{a} cups-driver-gutenprint{a} cups-pdf{a} 
+  cups-ppdc{a} default-jdk{a} default-jre{a} default-jre-headless{a} 
+  devhelp{a} devhelp-common{u} dia-common{a} dia-gnome{a} dia-libs{a} 
+  djvusmooth{a} eclipse{a} eclipse-jdt{a} eclipse-pde{a} 
+  eclipse-platform{a} eclipse-platform-data{u} eclipse-plugin-cvs{a} 
+  eclipse-rcp{a} elementary-icon-theme{a} emacs-snapshot{a} eog{a} 
+  evince{a} evolution-webcal{a} exiftran{u} exo-utils{a} fastjar{u} 
+  fetchyahoo{u} file-roller{a} firefox{a} firefox-globalmenu{a} 
+  firefox-gnome-support{a} flashplugin-installer{a} foo2zjs{a} gbrainy{a} 
+  gcalctool{a} gcdemu{a} gcj-4.5-base{u} gcj-4.5-jre-lib{u} gconf-editor{a} 
+  gdm{a} gdm-guest-session{a} gedit{a} geeqie{a} geeqie-common{u} 
+  getlive{u} ghostscript{a} ghostscript-cups{a} ghostscript-x{a} gigolo{a} 
+  gimp{a} ginn{a} gir1.2-appindicator-0.1{a} gir1.2-gnomebluetooth-1.0{a} 
+  gir1.2-gstreamer-0.10{u} gir1.2-gtk-2.0{a} gir1.2-gtk-3.0{a} 
+  gir1.2-gtksource-3.0{a} gir1.2-panelapplet-3.0{a} gir1.2-peas-1.0{a} 
+  gir1.2-rb-3.0{a} gir1.2-totem-1.0{a} gir1.2-vte-0.0{a} 
+  gir1.2-webkit-3.0{a} gkrellm{a} gksu{a} glade{a} gmusicbrowser{a} 
+  gnome-about{a} gnome-bluetooth{a} gnome-codec-install{a} 
+  gnome-disk-utility{a} gnome-games-common{a} gnome-icon-theme{a} 
+  gnome-icon-theme-symbolic{a} gnome-keyring{a} gnome-mag{a} 
+  gnome-mahjongg{a} gnome-media{a} gnome-menus{a} gnome-nettool{a} 
+  gnome-orca{a} gnome-panel-bonobo{a} gnome-power-manager{a} 
+  gnome-screensaver{a} gnome-screenshot{a} gnome-search-tool{a} 
+  gnome-session{a} gnome-session-bin{a} gnome-session-canberra{a} 
+  gnome-settings-daemon{a} gnome-sudoku{a} gnome-system-log{a} 
+  gnome-system-monitor{a} gnome-system-tools{a} gnome-terminal{a} 
+  gnome-themes-selected{a} gnome-themes-ubuntu{a} gnome-time-admin{a} 
+  gnome-user-guide{a} gnome-user-share{a} gnome-web-photo{a} gnomine{a} 
+  gnumeric{a} gnumeric-common{u} gnumeric-doc{u} gnuplot{a} gnuplot-x11{a} 
+  gqview{a} gs-cjk-resource{a} gtk-chtheme{a} gtk2-engines{a} 
+  gtk2-engines-murrine{a} gtk2-engines-pixbuf{a} gtk2-engines-xfce{a} 
+  gtk3-engines{a} gtk3-engines-unico{a} gucharmap{a} gvfs-backends{a} 
+  gvfs-bin{u} gwibber{a} gwibber-service{a} gwibber-service-facebook{a} 
+  gwibber-service-identica{a} gwibber-service-twitter{a} hal{u} hal-info{u} 
+  hddtemp{u} hplip{a} hplip-cups{a} humanity-icon-theme{a} ibus{a} 
+  ibus-gtk{a} ibus-pinyin{a} ibus-table{a} icedtea-6-jre-cacao{a} 
+  icedtea-6-jre-jamvm{a} icedtea-netx{a} icedtea-plugin{a} 
+  icedtea6-plugin{a} icewm{a} icewm-gnome-support{a} 
+  indicator-application{a} indicator-appmenu{a} indicator-me{a} 
+  indicator-messages{a} indicator-session{a} indicator-sound{a} inkscape{a} 
+  jarwrapper{u} jockey-gtk{a} junit{u} junit4{u} kipi-plugins{a} 
+  language-selector-gnome{a} latencytop{a} latex2html{a} libaa1-dev{u} 
+  libabiword-2.8{a} libaccess-bridge-java-jni{a} libaiksaurus-1.2-0c2a{u} 
+  libaiksaurus-1.2-data{u} libaiksaurusgtk-1.2-0c2a{a}   libappindicator0.1-cil{a} libappindicator1{a} libappindicator3-1{a} 
+  libart-2.0-dev{u} libasm3-java{u} libasound2-dev{u} libatk1.0-dev{u} 
+  libaudio-dev{u} libaudio-scrobbler-perl{u} libaudiofile-dev{u} 
+  libavahi-client-dev{a} libavahi-client3 libavahi-common-dev{u} 
+  libavahi-glib-dev{u} libavahi-gobject0{a} libavahi-ui-gtk3-0{a} 
+  libavahi-ui0{a} libbamf0{a} libblas3gf{u} libbonobo2-dev{u} 
+  libbonoboui2-0{a} libbonoboui2-dev{a} libbrasero-media3-1{a} 
+  libc-ares2{u} libcaca-dev{u} libcairo-script-interpreter2{u} 
+  libcairo2-dev{u} libcanberra-dev{u} libcanberra-gtk-module{a} 
+  libcanberra-gtk0{a} libcanberra-gtk3-0{a} libcanberra-gtk3-module{a} 
+  libcanberra-pulse{a} libcap2-bin{u} libclutter-gtk-0.10-0{a} 
+  libclutter-gtk-1.0-0{a} libcommons-beanutils-java{u} 
+  libcommons-codec-java{u} libcommons-collections3-java{u} 
+  libcommons-compress-java{u} libcommons-digester-java{u} 
+  libcommons-el-java{u} libcommons-httpclient-java{u} 
+  libcommons-logging-java{u} libconfig-inifiles-perl{u} 
+  libconvert-binhex-perl{u} libcrypt-ssleay-perl{u} libcryptui0{a} 
+  libcups2{a} libcupscgi1{a} libcupsdriver1{a} libcupsimage2{a} 
+  libcupsmime1{a} libcupsppdc1{a} libdb-je-java{u} libdb4.7-java{u} 
+  libdb4.7-java-gcj{u} libdbus-1-dev{u} libdbusmenu-gtk3{a} 
+  libdbusmenu-gtk3-3{a} libdevhelp-3-0{a} libdmapsharing-3.0-2{a} 
+  libdmapsharing2{a} libecj-java{u} libedata-cal1.2-10{a} 
+  libequinox-osgi-java{u} libesd0-dev{u} libevince3-3{a} libexo-1-0{a} 
+  libextutils-depends-perl{u} libextutils-pkgconfig-perl{u} 
+  libfile-homedir-perl{u} libfile-which-perl{u} libfontconfig1-dev{u} 
+  libfreetype6-dev{u} libgail-3-0{a} libgail-common{a} libgail-dev{a} 
+  libgail-gnome-module{a} libgail18{a} libgc1c2{u} libgcj-bc{u} 
+  libgcj-common{u} libgcj11{u} libgconf2-dev{u} libgconfmm-2.6-1c2{u} 
+  libgcr-3-0{a} libgcr0{a} libgcrypt11-dev{u} libgdk-pixbuf2.0-dev{u} 
+  libgdome2-0{u} libgdome2-cpp-smart0c2a{u} libgdu-gtk0{a} libgfortran3{u} 
+  libgimp2.0{a} libgkeyfile1.0-cil{u} libgksu2-0{a} libglade2-0{a} 
+  libglade2-dev{a} libglade2.0-cil{a} libglade2.0-cil-dev{a} 
+  libglademm-2.4-1c2a{a} libgladeui-1-11{a} libgladeui-2-0{a} 
+  libglib2.0-cil-dev{u} libgmime-2.0-2a{u} libgnome-bluetooth8{a} 
+  libgnome-control-center1{a} libgnome-desktop-2-17{a} 
+  libgnome-desktop-3-0{a} libgnome-keyring-dev{u} 
+  libgnome-media-profiles-3.0-0{a} libgnome-media0{a} 
+  libgnome-vfs2.0-cil{a} libgnome-window-settings1{a} libgnome2-0{a} 
+  libgnome2-canvas-perl{a} libgnome2-dev{a} libgnome2-gconf-perl{u} 
+  libgnome2-perl{a} libgnome2-vfs-perl{a} libgnome2-wnck-perl{a} 
+  libgnome2.24-cil{a} libgnomecanvas2-0{a} libgnomecanvas2-dev{a} 
+  libgnomekbd4{a} libgnomekbd7{a} libgnomeui-0{a} libgnomeui-dev{a} 
+  libgnomevfs2-0{a} libgnomevfs2-dev{a} libgnomevfs2-extra{a} 
+  libgnutls-dev{u} libgoffice-0.8-8{a} libgoffice-0.8-8-common{u} 
+  libgoo-canvas-perl{a} libgoocanvas3{a} libgpg-error-dev{u} libgs9{a} 
+  libgstreamer-perl{u} libgtk-3-0{a} libgtk-3-bin{a} libgtk-3-dev{a} 
+  libgtk-sharp-beans-cil{a} libgtk-vnc-1.0-0{a} libgtk-vnc-2.0-0{a} 
+  libgtk2-imageview-perl{a} libgtk2-notify-perl{a} libgtk2-perl{a} 
+  libgtk2-trayicon-perl{a} libgtk2-unique-perl{a} libgtk2.0-0{a} 
+  libgtk2.0-bin{a} libgtk2.0-cil{a} libgtk2.0-cil-dev{a} libgtk2.0-dev{a} 
+  libgtkhtml-4.0-0{a} libgtkhtml-4.0-common{a} libgtkhtml-editor-4.0-0{a} 
+  libgtkhtml-editor0{a} libgtkhtml3.14-19{a} libgtkimageview0{a} 
+  libgtkmathview0c2a{a} libgtkmm-2.4-1c2a{a} libgtkmm-3.0-1{a} 
+  libgtksourceview-3.0-0{a} libgtksourceview2.0-0{a} libgtkspell0{a} 
+  libgucharmap-2-90-7{a} libgucharmap7{a} libgudev1.0-cil{u} 
+  libgweather-3-0{a} libgweather1{a} libgwibber1{a} libhal-storage1{u} 
+  libhamcrest-java{u} libhsqldb-java{u} libhttp-server-simple-perl{u} 
+  libice-dev{u} libicu4j-java{u} libidl-dev{u} libido-0.1-0{a} 
+  libindicate-gtk2{a} libindicator3{a} libindicator3-3{a} 
+  libio-socket-ssl-perl{u} libjasper-java{u} libjaxp1.3-java{u}   libjetty-java{u} libjline-java{u} libjsch-java{u} libjtidy-java{u} 
+  libkeybinder0{a} libksane0{a} liblapack3gf{u} 
+  liblaunchpad-integration-3.0-1{a} liblaunchpad-integration1{a} 
+  liblaunchpad-integration1.0-cil{a} liblink-grammar4{u} liblucene2-java{u} 
+  libmetacity-private0{a} libmime-tools-perl{u} 
+  libmono-addins-gui0.2-cil{a} libnautilus-extension1{a} libncurses5-dev{u} 
+  libnet-libidn-perl{u} libnet-ssleay-perl{u} libnotify0.4-cil{a} 
+  libnotify1{a} libntlm0{u} liborbit2-dev{u} libotr2{u} libots0{u} 
+  liboverlay-scrollbar-0.1-0{a} libpanel-applet-3-0{a} 
+  libpanel-applet2-0{a} libpango1.0-dev{u} libpeas-1.0-0{a} 
+  libpixman-1-dev{u} libpng12-dev{u} libpolkit-gtk-1-0{a} 
+  libpoppler-glib6{a} libpopt-dev{u} libportsmf0{u} 
+  libproc-processtable-perl{u} libproc-simple-perl{u} libpulse-browse0{a} 
+  libpulse-dev{a} libpurple0{a} libregexp-java{u} libreoffice{a} 
+  libreoffice-base{a} libreoffice-base-core{a} libreoffice-calc{a} 
+  libreoffice-common{a} libreoffice-core{a} libreoffice-draw{a} 
+  libreoffice-emailmerge{a} libreoffice-filter-mobiledev{a} 
+  libreoffice-gnome{a} libreoffice-gtk{a} libreoffice-help-en-gb{a} 
+  libreoffice-help-en-us{a} libreoffice-impress{a} 
+  libreoffice-java-common{a} libreoffice-kde{a} libreoffice-l10n-common{u} 
+  libreoffice-l10n-en-gb{a} libreoffice-l10n-en-za{a} libreoffice-math{a} 
+  libreoffice-report-builder-bin{a} libreoffice-style-human{a} 
+  libreoffice-style-oxygen{a} libreoffice-writer{a} librhythmbox-core4{a} 
+  librsvg2-common{a} libsane{a} libsane-hpaio{a} libsdl-gfx1.2-dev{a} 
+  libsdl1.2-dev{a} libseed0{a} libselinux1-dev{u} 
+  libsensors-applet-plugin0{u} libsepol1-dev{u} libservlet2.4-java{u} 
+  libservlet2.5-java{u} libsexy2{a} libslang2-dev{u} libslf4j-java{u} 
+  libsm-dev{u} libsmi2ldbl{u} libsort-naturally-perl{u} libspectre1{a} 
+  libsyncdaemon-1.0-1{a} libtagc0{u} libtasn1-3-dev{u} libthunarx-2-0{a} 
+  libtotem0{a} libunique-1.0-0{a} libunique-3.0-0{a} libunity-misc0{a} 
+  libvamp-hostsdk3{u} libvte-2.90-9{a} libvte9{a} libwebkitgtk-1.0-0{a} 
+  libwebkitgtk-3.0-0{a} libwireshark-data{u} libwireshark0{u} 
+  libwiretap0{u} libwmf-bin{u} libwnck-3-0{a} libwnck22{a} libwsutil0{u} 
+  libwv-1.2-3{u} libwww-mechanize-perl{u} libwxbase2.8-dev{u} 
+  libwxgtk2.8-0{a} libwxgtk2.8-dev{a} libxcb-render0-dev{u} 
+  libxcb-shm0-dev{u} libxcomposite-dev{u} libxcursor-dev{u} 
+  libxdamage-dev{u} libxerces2-java{u} libxfce4ui-1-0{a} libxfcegui4-4{a} 
+  libxfixes-dev{u} libxft-dev{u} libxi-dev{u} libxinerama-dev{u} 
+  libxml-namespacesupport-perl{u} libxml-sax-expat-perl{u} 
+  libxml-sax-perl{u} libxml-simple-perl{u} libxml2-dev{u} libxrandr-dev{u} 
+  libxrender-dev{u} libxt-dev{u} light-themes{a} 
+  link-grammar-dictionaries-en{u} logjam{a} mail-notification{a} meld{a} 
+  metacity{a} monodevelop{a} monodevelop-nunit{a} 
+  monodevelop-versioncontrol{a} monodoc-base{u} monodoc-manual{a} 
+  mousepad{a} mousetweaks{a} mpg321{u} murrine-themes{a} nautilus{a} 
+  nautilus-sendto{a} nautilus-sendto-empathy{a} nautilus-share{a} 
+  network-manager-gnome{a} network-manager-pptp-gnome{a} nspluginwrapper{a} 
+  okular{a} onboard{a} openjdk-6-demo{a} openjdk-6-jdk{a} openjdk-6-jre{a} 
+  openjdk-6-jre-headless{a} openjdk-6-jre-lib{a} openoffice.org{a} 
+  openoffice.org-help-en-us{a} orage{a} orbit2{u} overlay-scrollbar{a} 
+  parole{a} perlmagick{u} pidgin{a} pidgin-data{u} pidgin-extprefs{a} 
+  pidgin-libnotify{a} pidgin-otr{a} pidgin-plugin-pack{a} pidgin-skype{a} 
+  pinentry-gtk2{a} pitivi{a} playonlinux{a} pnm2ppa{a} policykit-1-gnome{a} 
+  printer-applet{a} prosper{a} ps2eps{a} pstoedit{a} pulseaudio{a} 
+  pulseaudio-esound-compat{a} pulseaudio-module-bluetooth{a} 
+  pulseaudio-module-gconf{a} pulseaudio-module-x11{a} 
+  pulseaudio-module-zeroconf{a} pulseaudio-utils{a} pxljr{a} 
+  python-appindicator{a} python-aptdaemon-gtk{a} 
+  python-aptdaemon.gtk3widgets{a} python-aptdaemon.gtkwidgets{a} 
+  python-cups{a} python-djvu{u} python-glade2{a} python-gmenu{a} 
+  python-gnome2{a} python-gnomecanvas{a} python-gnomedesktop{a} 
+  python-gnomekeyring{a} python-gtk2{a} python-gtk2-dev{a} 
+  python-gtk2-doc{a} python-gtksourceview2{a} python-gtkspell{a} 
+  python-ibus{a} python-indicate{a} python-launchpad-integration{a} 
+  python-lxml{u} python-notify{a} python-numpy{u} python-pyatspi{a}   python-pygoocanvas{a} python-renderpm{u} python-reportlab{u} 
+  python-reportlab-accel{u} python-ubuntuone-client{a} 
+  python-ubuntuone-control-panel{a} python-uniconvertor{u} python-uno{a} 
+  python-virtkey{a} python-vte{a} python-webkit{a} python-wnck{a} 
+  python-wxgtk2.8{a} python-wxversion{a} qjackctl{a} quadrapassel{a} 
+  regexxer{a} rhythmbox{a} rhythmbox-plugin-cdrecorder{a} 
+  rhythmbox-plugins{a} ristretto{a} samba{a} sane-utils{a} sat4j{u} 
+  scite{a} scribus{a} seahorse{a} sensors-applet{a} sessioninstaller{a} 
+  shotwell{a} shutter{a} simple-scan{a} software-center{a} 
+  software-properties-gtk{a} sound-juicer{a} splix{a} ssh-askpass-gnome{a} 
+  synaptic{a} system-config-printer-common{a} 
+  system-config-printer-gnome{a} system-config-printer-kde{a} 
+  system-config-printer-udev{a} tango-icon-theme-common{a} 
+  telepathy-haze{a} telepathy-salut{a} thunar{a} thunar-archive-plugin{a} 
+  thunar-media-tags-plugin{a} thunar-volman{a} thunderbird{a} 
+  thunderbird-globalmenu{a} thunderbird-locale-en-gb{a} 
+  thunderbird-locale-en-us{a} tomboy{a} totem{a} tracker-extract{a} 
+  tracker-gui{a} tracker-miner-fs{a} transmission-gtk{a} tsclient{a} 
+  tumbler{a} ubufox{a} ubuntu-artwork{a} ubuntu-docs{a} ubuntu-mono{a} 
+  ubuntu-sso-client{a} ubuntuone-client{a} ufraw-batch{u} unison-gtk{a} 
+  unity{a} unity-asset-pool{a} unity-place-applications{a} 
+  unity-place-files{a} update-manager{a} update-notifier{a} 
+  usb-creator-gtk{a} usb-imagewriter{a} vinagre{a} vino{a} wireshark{a} 
+  wireshark-common{u} wx2.8-headers{u} x11proto-composite-dev{u} 
+  x11proto-damage-dev{u} x11proto-fixes-dev{u} x11proto-randr-dev{u} 
+  x11proto-render-dev{u} x11proto-xinerama-dev{u} xchat{a} xchat-common{u} 
+  xdg-user-dirs-gtk{a} xfburn{a} xfce4-appfinder{a} 
+  xfce4-cpugraph-plugin{a} xfce4-dict{a} xfce4-fsguard-plugin{a} 
+  xfce4-indicator-plugin{a} xfce4-mailwatch-plugin{a} xfce4-mixer{a} 
+  xfce4-mount-plugin{a} xfce4-netload-plugin{a} xfce4-notes{a} 
+  xfce4-notes-plugin{a} xfce4-notifyd{a} xfce4-panel{a} 
+  xfce4-power-manager{a} xfce4-power-manager-data{u} 
+  xfce4-quicklauncher-plugin{a} xfce4-screenshooter{a} xfce4-session{a} 
+  xfce4-settings{a} xfce4-smartbookmark-plugin{a} 
+  xfce4-systemload-plugin{a} xfce4-taskmanager{a} xfce4-terminal{a} 
+  xfce4-utils{a} xfce4-verve-plugin{a} xfce4-volumed{a} 
+  xfce4-weather-plugin{a} xfdesktop4{a} xfprint4{a} xfwm4{a} 
+  xfwm4-themes{a} xorg-sgml-doctools{u} xsane{a} xsane-common{u} 
+  xubuntu-artwork{a} xubuntu-default-settings{a} xubuntu-desktop{a} 
+  xubuntu-gdm-theme{a} xubuntu-icon-theme{a} xubuntu-wallpapers{u} 
+  xul-ext-ubufox{a} xulrunner-1.9.2{a} xulrunner-2.0{a} yelp{a} 
+  zeitgeist{a} zeitgeist-datahub{a} zeitgeist-extension-fts{a} zenity{a} 
+
+
+libavahi-common3
+
+  avahi-daemon{a} lib32nss-mdns{a} libavahi-common3 libavahi-core7{a} 
+  libavahi-glib1{a} libnss-mdns{a} ttf-umefont{u} winbind{u} wine1.2{a} 
+  wine1.2-gecko{u} 
+
+libaccountsservice0
+   accountsservice{a} libaccountsservice0 
+
+avahi-autoipd
+
+brasero-common
+
+dconf-gsettings-backend
+
+desktop-file-utils
+
+  akonadi-server{u} amarok{a} amarok-common{u} amarok-utils{u} aptdaemon{a} 
+  bluez{a} bluez-alsa{a} bluez-gstreamer{a} brltty-x11{a} cdparanoia{u} 
+  cdrdao{u} compiz-core{a} compiz-plugins{a} compiz-plugins-main{a} 
+  compizconfig-backend-gconf{a} consolekit create-resources{u} dcraw{u} 
+  digikam{a} digikam-data{u} dolphin{a} evince-common{a} evolution-common 
+  evolution-data-server-common freetds-common{u} gconf-defaults-service 
+  gconf2 gconf2-common gedit-common geoclue{a} geoclue-ubuntu-geoip{a} 
+  gir1.2-atk-1.0 gir1.2-clutter-1.0 gir1.2-dbusmenu-glib-0.4{a} 
+  gir1.2-dee-0.5{a} gir1.2-freedesktop gir1.2-gconf-2.0 
+  gir1.2-gdkpixbuf-2.0 gir1.2-glib-2.0 gir1.2-json-1.0 gir1.2-notify-0.7 
+  gir1.2-pango-1.0 gir1.2-soup-2.4{a} gir1.2-totem-plparser-1.0 
+  gir1.2-unity-3.0{a} glib-networking{a} gnome-accessibility-themes 
+  gnome-applets-data{a} gnome-desktop3-data gnome-doc-utils 
+  gnome-media-common{a} gnome-panel-data{a} gnome-terminal-data 
+  gnome-utils-common gsettings-desktop-schemas gstreamer0.10-nice{a} 
+  gstreamer0.10-plugins-good{a} gvfs{a} gvfs-fuse{a} jackd2-firewire{a} 
+  jockey-common{a} k3b{a} k3b-data{u} kaffeine{a} kate{a} kcachegrind{a} 
+  kdebase-bin{a} kdebase-runtime{a} kdegraphics-libs-data{u} 
+  kdelibs5-plugins{a} kdemultimedia-kio-plugins{a} kdepim-runtime{a} 
+  kdepimlibs-kio-plugins{u} kexi{a} kfind{a} kmail{a} koffice-data{u} 
+  koffice-libs{a} konqueror{a} konqueror-nsplugins{a} krita{a} 
+  krita-data{u} krosspython{u} kspread{a} ktorrent{a} ktorrent-data{u} 
+  libakonadi-contact4{u} libakonadi-kabc4{u} libakonadi-kcal4{u} 
+  libakonadi-kde4{u} libakonadi-kmime4{u} libakonadiprotocolinternals1{u} 
+  libasyncns0{u} libatk1.0-0 libatk1.0-data libatk1.0-doc libatkmm-1.6-1 
+  libatspi1.0-0{a} libavahi-common-data libboost-program-options1.42.0{u} 
+  libcairomm-1.0-1 libcamel1.2-19{a} libcanberra0 libck-connector0 
+  libclutter-1.0-0 libclutter-1.0-common libcompizconfig0{a} libdconf0 
+  libebackend-1.2-1 libebackend1.2-0{a} libecal1.2-8 libedata-cal-1.2-11 
+  libedataserver1.2-14 libegroupwise1.2-13 libffado2{a} 
+  libfolks-telepathy22{a} libfolks22{a} libgck0 libgconf2-4 
+  libgconf2.0-cil{a} libgdata-common libgdata11 libgdu0 libgee2 
+  libgirepository-1.0-1 libgladeui-common libglib2.0-bin libglib2.0-data 
+  libglib2.0-dev libglib2.0-doc libglibmm-2.4-1c2a libgnome-keyring0 
+  libgnome-menu2 libgnome2-common{a} libgnomekbd-common 
+  libgnomevfs2-common{a} libgpgme++2{u} libgps19{u} libgssdp-1.0-2{a} 
+  libgstfarsight0.10-0{a} libgtk-3-common libgtk-3-doc libgtk2.0-common 
+  libgtk2.0-doc libgtksourceview-3.0-common libgtlcore0.7{u} libgtop2-7 
+  libgtop2-common libgupnp-1.0-3{a} libgupnp-igd-1.0-3{a} libgvnc-1.0-0 
+  libgweather-common libibus2 libjson-glib-1.0-0 libkabc4{u} libkcal4{u} 
+  libkcalcore4{u} libkcalutils4{u} libkdcraw9{u} libkdepim4{a} 
+  libkexiv2-9{u} libkimap4{u} libkimproxy4{u} libkipi8{u} libkldap4{u} 
+  libkleo4{u} libkmime4{u} libknewstuff2-4{u} libkontactinterface4{u} 
+  libkpgp4{u} libkpimidentities4{u} libkpimtextedit4{u} libkpimutils4{u} 
+  libkresources4{u} libkrossui4{u} libksieve4{u} libktnef4{u} 
+  libktorrent-l10n{u} libktorrent2{u} libkutils4{u} liblastfm0{u}
+  liblensfun-data{u} liblensfun0{u} libllvm2.8{u} liblog4net1.2-cil{u} 
+  libloudmouth1-0{u} libmailtransport4{u} libmarblewidget11{u} 
+  libmessagecore4{u} libmessagelist4{a} libmicroblog4{u} libmimelib4{u} 
+  libmission-control-plugins0 libmono-accessibility1.0-cil{u} 
+  libmono-bytefx0.7.6.1-cil{u} libmono-bytefx0.7.6.2-cil{u} 
+  libmono-c5-1.1-cil{u} libmono-cairo1.0-cil{u} 
+  libmono-cecil-private-cil{u} libmono-cil-dev{u} libmono-corlib1.0-cil{u} 
+  libmono-cscompmgd7.0-cil{u} libmono-cscompmgd8.0-cil{u} 
+  libmono-data-tds1.0-cil{u} libmono-data1.0-cil{u} libmono-data2.0-cil{u} 
+  libmono-db2-1.0-cil{u} libmono-debugger-soft0.0-cil{u} libmono-dev{a} 
+  libmono-getoptions1.0-cil{u} libmono-getoptions2.0-cil{u} 
+  libmono-i18n-west1.0-cil{u} libmono-i18n1.0-cil{u} libmono-ldap1.0-cil{u} 
+  libmono-ldap2.0-cil{u} libmono-messaging-rabbitmq2.0-cil{u} 
+  libmono-microsoft-build2.0-cil{u} libmono-microsoft7.0-cil{u} 
+  libmono-npgsql1.0-cil{u} libmono-npgsql2.0-cil{u} 
+  libmono-oracle1.0-cil{u} libmono-oracle2.0-cil{u} libmono-peapi1.0-cil{u} 
+  libmono-peapi2.0-cil{u} libmono-posix1.0-cil{u} 
+  libmono-rabbitmq2.0-cil{u} libmono-relaxng1.0-cil{u} 
+  libmono-relaxng2.0-cil{u} libmono-security1.0-cil{u} 
+  libmono-sharpzip0.6-cil{u} libmono-sharpzip0.84-cil{u} 
+  libmono-sharpzip2.6-cil{u} libmono-simd2.0-cil{u} 
+  libmono-sqlite1.0-cil{u} libmono-system-data1.0-cil{u} 
+  libmono-system-ldap1.0-cil{u} libmono-system-ldap2.0-cil{u} 
+  libmono-system-messaging1.0-cil{u} libmono-system-runtime1.0-cil{u} 
+  libmono-system-runtime2.0-cil{u} libmono-system-web-mvc1.0-cil{u} 
+  libmono-system-web-mvc2.0-cil{u} libmono-system-web1.0-cil{u} 
+  libmono-system1.0-cil{u} libmono-tasklets2.0-cil{u} 
+  libmono-windowsbase3.0-cil{u} libmono-winforms1.0-cil{u} libmono0{u} 
+  libmono1.0-cil{u} libnice10{a} libnotify4 libnunit-cil-dev{u} 
+  libnunit2.4-cil{u} liboobs-1-5{a} libopenctl0.7{u} libopenshiva0.7{u} 
+  libpam-ck-connector libpango1.0-doc libpangomm-1.4-1 libpeas-common 
+  libpolkit-agent-1-0 libpolkit-backend-1-0 libpolkit-gobject-1-0 
+  libpolkit-qt-1-1{a} libpq5{u} libpqxx-3.0{u} libqapt-runtime{a} 
+  libqgpgme1{u} libqtscript4-core{u} libqtscript4-gui{u} 
+  libqtscript4-network{u} libqtscript4-sql{u} libqtscript4-uitools{u} 
+  libqtscript4-xml{u} libqtshiva0.1{u} libquvi0 libsoup-gnome2.4-1{a} 
+  libsoup2.4-1{a} libspnav0{u} libstartup-notification0 libsybdb5{u} 
+  libsyndication4{u} libtag-extras1{u} libtelepathy-farsight0{a} 
+  libtelepathy-glib0 libtelepathy-logger2{a} libtotem-plparser17 
+  libtracker-client-0.8-0{a} libtracker-extract-0.8-0{a} 
+  libtracker-miner-0.8-0{a} libunac1{u} libunity3{a} libunity4{a} 
+  libupower-glib1 libvte-common libwebkitgtk-1.0-common 
+  libwebkitgtk-3.0-common libwnck-3-common libwnck-common libxbase2.0-0{u} 
+  libxklavier16 libxml++2.6-2{a} marble-data{u} marble-plugins{u} 
+  metacity-common mono-2.0-devel{a} mono-devel{a} nant{a} nautilus-data 
+  nepomukcontroller{a} network-manager{a} packagekit{a} 
+  packagekit-backend-aptcc{a} partitionmanager{a} 
+  plasma-scriptengine-python{a} plasma-widget-facebook{a} policykit-1 
+  policykit-desktop-privileges polkit-kde-1{a} python-aptdaemon{a} 
+  python-farsight{a} python-gconf{a} python-gobject{a} 
+  python-gobject-cairo{a} python-gobject-dev{a} python-gst0.10{a} 
+  python-kde4{a} python-packagekit{a} python-papyon{a} qapt-batch{a} 
+  quassel{a} rekonq{a} software-properties-kde{a} system-tools-backends{a} 
+  systemsettings{a} telepathy-butterfly telepathy-gabble telepathy-idle 
+  telepathy-logger{a} telepathy-mission-control-5 totem-common tracker{a} 
+  tracker-utils{a} ubuntu-system-service{a} ubuntu-wallpapers{a} udisks{a} 
+  upower usb-creator-common{a} usb-creator-kde{a} userconfig{a} yelp-xsl 
+  zeitgeist-core{a} zenity-common 

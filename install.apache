@@ -33,4 +33,4 @@ a2enmod rewrite
 
 - for dev machines, you may not want it to start at boot
 update-rc.d -f apache2 remove
-update-rc.d -f mysql remove
+echo manual > /etc/init/mysql.override

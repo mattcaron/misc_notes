@@ -692,3 +692,34 @@ Compose Key Position
 Set it to left windows.
 Close
 Apply System-Wide
+
+30.) Remove a drive from a RAID addray
+
+We will assume the old drive is /dev/sdc
+
+a.) Fail the devices (so they go idle):
+
+mdadm /dev/md0 --fail /dev/sdc1
+mdadm /dev/md1 --fail /dev/sdc2
+
+b.) Remove the devices
+
+mdadm /dev/md0 --remove /dev/sdc1
+mdadm /dev/md1 --remove /dev/sdc2
+
+c.) By default, they will be set as hot spares, since the initial
+array has 2 drives. This will change it to have three:
+
+mdadm /dev/md0 --grow -n 2
+mdadm /dev/md1 --grow -n 2
+
+e.) update /etc/mdadm/mdadm.conf
+
+- change the lines describing the ARRAY devices to have the correct
+  num-devices. FAILURE TO DO THIS WILL MAKE IT NOT BOOT!!!
+
+f.) regenerate the initramfs
+
+sudo dpkg-reconfigure linux-image-`uname -r`
+
+- FAILURE TO DO THIS WILL MAKE IT NOT BOOT!!!

@@ -1,0 +1,10 @@
+48.) Install mate
+
+echo deb http://tridex.net/repo/ubuntu/ oneiric main | sudo tee /etc/apt/sources.list.d/mate-oneiric.list
+sudo chmod a+r /etc/apt/sources.list.d/mate-oneiric.list
+sudo apt-get update
+sudo apt-get install mate-archive-keyring
+sudo apt-get update
+sudo apt-get full-upgrade
+sudo apt-get install mate-desktop-environment mate-conf-editor
+

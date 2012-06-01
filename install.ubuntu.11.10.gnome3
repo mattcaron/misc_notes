@@ -1,4 +1,4 @@
-These are installs on a fresh system.
+These are bases off an upgrade from 11.04 to 11.10
 
 1.) Boot the install cd and follow instructions to do the base
 install.  Set up machine as desired. Fairly
@@ -36,7 +36,21 @@ appropriate, and should be taken out of /home)
 
 ## NOTE: All this stuff assumes that you're root, such as with "sudo -s"
 
-2.) After machine is up, run synaptic, go to settings->repositories
+2.) install some basic things:
+sudo aptitude update
+sudo aptitude full-upgrade
+sudo aptitude install emacs synaptic
+
+3.) Make gnome useable:
+
+sudo add-apt-repository ppa:webupd8team/gnome3
+sudo add-apt-repository ppa:webupd8team/themes
+
+udo aptitude update
+sudo aptitude full-upgrade
+sudo aptitude install gnome-shell gnome-shell-extensions-mediaplayer gnome-shell-extensions-weather gnome-shell-extensions-gpaste gpaste gnome-shell-extensions-hamster gnome-shell-extensions-workspace-indicator gnome-shell-extensions-drive-menu gnome-shell-extensions-gajim gnome-shell-extensions-auto-move-windows gnome-shell-extensions-alternate-tab gnome-shell-extensions-apps-menu gnome-shell-extensions-system-monitor gnome-shell-extensions-native-window-placement gnome-shell-extensions-windows-navigator gnome-shell-extensions-xrandr-indicator gnome-shell-extensions-user-theme gnome-shell-extensions-alternative-status-menu gnome-shell-extensions-places-menu gnome-shell-extensions-dock gnome-shell-extensions-common gnome-shell-extensions-autohidetopbar gnome-shell-extensions-windowoverlay-icons gnome-shell-extensions-extended-places-menu gnome-shell-extensions-noa11y gnome-shell-extensions-pidgin gnome-shell-system-monitor gnome-shell-message-notifier gnome-shell-extension-notesearch gnome-shell-extension-window-buttons
+
+3.) After machine is up, run synaptic, go to settings->repositories
 make sure the following are enabled:
 
 - main
@@ -55,21 +69,25 @@ Select other software tab and enable/add:
 - independent (Source code)
 
 Select updates tab and enable:
-- natty-security
-- natty-updates
-- natty-backports
+- oneric-security
+- oneric-updates
+- oneric-backports
 
 (or just grab sources.list from some reasonable machine)
 
 Select Statistics and enable:
 - submit statistical information
 
-3.) Do:
+4.) Do:
 aptitude update
 aptitude full-upgrade
 
-4.) Install things:
-aptitude install phonon-backend-xine nmap traceroute emacs-snapshot emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox tracker tracker-utils unison unison-gtk digikam kipi-plugins meld ntp brag exiv2 unrar autossh openoffice.org xmlstarlet dvdrtools cdrskin logjam mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime mono-2.0-devel monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs libmono-dev smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions gdm-guest-session git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra deskbar-applet ubuntu-restricted-extras ktorrent shutter libgoo-canvas-perl gnome-web-photo portsentry sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu gnome-swallow-applet usb-imagewriter iftop pidgin-skype sensors-applet sun-java6-jdk ia32-sun-java6-bin mail-notification wireshark atop gkrellm icewm icewm-themes icewm-gnome xubuntu-desktop xfce4-goodies xfce4-xfapplet-plugin tomboy
+5.) Install things:
+aptitude install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox tracker tracker-utils digikam kipi-plugins meld ntp brag exiv2 unrar autossh openoffice.org openoffice.org-help-en-us xmlstarlet cdrskin logjam mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk gqview konqueror kaffeine xine-ui xchat mpg123 sox rhythmbox kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions gdm-guest-session git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo portsentry sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop tomboy deborphan gnome-tweak-tool gnome-shell synaptic gkrellm gkrellm-x86info
+
+work on
+
+ubuntu-restricted-extras ia32-libs libc6-i386 acroread 
 
 5.) Set up static IP's (for machines with them)
 - edit /etc/network/interfaces, and add lines like:
@@ -183,13 +201,13 @@ server 192.168.9.98 (this was daisy, should now be loki..)
 
 - Other machines
   - Remember to turn it off on places you don't want it.
-    update-rc.d smbd disable
-    update-rc.d nmbd disable
+    echo "manual" >> /etc/init/smbd.override
+    echo "manual" >> /etc/init/nmbd.override
     service smbd stop
     service nmbd stop
 
 15.) Set up ssmtp
-   cd /etc/ssmtp
+    cd /etc/ssmtp
     mv ssmtp.conf ssmtp.conf.old
     cp ~/system_stuff/ssmtp/ssmtp.conf .
     chmod a+r ssmtp.conf
@@ -223,7 +241,7 @@ sudo service apache2 restart
 
 - for dev machines, you may not want it to start at boot
 update-rc.d -f apache2 remove
-update-rc.d -f mysql remove
+echo "manual" >> /etc/init/mysql.override
 
 17.) Add podget to my cron (one machine only)
 TODO - port over. Stuff is in .hpodder. 
@@ -235,20 +253,7 @@ then make it look like:
 
 so it will run every morning at 6am and log to nowhere
 
-18.) set up rsnapshot (on appropriate machines)
-aptitude install rsnapshot
-
-cd /etc/
-mv rsnapshot.conf rsnapshot.conf.old
-cp ~/system_stuff/rsnapshot/rsnapshot.conf .
-chmod a+r rsnapshot.conf
-
-- edit /etc/cron.d/rsnapshot and set the stuff to work like:
-# min hour   day month week    
-0 */4         * * *           root    /usr/bin/rsnapshot hourly
-30 3          * * *           root    /usr/bin/rsnapshot daily
-0  3          * * 1           root    /usr/bin/rsnapshot weekly
-30 2          1 * *           root    /usr/bin/rsnapshot monthly
+18.) Removed
 
 19.) /etc/hosts
 - add hosts to /etc/hosts as appropriate
@@ -258,7 +263,7 @@ update-rc.d gdm disable
 
 21.) Set up CDEmu ppa
 - Add the CDEmu repository
-sudo add-apt-repository "deb http://ppa.launchpad.net/cdemu/ppa/ubuntu natty main"
+sudo add-apt-repository "deb http://ppa.launchpad.net/cdemu/ppa/ubuntu oneiric main"                
 
 sudo aptitude update
 sudo aptitude full-upgrade
@@ -333,20 +338,18 @@ firewalls...)
 32.) Set up log monitoring
 TODO - finish this
 
-33.) Add mail notification from repos, because the default one doesn't do SSL
-
-sudo apt-add-repository ppa:mail-notification-ssl/ppa
-sudo aptitude update
-sudo aptitude install mail-notification
+33.) Removed
 
 34.) Removed
 
 35.) Removed
 
-36.) Install hpodder build dependencies (deprecated, if ported over to
-a different podcatcher):
+36.) Install mate desktop environment
 
-aptitude install haskell-compiler libghc6-configfile-dev libghc6-hdbc-dev libghc6-hdbc-sqlite3-dev libghc6-haxml-dev libghc6-missingh-dev libghc6-hslogger-dev libghc6-mtl-dev libghc6-network-dev libghc6-parsec-dev
+sudo apt-add-repository ppa:amanas/mate-desktop
+sudo aptitude update
+sudo aptitude install mate-desktop mate-common mate-themes mate-window-manager mate-panel mate-menus mate-session-manager mate-control-center mate-settings-daemon mate-vfs 
+
 
 37.) Install qbrew build dependencies:
 
@@ -356,26 +359,36 @@ aptitude install qt4-qmake libqt4-dev qt4-designer
 
 cd /etc/apt/sources.list.d
 sudo -e virtualbox.list
-add: deb http://download.virtualbox.org/virtualbox/debian natty contrib non-free
+add: deb http://download.virtualbox.org/virtualbox/debian oneiric contrib non-free
 sudo chmod a+r virtualbox.list
 
 wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
 sudo aptitude update
-sudo aptitude install virtualbox-4.0
+sudo aptitude install virtualbox-4.1
 
 47.) Remove the Airport express pulseaudio module (because it's broken)
 
 sudo aptitude remove pulseaudio-module-raop
 
-48.) Fix bash completion.
+48.) Clean out orphan packages 
 
-sudo -e /etc/bash_completion
-go to line 1587
-change -o defaults to -o filenames
+sudo aptitude purge `sudo deborphan | xargs`
 
-49.) Remove xscreensaver (so it doesn't start)
+49.) Install mate repo
 
-sudo aptitude remove xscreensaver
+add the following to /etc/apt/sources.list.d/mate.list
+
+deb http://tridex.net/repo/ubuntu/ oneiric main
+
+sudo aptitude update
+
+sudo aptitude install mate-archive-keyring
+
+sudo aptitude update
+
+sudo aptitude install mate-desktop mate-sensors-applet mate-system-monitor
+
+
 
 === Games ===
 
@@ -385,7 +398,7 @@ sudo aptitude install libsdl-gfx1.2-dev libyaml-dev
 
 2.) Add GetDeb games repo (PlayDeb)
 wget -q -O - http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
-sudo add-apt-repository "deb http://archive.getdeb.net/ubuntu natty-getdeb games"
+sudo add-apt-repository "deb http://archive.getdeb.net/ubuntu oneiric-getdeb games"
 
 and install a bunch of stuff from there (not all of this may work, the
 repo seems a little ill-maintained at this time)
@@ -397,15 +410,13 @@ I had gotten this to do FreeOrion, but that's apparently not here...
 
 3.) Install some games:
 TODO - update with more? OpenTycoon, etc?
-aptitude install boswars freecol lincity-ng warzone2100 freeciv-sound-standard freeciv-client-gtk
-
-scummvm beneath-a-steel-sky flight-of-the-amazon-queen fluidsynth
+aptitude install boswars freecol lincity-ng warzone2100 freeciv-sound-standard freeciv-client-gtk scummvm beneath-a-steel-sky flight-of-the-amazon-queen fluidsynth
 
 4.) Add PlayOnLinux
 
-echo "deb http://deb.playonlinux.com/ natty main" | \
-     sudo tee -a /etc/apt/sources.list.d/playonlinux-natty.list
-sudo chmod a+r /etc/apt/sources.list.d/playonlinux-natty.list
+echo "deb http://deb.playonlinux.com/ oneric main" | \
+     sudo tee -a /etc/apt/sources.list.d/playonlinux-oneric.list
+sudo chmod a+r /etc/apt/sources.list.d/playonlinux-oneric.list
 
 sudo aptitude update
 sudo aptitude install playonlinux
@@ -414,3 +425,31 @@ sudo aptitude install playonlinux
 
 sudo apt-add-repository ppa:ubuntu-wine/ppa
 
+sudo aptitude update
+sudo aptitude full-upgrade
+
+
+==== gnome shell extensions worth having ====
+
+- all the stuff in the initial install list (repos)
+
+https://extensions.gnome.org/extension/4/panel-favorites/
+https://extensions.gnome.org/extension/40/status-only-icon/
+https://extensions.gnome.org/extension/32/remove-panel-app-menu/
+https://extensions.gnome.org/extension/13/applications-menu/
+
+Mint gnome shell extension:
+
+sudo add-apt-repository ppa:webupd8team/gnome3
+sudo add-apt-repository ppa:webupd8team/themes
+
+sudo aptitude update
+sudo aptitude full-upgrade
+sudo aptitude install mgse-bottompanel mgse-menu mgse-windowlist zukitwo-theme-all gnome-shell-classic-systray
+
+gsettings set org.gnome.desktop.default-applications.terminal exec xterm
+
+gconftool-2 --type bool --set /apps/metacity/general/auto_raise false
+
+WOEID lookup (sortof, not really):
+http://xoap.weather.com/search/search?where=Galway

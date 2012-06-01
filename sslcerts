@@ -1,0 +1,40 @@
+(largely from here: http://www.tc.umn.edu/~brams006/selfsign.html,
+step 1B, because we'll use a CA)
+
+IMPORTANT:
+- The common name for the server cert should be the name of the machine
+- The common name for the ca cert should be different relative to the
+  server cert.
+
+a.) Generate the key and CA cert (once, assuming it hasn't expired)
+
+openssl genrsa -des3 -out ca.key 4096
+openssl req -new -x509 -days 9999 -key ca.key -out ca.crt
+
+(follow prompts)
+
+b.) Generate a server private key and signing request. Use a bad
+password here, as we will strip it off later.
+
+openssl genrsa -des3 -out server.key 4096
+openssl req -new -key server.key -out server.csr
+
+c.) Sign it with the cert. This set a 1 year expiry. Also, you need to
+increment the serial number each time you issue a new cert
+
+openssl x509 -req -days 365 -in server.csr -CA ca.crt -CAkey ca.key -set_serial 0001 -out server.crt
+
+d.) clean the password out of server key:
+
+openssl rsa -in server.key -out server.key.insecure
+mv server.key.insecure server.key
+
+e.) to view stuff
+
+openssl rsa -noout -text -in server.key
+openssl req -noout -text -in server.csr
+openssl x509 -noout -text -in server.crt
+openssl rsa -noout -text -in ca.key
+openssl x509 -noout -text -in ca.crt
+
+

@@ -70,3 +70,46 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F9CB8DB0
 sudo apt-get update
 sudo apt-get dist-upgrade
 
+18.) set up rsnapshot (on appropriate machines)
+apt-get install rsnapshot
+
+cd /etc/
+mv rsnapshot.conf rsnapshot.conf.old
+cp ~/system_stuff/rsnapshot/rsnapshot.conf .
+chmod a+r rsnapshot.conf
+
+- edit /etc/cron.d/rsnapshot and set the stuff to work like:
+# min hour   day month week    
+0 */4         * * *           root    /usr/bin/rsnapshot hourly
+30 3          * * *           root    /usr/bin/rsnapshot daily
+0  3          * * 1           root    /usr/bin/rsnapshot weekly
+30 2          1 * *           root    /usr/bin/rsnapshot monthly
+
+19.) Set up CDEmu ppa
+- Add the CDEmu repository
+sudo add-apt-repository ppa:cdemu/ppa 
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get install gcdemu cdemu-client
+
+23.) Set up portsentry (which actually doesn't work for stuff running
+firewalls...)
+
+- edit /etc/default/portsentry and set it to atcp/audp mode
+sudo service portsentry restart
+
+24.) Getdeb games
+sudo apt-get install warzone2100 enemy-territory smokinguns
+bloodfrontier bombic ufoai hedgewars
+
+3.) Install some games:
+TODO - update with more? OpenTycoon, etc?
+apt-get install boswars freecol lincity-ng warzone2100 freeciv-sound-standard freeciv-client-gtk scummvm beneath-a-steel-sky flight-of-the-amazon-queen fluidsynth
+
+
+24.) Install hpodder build dependencies (deprecated, if ported over to
+a different podcatcher):
+
+apt-get install haskell-compiler libghc6-configfile-dev libghc6-hdbc-dev libghc6-hdbc-sqlite3-dev libghc6-haxml-dev libghc6-missingh-dev libghc6-hslogger-dev libghc6-mtl-dev libghc6-network-dev libghc-parsec-dev
+

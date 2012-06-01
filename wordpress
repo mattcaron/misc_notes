@@ -3,7 +3,7 @@ Wordpress
 (1) Install webserver 
 	See install.apache
 - also, needs the php5-gd library
-  aptitude install php5-gd
+  apt-get install php5-gd
 
 (2) Install mysql-server
 aptitude install mysql-server
@@ -83,6 +83,20 @@ define('WP_HOME',    "http://${_SERVER['HTTP_HOST']}");
     </Directory>
 </VirtualHost>
 
+and:
+
+<VirtualHost *:80>
+    ServerName www.fishhousefishandgame.com
+    ServerAdmin webmaster@localhost
+    
+    DocumentRoot /home/matt/public_html/www.fishhousefishandgame.com
+    <Directory /home/matt/public_html/www.fishhousefishandgame.com>
+        Options Indexes FollowSymLinks MultiViews
+        Order allow,deny
+        allow from all
+    </Directory>
+</VirtualHost>
+
 
 - 
 
@@ -110,6 +124,10 @@ conf set errlog yes
 
 - turn on php5-fat
 web php select php5-fat
+
+(11) SSL
+
+See sslcerts
 
 
 TODO:
@@ -152,7 +170,7 @@ http://performancing.com/design/templates/how-to-customize-wordpress-part-1
 
 http://heinous.org/wiki/LiveJournal_XML_Export_Script
 
-aptitude install libsoap-lite-perl libwww-mechanize-perl libdate-manip-perl
+apt-get install libsoap-lite-perl libwww-mechanize-perl libdate-manip-perl
 
 - edit ljexport.pl and find the getXML function. Edit the form_number
   and set it to 2.
@@ -171,7 +189,7 @@ Tools -> import -> livejournal import
 
 --- Sync needs php-curl ---
 
-aptitude install php5-curl
+apt-get install php5-curl
 
 -- Mine TODO:
 

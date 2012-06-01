@@ -1,0 +1,4 @@
+sudo aptitude install intltool libghc-gio-dev libfolks-dev libmutter-dev libgjs-dev libgnome-menu-3-dev libgconf2-dev libgdk-pixbuf2.0-dev libsoup2.4-dev 
+
+
+git clone https://github.com/linuxmint/Cinnamon.git
