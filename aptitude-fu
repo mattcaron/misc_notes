@@ -1,0 +1,10 @@
+Show all automatically installed packages:
+aptitude search \~M
+
+Show all installed packages which were not automatically installed:
+aptitude search \~i\!\~M
+
+docs:
+sudo aptitude install aptitude-doc-en
+
+(and then they live in /usr/share/aptitude/html....)

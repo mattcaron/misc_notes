@@ -1,0 +1,19 @@
+kdenlive dvdstyler
+
+kdenlive - for video editing
+dvdstyler - for menu creation and chaptering (kdenlive kind of sucks at this)
+
+1. Add to video group:
+sudo usermod -a -G video matt
+
+2. dvgrab needs the -guid option to find the correct device because I
+have multiple firewire ports. Pass it info as follows:
+
+-guid 002011010100b160 
+  ^ for Canopus ADVC 100
+
+
+In kdenlive:
+To render DVD files, choose "render" and render to DVD (easy enough)
+Then you import these files into dvdstyler
+
