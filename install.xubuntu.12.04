@@ -73,7 +73,7 @@ apt-get update
 apt-get dist-upgrade
 
 5.) Install things:
-apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar openoffice.org xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk gqview konqueror kaffeine xine-ui mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop gkrellm xfce4-goodies tomboy mail-notification ubuntu-restricted-extras ia32-libs libc6-i386 acroread mercurial icewm icewm-themes icewm-gnome-support skype hpodder
+apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar openoffice.org xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk gqview konqueror kaffeine xine-ui mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew brewtarget manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop gkrellm xfce4-goodies tomboy mail-notification ubuntu-restricted-extras ia32-libs libc6-i386 acroread mercurial icewm icewm-themes icewm-gnome-support skype hpodder icedax pulseaudio-esound-compat
 
 6.) Set up static IP's (for machines with them)
 - edit /etc/network/interfaces, and add lines like:
@@ -84,6 +84,8 @@ auto iface eth0 inet static
 
 ifdown eth0
 ifup eth0
+
+- and set the DNS server in /etc/resolvconf/resolv.conf.d/base
 
 7.) Make ssh work:
 ## For an old machine, use the old keys - you did save /etc, didn't you?
@@ -131,8 +133,8 @@ apt-get install libdvdcss2 non-free-codecs googleearth-package app-install-data-
 
 11.) latex
     cd /usr/share/texmf/tex/latex
-    sudo cp -a ~/system_stuff/latex/local .
-    sudo chown -R root:root local
+    cp -a ~/system_stuff/latex/local .
+    chown -R root:root local
 - then run texconfig and select "rehash"
 - Also, set the paper to US
 
@@ -166,7 +168,7 @@ server 192.168.9.98 (this was daisy, should now be loki..)
 - Servers
     cd /etc/samba
     mv smb.conf smb.conf.old
-    cp ~/system_stuff/samba/smb.conf.machine_name ./smb.conf
+    cp ~/system_stuff/samba/smb.conf.`hostname` ./smb.conf
     update-rc.d smbd defaults
     update-rc.d nmbd defaults
     service smbd start
@@ -222,8 +224,7 @@ sudo service apache2 restart
 update-rc.d -f apache2 remove
 update-rc.d -f mysql remove
 
-17.) Add podget to my cron (one machine only)
-TODO - port over. Stuff is in .hpodder. 
+17.) Add hpodder to my cron 
 crontab -e
 
 then make it look like:
@@ -232,10 +233,7 @@ then make it look like:
 
 so it will run every morning at 6am and log to nowhere
 
-18.) Remove gdm so X doesn't start (servers only)
-update-rc.d gdm disable
-
-19.) Set up email backups (case only)
+18.) Set up email backups (case only)
 
 crontab -e
 
@@ -245,6 +243,9 @@ then make it look like:
 
 so it will on the second of the month at 1am and log to nowhere
 
+19.) Remove gdm so X doesn't start (servers only)
+update-rc.d gdm disable
+
 20.) Set up sensors (if not set up automagically) for case
 
 - For case / Gigabyte X48-DQ6 board
@@ -252,7 +253,12 @@ so it will on the second of the month at 1am and log to nowhere
 it87
 coretemp
 
-(For new machines, this is accomplished by running sensors-detect and following prompts)
+- For hiro / Thinkpad T60:
+- add the following to /etc/modules:
+coretemp
+
+(For new machines, this is accomplished by running sensors-detect and
+following prompts - the defaults are typically fine.)
 
 # FIXME - edit the conf file to fix scaling, etc.
 
@@ -289,6 +295,33 @@ apt-add-repository ppa:xubuntu-dev/xfce-4.10
 apt-get update
 apt-get dist-upgrade
 
+28.) In fixed systems, remove network-manager
+
+sudo apt-get remove network-manager
+
+29.) Set browser in thunderbird
+
+This looks to be controlled by
+matt/.thunderbird/default/ysovf56j.slt/mimeTypes.rdf. Find the
+urn:scheme:externalApplication:http and https lines, and change them
+to what you want. Sane choices are:
+- `sensible-browser`, so it picks up the system settings, which are set with 
+         `sudo update-alternatives --config x-www-browser`
+- `exo-open`, which opens the selected one from XFce
+
+30.) Install MATE desktop
+
+sudo add-apt-repository \
+"deb http://packages.mate-desktop.org/repo/ubuntu precise main"
+
+sudo apt-get update
+sudo apt-get install mate-archive-keyring
+sudo apt-get update
+sudo apt-get install mate-desktop-environment
+
+31.) Proprietary drivers (optional)
+
+fglrx-updates
 
 === Games ===
 
@@ -311,3 +344,4 @@ sudo apt-add-repository ppa:ubuntu-wine/ppa
 
 sudo apt-get update
 sudo apt-get dist-upgrade
+
