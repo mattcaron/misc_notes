@@ -246,3 +246,7 @@ Prep:
 (1) Fix perms so that the webserver can write
 (2) security concerns?
 (3) facebook integration?
+
+rsync -avz --delete --exclude .git --exclude uploads --exclude plugins --exclude themes --exclude wp-config.php . /home/matt/public_html/www.fishhousefishandgame.com/wordpress/
+
+rsync -avz --delete --exclude .git --exclude uploads --exclude plugins --exclude themes . /home/matt/public_html/www.mattcaron.net/wordpress
