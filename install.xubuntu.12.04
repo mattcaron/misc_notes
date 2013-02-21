@@ -323,6 +323,31 @@ sudo apt-get install mate-desktop-environment
 
 fglrx-updates
 
+32.) Pulseaudio equalizer:
+
+sudo apt-add-repository ppa:nilarimogard/webupd8
+
+sudo apt-get update && sudo apt-get install pulseaudio-equalizer
+
+33.) Add Steam:
+
+add the following to /etc/apt/sources.list.d/steam.list:
+
+deb http://repo.steampowered.com/steam/ precise steam
+
+key:
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys
+F24AEA9FB05498B7
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get install steam
+
+reboot (because the above likely installed a new fglrx driver)
+
+run steam:
+steam
+
 === Games ===
 
 1.) Add GetDeb games repo (PlayDeb)
