@@ -14,9 +14,6 @@ ssh-keygen -t dsa -f ~/.ssh/id_dsa
 cat .ssh/id_dsa.pub | ssh server "cat - >> .ssh/authorized_keys"
 ssh server "chmod go-rwx .ssh/authorized_keys"
 
-- SSH to your remote host, and add the identity.pub to that
-- machine's ~/.ssh/authorized_keys (or just copy it)
-
 2.) to set DVD region code (only necessary once, per drive, EVER!!!)
 - (indeed, most of them can only be set a few times before, they're
 - locked forever. Be honest)
