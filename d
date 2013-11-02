@@ -1,6 +1,36 @@
 1. As of 11.04, it's in repos.
 
-sudo aptitude install gdc
+sudo aptitude install gdc-4.6
+
+2. gtkd:
+
+git clone 
+https://github.com/gtkd-developers/GtkD.git
+cd GtkD
+make libs
+
+(make all fails because some of the demos use things which aren't
+supported under gdc 4.6)
+
+
+
+
+
+
+Notes:
+Old: D 1.0 with Tango
+New: D 2.0 with Phobos
+
+
+Deprecated:
+
+1.) Grab the precompiled tango:
+
+http://www.dsource.org/projects/tango/wiki/DmdDownloads
+
+2.) chuck it in /usr/local/apps/
+
+3.) Symlink tomfoolery
 
 2. WxD
 
@@ -27,17 +57,3 @@ gdc -o wxHello wxHello.d -I/home/matt/workspace/code/wxd/wxd -L/home/matt/worksp
 
 
 
-Notes:
-Old: D 1.0 with Tango
-New: D 2.0 with Phobos
-
-
-Deprecated:
-
-1.) Grab the precompiled tango:
-
-http://www.dsource.org/projects/tango/wiki/DmdDownloads
-
-2.) chuck it in /usr/local/apps/
-
-3.) Symlink tomfoolery
