@@ -1,0 +1,126 @@
+lxc
+
+largely from:
+http://lxc.sourceforge.net/lxc.html
+https://help.ubuntu.com/community/OpenVZ
+http://www.ibm.com/developerworks/linux/library/l-lxc-containers/
+
+With additional notes from:
+http://www.stgraber.org/2009/11/06/lxc-containers-or-extremely-fast-virtualization
+http://linux-vserver.org/Upstart_issues
+http://lxc.teegra.net/
+
+0. Note that you likely want to create a separate partition for machines and put the machines there.
+
+1. apt-get install lxc debootstrap
+(Note - this is pretty inefficient in terms of space. The lxc setup does allow for read-only mounts of things. So, it can have its own /etc and html docs but share binaries and libraries with the host)
+
+2. Set up cgroup
+mkdir /var/cgroup
+mount -t cgroup cgroup /var/cgroup
+
+(probably want to add it to /etc/fstab as well:
+cgroup          /var/cgroup     cgroup      defaults              0       0
+)
+
+3. Add a bridged network interface:
+brctl addbr br0
+brctl setfd br0 0
+- bring up the bridge with a given IP
+ifconfig br0 192.168.9.50 promisc up
+- add the existing interface and set it to a bad 
+brctl addif br0 wlan0
+ifconfig wlan0 0.0.0.0 up
+
+4. Bootstrap a basic system
+mkdir trac
+sudo debootstrap --arch i386 karmic trac
+
+5. Create a config file:
+lxc.utsname = my_ssh_container
+lxc.network.type = veth
+lxc.network.flags = up
+lxc.network.link = br0
+lxc.network.ipv4 = 192.168.9.51/24
+lxc.network.name = eth0
+lxc.mount = /opt/machines/trac/fstab
+lxc.rootfs = /opt/machines/trac/rootfs
+
+6. Create the machine:
+lxc-create -n trac -f /opt/machines/trac/config
+
+7. edit the appropriate files on the guest
+
+/etc/fstab:
+tmpfs	/dev/shm   	tmpfs  defaults 0 0
+proc	/proc      	proc   defaults 0 0
+devpts	/dev/pts 	devpts defaults 0 0
+sysfs	/sys		sysfs  defaults 0 0
+
+/etc/resolv.conf
+/etc/hosts
+/etc/hostname
+• Set them up correctly
+
+/etc/init
+• remove the following files:
+rm control-alt-delete.conf hwclock.conf \
+hwclock-save.conf mountall.conf mountall-net.conf \
+mountall-reboot.conf mountall-shell.conf \
+networking.conf procps.conf rsyslog-kmsg.conf \
+tty2.conf tty3.conf tty4.conf tty5.conf \
+tty6.conf upstart-udev-bridge.conf
+• Create lxc.conf to generate things:
+start on startup
+script
+        >/etc/mtab
+        mount -a
+	touch /var/run/network/ifstate
+        ifdown eth0
+        ifup eth0
+        initctl emit virtual-filesystems
+        initctl emit local-filesystems
+        initctl emit remote-filesystems
+        initctl emit filesystem
+end script
+• Edit /etc/init/rc.sysinit.conf and change the line:
+start on filesystem and net-device-up IFACE=lo
+  to
+start on filesystem
+Important: This seems to be fragile in that system updates seem to put it back. If all your machines won't boot suddenly, check this.
+
+
+bootstrap a basic bash so the various nice utilities work:
+lxc-start -n trac bash
+
+• add user. 
+• add admin group
+• set sudoers to allow admin group
+• add user to admin group
+• generate locale
+       sudo locale-gen en_US.UTF-8
+
+/etc/apt
+• grab the sources.list from the host (if guest is same as host) or make one
+
+8. Start the machine:
+lxc-start -n trac init &
+
+Start for real:
+lxc-start -n trac
+
+Notes:
+
+Console:
+sudo lxc-console -n trac
+
+Debugging:
+lxc-start -l DEBUG -o $(tty) --name trac &
+
+
+on host:
+• add /etc/init/lxc-machines and /etc/defaults/lxc-machines
+• update-rc.d lxc-machines defaults
+
+TODO:
+• UFW breaks stuff
