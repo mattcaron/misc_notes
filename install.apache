@@ -1,4 +1,4 @@
-aptitude install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt mysql-server
+apt-get install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt mysql-server
 
 - edit /etc/apache2/ports.conf and change:
 
