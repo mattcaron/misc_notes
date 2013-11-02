@@ -1,0 +1,599 @@
+I.) Base install and configs:
+
+1.) Install Ubuntu server as normal from an Ubuntu install CD.
+
+Partition as follows:
+
+Disks 1 and 2:
+
+- BOS compat boot partition (grub_bios) - 100MB
+/boot - 1GB (physical RAID)
+- rest (physical RAID)
+  - Make this RAID LVM, partitioned as follows:
+    / - 500GB
+    /tmp - 50GB
+    /var - 100GB
+    swap - 4GB
+    /home - rest
+
+Disks 3 and 4:
+- whole disk (physical RAID)
+  - Make this RAID LVM, partitioned as follows:
+    /mnt/time_machine - 2TB
+    /mnt/dlna - 1TB
+
+When it asks for what to install, select OpenSSH server and leave
+everything else blank.
+
+2.) Set up networking:
+
+- edit /etc/network/interfaces, and add lines like:
+auto iface eth0 inet static
+	address 192.168.9.51
+        netmask 255.255.255.0
+	gateway 192.168.9.254
+
+ifdown eth0
+ifup eth0
+
+- and set the DNS server in /etc/resolvconf/resolv.conf.d/base
+
+- Then restart it:
+
+sudo service resolvconf restart
+
+3.) Install Amahi (base install):
+
+From: http://docs.amahi.org/ubuntu-12.html
+
+- Do:
+    wget http://u12.amahi.org/install-amahi
+    sh install-amahi
+
+- Enter sudo password when asked.
+
+-  Reboot when asked
+
+4.) Bootstrap install of useful things:
+
+sudo apt-get install synaptic
+
+5.) After machine is up, run synaptic, go to settings->repositories
+make sure the following are enabled:
+
+- main
+- universe
+- restricted
+- multiverse
+- source code
+
+Select other software tab and enable/add:
+- partner
+- partner (Source Code)
+- independent
+- independent (Source code)
+
+Select updates tab and enable:
+- precise-security
+- precise-updates
+- precise-backports
+
+(or just grab sources.list from some reasonable machine)
+
+Select Statistics and enable:
+- submit statistical information
+
+6.) Do:
+apt-get update
+apt-get dist-upgrade
+
+7.) Install more useful things
+sudo apt-get install tree unison atop texlive-binaries hpodder \
+system-config-printer-gnome cups synaptic brother-cups-wrapper-laser nmap \
+emacs wireshark lm-sensors ntp ssmtp logcheck wakeonlan gdisk git-core gitk \
+iftop
+
+8.) Change DNS from OpenDNS to the router, which will pass queries up
+    to the ISP:
+
+sudo​hda-change-dns 192.168.9.254 192.168.9.254
+
+9.) Enable HTTPS
+
+From: https://wiki.amahi.org/index.php/Access_HDA_over_SSL
+
+- Make a selfsigned cert (see sslcerts), so you end up with crt and
+  key on the amahi server
+
+- Move things where Amahi expects them:
+
+sudo mkdir /etc/httpd/ssl.key mkdir /etc/httpd/ssl.crt
+sudo mv crt /etc/httpd/ssl.crt/server.crt
+sudo mv key /etc/httpd/ssl.key/server.key
+sudo chmod 400 /etc/httpd/ssl.key/server.key
+
+- Add vhosts on 443:
+
+echo 'NameVirtualHost *:443' | sudo tee -a /etc/httpd/conf.d/00-init.conf > /dev/null
+
+- Add config:
+
+sudo cp /etc/httpd/conf.d/01-platform.conf /etc/httpd/conf.d/01-platform-ssl.conf
+
+- Edit 01-platform-ssl.conf and change "<Virtualhost *:80>" to:
+
+<VirtualHost *:443>
+   SSLEngine on
+   SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+   SSLCertificateFile /etc/httpd/ssl.crt/server.crt
+   SSLCertificateKeyFile /etc/httpd/ssl.key/server.key
+
+- Change the rewrite rules at the bottom of the rewrite rules in
+  01-platform.conf
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,L]
+
+- restart:
+
+sudo service apache2 restart
+
+10.) Turn on advanced settings:
+
+Settings->Global Settings
+
+Tick "Advanced settings"
+
+11.) Advanced network customization:
+See:
+https://wiki.amahi.org/index.php/Network_customizations
+
+Create /etc/hdactl.conf and put in:
+
+$DYN_LO="100";
+$DYN_HI="240";
+
+sudo service hdactl stop
+sudo service hdactl start
+
+(everything below 150 is static, as is everything 240 and above)
+
+12.) Add a pile of machines:
+
+mysql -u amahihda hda_production -pAmahiHDARulez
+
+- then add the machines:
+
+INSERT INTO hosts (host,mac,address) VALUES
+ ("brother-hl5250dn","00:80:77:E5:9B:E6",112),
+ ("dell3000","08:00:37:32:08:75",111),
+ ("bridge-office","00:0F:66:0A:96:23",253),
+ ("bridge-bedroom","68:7F:74:1B:79:F6",252),
+ ("bridge-garage","00:12:17:ba:54:3f",251),
+ ("router","A0:F3:C1:E4:B6:2E",254);
+
+(Note that there are *way* fewer machines with Static IPs, because,
+with Amahi, we don't need them put in just to add them to DNS - it
+allows sending of host names and auto-updating of DNS. So, everything
+here is actually static, or things which are too stupid to know their
+own name, but we actually want to get to (ie, printers). Also, we
+*could* have given them aliases, but then the WOL button wouldn't
+work.)
+
+- once that's done, go to Setup->Networking->Static IPs and add case:
+
+case 1 00:1d:7d:07:d3:25
+
+- (that will force it to blow all the machines out to the config files)
+
+13.) Add an alias for "amahi":
+
+Networking->Aliases
+
+Add amahi at 51
+
+14.) Add accounts:
+
+Setup->Users
+
+liz (and make admin)
+
+15.) Disable greyhole (we don't use it)
+
+Setup->Servers->Greyhole, and disable all of it.
+
+- And, of course, that doesn't persist, so actually remove it:
+
+echo "manual" >> /etc/init/greyhole.override
+sudo service greyhole stop
+
+- And, of course, that doesn't stop the greyhole cron job, so edit
+  /etc/cron.daily/grehole and comment it out
+
+16.) Set up shares:
+
+Setup->Shares
+
+- Delete everything that's there (they're in the wrong spot, we don't
+  care, etc.)
+
+17.) Fix samba workgroup:
+
+- Patch /var/hda/platform/html/app/models/share.rb
+- In the function self.header_workgroup, right after:
+		"\tpreferred master = yes",
+- add:
+		"\tlocal master = yes",
+
+- Then fix the workgroup:
+
+Setup->Shares->Settings
+
+Set workgroup to HOME
+
+18.) Enable firewall (after allowing things through)
+
+    sudo ufw allow ssh
+    sudo ufw allow from 192.168.9.0/24 to any port domain
+    sudo ufw allow from 192.168.9.0/24 to any port http
+    sudo ufw allow from 192.168.9.0/24 to any port https
+    sudo ufw allow from 192.168.9.0/24 to any port bootps
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-ns
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-dgm
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-ssn
+    sudo ufw allow from 192.168.9.0/24 to any port microsoft-ds
+    sudo ufw allow from 192.168.9.0/24 to any port mdns
+
+- enable:
+
+    sudo ufw enable
+
+19.) cups
+- sudo system-config-printer
+- add printers as appropriate
+- Under Server->Settings select:
+    Show printers shared by other systems
+- For servers, under "Server Settings", select:
+    Publish shared printers conected to this system
+- make sure to enable it in the ufw
+    sudo ufw allow from 192.168.9.0/24 to any port ipp
+
+20.) Set up hpodder (installed above)
+
+crontab -e
+
+then make it look like:
+
+  0 6   *   *   *    /home/matt/bin/hpodder > /dev/null
+
+so it will run every morning at 6am and log to nowhere
+
+21.) Set up email backups (amahi only)
+
+sudo apt-get install offlineimap
+
+crontab -e
+
+then add:
+
+@hourly              offlineimap -u quiet
+
+so it will sync email hourly
+
+Of course, this is only half of it - it snapshots email, but doesn't
+really do an archive. For that, we do an rsnapshot
+
+sudo apt-get install rsnapshot
+
+and then set up crontab:
+
+#0 */1  * * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot_email.conf hourly
+#30 3   * * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot_email.conf daily
+#0  3   * * 1  /usr/bin/rsnapshot -c /home/matt/.rsnapshot_email.conf weekly
+#30 2   1 * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot_email.conf monthly
+
+22.) Set up sensors:
+
+- For amahi / ASROCK E350
+- add the following to /etc/modules:
+w83627ehf
+
+23.) Make ssh work:
+## For an old machine, use the old keys - you did save /etc, didn't you?
+
+## For a new machine, use the new keys generated by the distro.
+
+- make sure to add to the firewall
+ufw allow ssh
+
+- set:
+- PermitRootLogin no
+
+- once you've set up public key auth, turn off password access. edit
+    /etc/ssh/sshd_config
+and set
+    PasswordAuthentication no
+
+service ssh restart
+
+24.) Set up ntpd server:
+
+- enable firewall
+
+sudo ufw allow from 192.168.9.0/24 to any port ntp
+
+25.) Set up ssmtp
+    cd /etc/ssmtp
+    mv ssmtp.conf ssmtp.conf.old
+    cp ~/system_stuff/ssmtp/ssmtp.conf .
+    chmod a+r ssmtp.conf
+
+26.) Set up logcheck
+- edit /etc/cron.d/logcheck and set it to @daily and not every 2 hours
+
+27.) Fix wake on lan:
+
+cd /usr/bin
+sudo ln -s wakeonlan wol
+
+28.) Add database backup to crontab:
+
+@daily               /home/matt/bin/mysql_backup > /dev/null
+
+(make sure the DB password is in ~/attic/backup/amahi/mysql.pw
+
+29.) Add fstab line for external backup drive (because there's no
+     automounter)
+
+/dev/sde1          /mnt/external_backup  ext4   defaults,noauto  0       0
+
+- Make sure to make the mountpoint:
+
+sudo mkdir /mnt/external_backup
+
+30.) Add UPS monitoring
+
+- From:
+
+http://blog.shadypixel.com/monitoring-a-ups-with-nut-on-debian-or-ubuntu-linux/
+
+- The first bit, with GNOME, works for desktops, not server. Anyway,
+  install things:
+
+sudo apt-get install nut
+
+- Edit /etc/nut/ups.conf
+
+[apc]
+    driver = usbhid-ups
+    port = auto
+
+- There's only one UPS hooked to this guy, so we don't need to worry
+  about disambiguation.
+
+- Also, if you just installed nut, but the UPS is already plugged in,
+  you'll need to unplug and replug it to fire the notplug events.
+
+- Start it:
+
+sudo upsdrvctl start
+
+- Add the following to /etc/nut/upsd.conf
+
+ACL all 0.0.0.0/0
+ACL localhost 127.0.0.1/32
+ACCEPT localhost
+REJECT all
+
+- This will reject all nonlocal traffic
+
+- Add the following to /etc/nut/upsd.users
+
+[local_mon]
+    password = PASSWORD_HERE
+    allowfrom = localhost
+    upsmon master
+
+- Obviously, make PASSWORD_HERE some random password
+
+- Add the following to /etc/nut/upsmon.conf, at the bottom of the
+  MONITOR section:
+
+MONITOR ups@localhost 1 local_mon PASSWORD_HERE master
+
+- Edit /etc/nut/nut.conf and set
+
+MODE=standalone
+
+- Start it
+
+sudo service nut start
+
+- You can print statistics via:
+
+upsc ups
+
+II. Install and configure apps:
+
+(This may require going to the store and buying the non-free ones, etc.)
+
+1.) DLNA
+
+(From: https://wiki.amahi.org/index.php/DLNA)
+
+- In Setup->Shares, add:
+
+   dlna     /var/hda/files/dlna
+
+- And we want them to be guest writeable, so add the "extra parameter":
+
+guest ok = yes
+
+- Make the missing remount lines:
+
+     sudo mkdir /home/matt/dlna
+     sudo mkdir /home/liz/dlna
+
+- Add remount lines:
+
+/mnt/dlna          /var/hda/files/dlna   none   bind             0       0
+/mnt/dlna          /home/matt/dlna/      none   bind             0       0
+/mnt/dlna          /home/liz/dlna/       none   bind             0       0
+
+- Then remount:
+
+   sudo mount -a
+
+- edit /etc/minidlna.conf
+
+- comment out all the media_dir lines
+
+- add this one:
+
+   media_dir=/var/hda/files/dlna
+
+- And we want guests to *actually* be able to write to it, so we need
+  to fix those perms:
+
+sudo chmod o+w /var/hda/files/dlna
+
+- But we don't want random users deleting things, so set the sticky
+  bit for a modicum of security:
+
+sudo chmod +t /var/hda/files/dlna
+
+- And we want the users group to be able to manipulate things:
+
+sudo chmod g+s /var/hda/files/dlna
+
+- restart:
+
+   sudo /etc/init.d/minidlna restart
+
+- Allow through firewall
+
+sudo ufw allow from 192.168.9.0/24 to any port 8200
+
+2.) Amahi Time Machine
+
+(From: https://wiki.amahi.org/index.php/Amahi_Time_Machine)
+
+- add a remount line to fstab:
+
+/mnt/time_machine  /var/hda/files/amahi-time-machine  none  bind 0       0
+
+- Remount:
+
+   sudo mount -a
+
+- fix perms so Liz can write to it:
+
+   sudo chown -R liz /mnt/time_machine/
+
+- Allow through firewall
+
+sudo ufw allow from 192.168.9.0/24 to any port 548
+
+- Due to an odd bug (likely a race condition), these aren't always
+  started in the correct order, and often need a kick to work:
+
+https://bugs.amahi.org/issues/1045
+https://bugs.launchpad.net/ubuntu/+source/avahi/+bug/624043?comments=all
+http://ubuntuforums.org/archive/index.php/t-1482573.html
+
+- Anyway, add the following to /etc/rc.local (before the exit):
+
+    service avahi-daemon stop
+    service netatalk stop
+    sleep 5
+    service netatalk start
+    service avahi-daemon start
+
+3.) OpenVPN
+
+- Allow through firewall from everywhere:
+
+sudo ufw allow openvpn
+
+4.) DokuWiki
+
+(Picked docuwiki after looking at the syntax examples in
+http://www.wikimatrix.org/compare/DokuWiki+PmWiki+WikkaWiki)
+
+- Install it
+- Add a webserver alias
+   Apps->Webapps->dokuwiki
+   Click New Alias
+   Add wiki
+- And a DNS alias:
+   Networking->Aliases
+   - add "wiki" going to IP 51
+   - click "Create Alias"
+- Add users through admin panel.
+- Edit the local config:
+ - Enable CamelCase
+  - edit /var/hda/web-apps/dokuwiki/html/conf/local.php
+  - add:
+    $conf['camelcase']   = 1;
+  - to the end
+ - Change title to "Caron family wiki":
+    $conf['title'] = 'Caron family wiki';
+ - Show usernames:
+  - add:
+    $conf['showuseras']  = 'loginname';
+
+5.) ownCloud
+- Log in using default creds
+- install pwauth
+
+sudo apt-get install pwauth
+
+- Click the "settings" gear at bottom left:
+ - Click Apps
+  - Enable Unix User Backend
+  - Enable Bookmarks
+  - Enable Tasks
+ - Click Users
+  - Delete the Admin account
+
+- Thunderbird:
+ - Address books
+   http://doc.owncloud.org/server/5.0/user_manual/pim/sync_thunderbird.html
+   - Used URL:
+     http://owncloud.home/remote.php/carddav/addressbooks/matt/contacts
+   - You can't copy cards, you need to export/import them
+ - Calendar
+   http://forum.owncloud.org/viewtopic.php?f=23&t=14137
+   - Used URL:
+     http://owncloud.home/remote.php/caldav/calendars/matt/defaultcalendar
+
+TODO:
+
+- Monitor stuff via SNP, etc.
+
+ - Looks like this needs to be manual - the one for Amahi is beta and
+   therefore unavailable to me:
+ - OpenWRT monitoring via SNMP:
+       http://www.roth.lu/s9y/index.php?/archives/45-Monitoring-OpenWRT-via-SNMP-using-Munin.html
+ - Should definitely be able to do it w/ the main router - might work
+   for the 54Gs as well.
+ - Also:
+       https://dev.openwrt.org/ticket/7167
+
+
+- Consider stuff in Tomboy's AmahiApps page.
+
+- Upgrade printer firmware and lock down
+
+- Write out passwords, put in envelope in safe
+
+IV. Backup scripts
+
+
+
+To run a backup, insert the external drive in to the cradle and run:
+
+    sudo ~/bin/server_backup
+
+V. Notes
+ -  /usr/bin/hdactl shows a lot of how things work
