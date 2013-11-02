@@ -20,15 +20,23 @@ partition.
   partition on each drive) and then define it to be whatever it is
   above, and continue on as normal from there.
 
-- These should represent MINIMUM sizes. More is often better.
+- These should represent MINIMUM sizes, and is sized for 500GB
+  HDD's. More is often better.
 
 LVM Partitions
-swap		2*RAM
-usr_local	10GB	/usr/local
-tmp		2GB	/tmp
-var		5GB	/var
-root		10GB	/
+swap		Amount of RAM + a bit[1]
+tmp		10GB	/tmp
+var		10GB	/var
+root		20GB	/
 home		Rest	/home
+
+[1] This is mainly important for machines where you want to
+hibernate. You need at least as much swap space as you have RAM, so do
+that plus a bit. Old standard is 2 * RAM, which is plenty, but is a
+bit overkill with modern machines. On the other hand, if you never do
+a full hibernate (because it just takes too long to read back 16GB of
+RAM from disk), set it to something reasonable. Swap kind of sucks
+anyway..
 
 (For some machines, a common area of /pub, or /shared, might be
 appropriate, and should be taken out of /home)
@@ -48,9 +56,6 @@ make sure the following are enabled:
 - restricted
 - multiverse
 - source code
-
-Select Download From, then choose "other" and select best server. Let
-it run the speed tests and you're good.
 
 Select other software tab and enable/add:
 - partner
@@ -73,7 +78,7 @@ apt-get update
 apt-get dist-upgrade
 
 5.) Install things:
-apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar openoffice.org xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk gqview konqueror kaffeine xine-ui mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew brewtarget manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop gkrellm xfce4-goodies tomboy mail-notification ubuntu-restricted-extras ia32-libs libc6-i386 acroread mercurial icewm icewm-themes icewm-gnome-support skype hpodder icedax pulseaudio-esound-compat
+apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar openoffice.org xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk gqview konqueror kaffeine xine-ui mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop gkrellm xfce4-goodies tomboy mail-notification ubuntu-restricted-extras ia32-libs libc6-i386 acroread mercurial icewm icewm-themes icewm-gnome-support skype hpodder icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools libav-tools openvpn gdisk wakeonlan wine kdenlive dvdstyler
 
 6.) Set up static IP's (for machines with them)
 - edit /etc/network/interfaces, and add lines like:
@@ -86,6 +91,10 @@ ifdown eth0
 ifup eth0
 
 - and set the DNS server in /etc/resolvconf/resolv.conf.d/base
+
+- Then restart it:
+
+sudo service resolvconf restart
 
 7.) Make ssh work:
 ## For an old machine, use the old keys - you did save /etc, didn't you?
@@ -109,40 +118,31 @@ service ssh restart
 
 ufw enable
 
-9.) Set up /etc/hosts.allow and /etc/hosts.deny:
-- hosts.allow:
-----------------
-ALL: 127.0.0.1
-sshd: ALL
------------------
+9.) Fix cron - add the following to the top of personal crontab:
 
-- hosts.deny:
-----------------
-ALL:ALL
------------------
+MAILTO="matt@mattcaron.net"
 
-10.) Install proprietary things (Medibuntu)
-From: https://help.ubuntu.com/community/Medibuntu
+10.) Install dvd decoder
 
-wget --output-document=/etc/apt/sources.list.d/medibuntu.list http://www.medibuntu.org/sources.list.d/$(lsb_release -cs).list
-chmod a+r /etc/apt/sources.list.d/medibuntu.list 
-apt-get update
-apt-get --yes --allow-unauthenticated install medibuntu-keyring 
-apt-get update
-apt-get install libdvdcss2 non-free-codecs googleearth-package app-install-data-medibuntu apport-hooks-medibuntu 
+echo "deb http://download.videolan.org/pub/debian/stable/ /" | sudo tee /etc/apt/sources.list.d/libdvdcss.list
+echo "deb-src http://download.videolan.org/pub/debian/stable/ /" | sudo tee -a /etc/apt/sources.list.d/libdvdcss.list
+sudo chmod a+r /etc/apt/sources.list.d/libdvdcss.list
+wget -O - http://download.videolan.org/pub/debian/videolan-apt.asc|sudo apt-key add -
+sudo apt-get update
+sudo apt-get install libdvdcss2
 
 11.) latex
     cd /usr/share/texmf/tex/latex
     cp -a ~/system_stuff/latex/local .
     chown -R root:root local
+    cp -a ~/system_stuff/latex/fonts/cookingsymbols.tfm /usr/share/texmf/fonts/tfm/public/.
+    mkdir -p /usr/share/texmf/fonts/source/public/
+    chmod a+rx /usr/share/texmf/fonts/source/public/
+    cp -a ~/system_stuff/latex/fonts/cookingsymbols.mf /usr/share/texmf/fonts/source/public/.
 - then run texconfig and select "rehash"
 - Also, set the paper to US
 
 12.) ntpd (for fixed machines only, for mobile, the default is fine)
-TODO - FIX THIS - we have no NTP server for now
-## for server:
-- add ntpd to hosts.allow list
-ntpd: 192.168.9.0/24
 
 ## for server, make sure to add to ufw
 ufw allow ntp
@@ -151,7 +151,7 @@ ufw allow ntp
 - edit /etc/ntpd.conf and comment out the line:
 server ntp.ubuntu.com
 - and add the line:
-server 192.168.9.98 (this was daisy, should now be loki..)
+server router
 
 13.) cups
 - sudo system-config-printer
@@ -159,9 +159,9 @@ server 192.168.9.98 (this was daisy, should now be loki..)
 - Under Server->Settings select:
     Show printers shared by other systems
 - For servers, under "Server Settings", select:
-    Show printers shared by other systems
+    Publish shared printers conected to this system
 - make sure to enable it in the ufw
-    ufw allow ipp
+    sudo ufw allow from 192.168.9.0/24 to any port ipp
 
 14.) Set up samba:
 
@@ -175,10 +175,10 @@ server 192.168.9.98 (this was daisy, should now be loki..)
     service nmbd start
 
 - make sure to add ufw rules for it
-    ufw allow netbios-ns
-    ufw allow netbios-dgm
-    ufw allow netbios-ssn
-    ufw allow microsoft-ds
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-ns
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-dgm
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-ssn
+    sudo ufw allow from 192.168.9.0/24 to any port microsoft-ds
 
 - Other machines
   - Remember to turn it off on places you don't want it.
@@ -195,65 +195,27 @@ server 192.168.9.98 (this was daisy, should now be loki..)
 
 16.) Set up apache (if applicable)
 
-apt-get install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt mysql-server
+- see install.apache
 
-- edit /etc/apache2/ports.conf and change:
+17.) Install handbrake media converter:
 
-Listen 80
+sudo apt-add-repository ppa:stebbins/handbrake-releases 
+sudo apt-get update
+sudo apt-get install handbrake-gtk handbrake-cli
 
-- to 
+18.) Set up video editing:
 
-Listen 127.0.0.1:80
+- Add user to video group so I can capture video
+sudo usermod -a -G video matt
 
-- and
-
-Listen *:443
-
-- to
-
-Listen 127.0.0.1:443
-
-- enable the userdir and rewrite modules
-
-a2enmod userdir
-a2enmod rewrite
-
-sudo service apache2 restart
-
-- for dev machines, you may not want it to start at boot
-update-rc.d -f apache2 remove
-update-rc.d -f mysql remove
-
-17.) Add hpodder to my cron 
-crontab -e
-
-then make it look like:
-
-  0 6   *   *   *    /home/matt/bin/hpodder > /dev/null
-
-so it will run every morning at 6am and log to nowhere
-
-18.) Set up email backups (case only)
-
-crontab -e
-
-then make it look like:
-
- 0 1   2   *   *    /home/matt/bin/backup_email > /dev/null
-
-so it will on the second of the month at 1am and log to nowhere
-
-19.) Remove gdm so X doesn't start (servers only)
-update-rc.d gdm disable
-
-20.) Set up sensors (if not set up automagically) for case
+19.) Set up sensors (if not set up automagically) for case
 
 - For case / Gigabyte X48-DQ6 board
 - add the following to /etc/modules:
 it87
 coretemp
 
-- For hiro / Thinkpad T60:
+- For hiro / Thinkpad T530:
 - add the following to /etc/modules:
 coretemp
 
@@ -262,9 +224,18 @@ following prompts - the defaults are typically fine.)
 
 # FIXME - edit the conf file to fix scaling, etc.
 
-21.) Fix volume hotkeys for hiro
+20.) Add temperature monitoring script to crontab:
 
-cp /sys/devices/platform/thinkpad_acpi/hotkey_all_mask /sys/devices/platform/thinkpad_acpi/hotkey_mask
+@hourly              /home/matt/bin/tempChecker
+
+21.) Add updated intel graphics drivers
+
+apt-add-repository ppa:ubuntu-x-swat/intel-graphics-updates
+apt-add-repository ppa:ubuntu-x-swat/x-updates
+
+and, with that, you likely want the new kernel:
+
+sudo apt-get install linux-generic-lts-quantal linux-headers-generic-lts-quantal
 
 22.) Set up logcheck
 - edit /etc/cron.d/logcheck and set it to @daily and not every 2 hours
@@ -279,10 +250,14 @@ apt-get install qt4-qmake libqt4-dev qt4-designer
 
 25.) Install virtualbox bleeding edge
 
-echo "deb http://download.virtualbox.org/virtualbox/debian precise contrib" >> /etc/apt/sources.list
+echo "deb http://download.virtualbox.org/virtualbox/debian precise contrib" >> /etc/apt/sources.list.d/virtualbox.list
+chmod a+r /etc/apt/sources.list.d/virtualbox.list
 wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | apt-key add -
 apt-get update
-apt-get install virtualbox-4.1
+apt-get install virtualbox-4.2
+
+Make sure to add necessary users to the vboxusers group, ie:
+sudo usermod -a -G vboxusers matt
 
 26.) Install tf101 support (mtpfs)
 
@@ -309,17 +284,18 @@ to what you want. Sane choices are:
          `sudo update-alternatives --config x-www-browser`
 - `exo-open`, which opens the selected one from XFce
 
-30.) Install MATE desktop
+30.) Install Mate
+http://wiki.mate-desktop.org/download
 
-sudo add-apt-repository \
-"deb http://packages.mate-desktop.org/repo/ubuntu precise main"
-
+sudo add-apt-repository "deb http://packages.mate-desktop.org/repo/ubuntu precise main"
 sudo apt-get update
+
+sudo apt-get dist-upgrade
 sudo apt-get install mate-archive-keyring
-sudo apt-get update
+# this install more packages
 sudo apt-get install mate-desktop-environment
 
-31.) Proprietary drivers (optional)
+31.) Proprietary drivers (optional, for systems with ATI cards)
 
 fglrx-updates
 
@@ -332,15 +308,11 @@ sudo apt-get update && sudo apt-get install pulseaudio-equalizer
 33.) Add Steam:
 
 add the following to /etc/apt/sources.list.d/steam.list:
-
-deb http://repo.steampowered.com/steam/ precise steam
-
-key:
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys
-F24AEA9FB05498B7
+echo "deb http://repo.steampowered.com/steam/ precise steam" >> /etc/apt/sources.list.d/steam.list
+chmod a+r /etc/apt/sources.list.d/steam.list
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F24AEA9FB05498B7
 
 sudo apt-get update
-sudo apt-get dist-upgrade
 sudo apt-get install steam
 
 reboot (because the above likely installed a new fglrx driver)
@@ -348,25 +320,42 @@ reboot (because the above likely installed a new fglrx driver)
 run steam:
 steam
 
-=== Games ===
+34.) Add PlayOnLinux
 
-1.) Add GetDeb games repo (PlayDeb)
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E0F72778C4676186
+sudo wget http://deb.playonlinux.com/playonlinux_precise.list \
+     -O /etc/apt/sources.list.d/playonlinux.list
+sudo chmod a+r /etc/apt/sources.list.d/playonlinux.list
+sudo apt-get update
+sudo apt-get install playonlinux
+
+35.) Add GetDeb games repo (PlayDeb)
 wget -q -O - http://archive.getdeb.net/getdeb-archive.key | apt-key add -
 add-apt-repository "deb http://archive.getdeb.net/ubuntu precise-getdeb games"
 
 sudo apt-get update
 
-2.) Add PlayOnLinux
+sudo apt-get install enemy-territory
 
-echo "deb http://deb.playonlinux.com/ precise main" >> /etc/apt/sources.list
-wget -q http://deb.playonlinux.com/public.gpg -O- | apt-key add -
-apt-get update
-apt-get install playonlinux
+36.) Add gcdemu
 
-3.) Install updated wine
-
-sudo apt-add-repository ppa:ubuntu-wine/ppa
-
+apt-add-repository ppa:cdemu/ppa 
 sudo apt-get update
-sudo apt-get dist-upgrade
+sudo apt-get install gcdemu
+
+37.) symlink quake data to where it expects it.
+cd /usr/share/games/quake/
+sudo ln -s ~/dosbox/games/quake/id1 .
+
+35.) symlink rott data where it expects it
+cd /usr/share/games/
+sudo ln -s ~/dosbox/games/rott .
+
+also, fix the default symlink:
+
+sudo update-alternatives --set rott /usr/games/rott-commercial
+
+36.) Add firewall exception for iperf
+
+sudo ufw allow from 192.168.9.0/24 to any port 5001
 
