@@ -2,8 +2,8 @@ Wordpress
 
 (1) Install webserver 
 	See install.apache
-- also, needs the php5-gd library
-  apt-get install php5-gd
+- also, needs the php5-gd and curl libraries
+  apt-get install php5-gd php5-curl
 
 (2) Install mysql-server
 aptitude install mysql-server
@@ -73,8 +73,32 @@ define('WP_HOME',    "http://${_SERVER['HTTP_HOST']}");
 
 <VirtualHost *:80>
     ServerName www.mattcaron.net
-    ServerAdmin webmaster@localhost
+    ServerAlias mattcaron.net
+    ServerAdmin matt@mattcaron.net
     
+    DocumentRoot /home/matt/public_html/www.mattcaron.net
+    <Directory /home/matt/public_html/www.mattcaron.net>
+	Options Indexes FollowSymLinks MultiViews
+	Order allow,deny
+	allow from all
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName www.mattcaron.net
+    ServerAlias mattcaron.net 
+    ServerAdmin matt@mattcaron.net
+
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/private/mattcaron.net/cert
+    SSLCertificateKeyFile /etc/ssl/private/mattcaron.net/key
+
+    # Standard SSL protocol adustments for IE
+    BrowserMatch "MSIE [2-6]" \
+               nokeepalive ssl-unclean-shutdown \
+               downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
     DocumentRoot /home/matt/public_html/www.mattcaron.net
     <Directory /home/matt/public_html/www.mattcaron.net>
 	Options Indexes FollowSymLinks MultiViews
@@ -87,7 +111,10 @@ and:
 
 <VirtualHost *:80>
     ServerName www.fishhousefishandgame.com
-    ServerAdmin webmaster@localhost
+    ServerAlias fishhousefishandgame.com \
+    		fishhousefishandgameclub.com \
+		www.fishhousefishandgameclub.com
+    ServerAdmin webmaster@fishhousefishandgame.com
     
     DocumentRoot /home/matt/public_html/www.fishhousefishandgame.com
     <Directory /home/matt/public_html/www.fishhousefishandgame.com>
@@ -97,6 +124,30 @@ and:
     </Directory>
 </VirtualHost>
 
+<VirtualHost *:443>
+    ServerName www.fishhousefishandgame.com
+    ServerAlias fishhousefishandgame.com \
+    		fishhousefishandgameclub.com \
+		www.fishhousefishandgameclub.com
+    ServerAdmin webmaster@fishhousefishandgame.com
+
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/private/mattcaron.net/cert
+    SSLCertificateKeyFile /etc/ssl/private/mattcaron.net/key
+
+    # Standard SSL protocol adustments for IE
+    BrowserMatch "MSIE [2-6]" \
+               nokeepalive ssl-unclean-shutdown \
+               downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+    
+    DocumentRoot /home/matt/public_html/www.fishhousefishandgame.com
+    <Directory /home/matt/public_html/www.fishhousefishandgame.com>
+        Options Indexes FollowSymLinks MultiViews
+        Order allow,deny
+        allow from all
+    </Directory>
+</VirtualHost>
 
 - 
 
