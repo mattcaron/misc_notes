@@ -501,13 +501,22 @@ https://bugs.amahi.org/issues/1045
 https://bugs.launchpad.net/ubuntu/+source/avahi/+bug/624043?comments=all
 http://ubuntuforums.org/archive/index.php/t-1482573.html
 
-- Anyway, add the following to /etc/rc.local (before the exit):
+- Anyway, add the following to /usr/local/bin/timemachine_restart:
 
-    service avahi-daemon stop
-    service netatalk stop
-    sleep 5
-    service netatalk start
-    service avahi-daemon start
+#!/bin/sh
+service avahi-daemon stop
+service netatalk stop
+sleep 5
+service netatalk start
+service avahi-daemon start
+
+- fix perms:
+
+sudo chmod a+x /usr/local/bin/timemachine_restart
+
+- and then edit root's crontab and add:
+
+@reboot /usr/local/bin/timemachine_restart > /dev/null 2>&1
 
 3.) OpenVPN
 
