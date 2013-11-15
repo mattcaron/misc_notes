@@ -111,9 +111,7 @@ and:
 
 <VirtualHost *:80>
     ServerName www.fishhousefishandgame.com
-    ServerAlias fishhousefishandgame.com \
-    		fishhousefishandgameclub.com \
-		www.fishhousefishandgameclub.com
+    ServerAlias fishhousefishandgame.com
     ServerAdmin webmaster@fishhousefishandgame.com
     
     DocumentRoot /home/matt/public_html/www.fishhousefishandgame.com
@@ -126,9 +124,7 @@ and:
 
 <VirtualHost *:443>
     ServerName www.fishhousefishandgame.com
-    ServerAlias fishhousefishandgame.com \
-    		fishhousefishandgameclub.com \
-		www.fishhousefishandgameclub.com
+    ServerAlias fishhousefishandgame.com
     ServerAdmin webmaster@fishhousefishandgame.com
 
     SSLEngine on
@@ -147,6 +143,24 @@ and:
         Order allow,deny
         allow from all
     </Directory>
+</VirtualHost>
+
+and:
+
+<VirtualHost *:80>
+    ServerName www.fishhousefishandgameclub.com
+    ServerAlias fishhousefishandgameclub.com
+    ServerAdmin webmaster@fishhousefishandgame.com
+    RewriteEngine on
+    RewriteRule ^/(.*)$  http://www.fishhousefishandgame.com/$1  [R,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName www.fishhousefishandgameclub.com
+    ServerAlias fishhousefishandgameclub.com
+    ServerAdmin webmaster@fishhousefishandgame.com
+    RewriteEngine on
+    RewriteRule ^/(.*)$  http://www.fishhousefishandgame.com/$1  [R,L]
 </VirtualHost>
 
 - 
