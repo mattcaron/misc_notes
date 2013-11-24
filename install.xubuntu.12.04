@@ -359,3 +359,7 @@ sudo update-alternatives --set rott /usr/games/rott-commercial
 
 sudo ufw allow from 192.168.9.0/24 to any port 5001
 
+37.) Allow firewall exception for ktorrent:
+
+sudo ufw allow 6881
+sudo ufw allow 8881
