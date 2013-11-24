@@ -15,7 +15,6 @@
 - Which says "accept mail from the server listed in our mx record" (as
   if that wasn't obvious)
 
-
 1. Updates!
 
 sudo apt-get update
@@ -51,18 +50,30 @@ service ssh restart
 
 sudo ufw enable
 
-6. Install useful things
+6. Set the hostname:
 
-sudo apt-get install tree emacs23-nox
+- Edit /etc/hostname and set it to linode
+- Edit /etc/hosts and set the 127.0.1.1 line to look like:
 
-7. Copy in certs
+127.0.1.1       linode
+
+- This will prevent bounce messages from some mailservers, since they
+  rely on the host name that the server claims to be (which is gotten
+  from /etc/hostname) and then try to reverse that and make sure
+  they're the same.
+
+7. Install useful things
+
+sudo apt-get install tree emacs23-nox git
+
+8. Copy in certs
 
 - copy mattcaron.net into /etc/ssh/private
 sudo chown -R root:ssl-cert /etc/ssh/private/mattcaron.net
 sudo chmod g+x /etc/ssh/private/mattcaron.net
 sudo chmod g+r /etc/ssh/private/mattcaron.net/*
 
-8. Install apache
+9. Install apache
     See install.apache
 
 - However, we want it to listen publicly, so don't make it only
@@ -73,10 +84,10 @@ sudo chmod g+r /etc/ssh/private/mattcaron.net/*
     sudo ufw allow http
     sudo ufw allow https
 
-9. Install wordpress bits
+10. Install wordpress bits
     See wordpress (the top of it, the rest of it is just notes)
 
-10. Install dovecot (imap)
+11. Install dovecot (imap)
 
 - Based on: https://help.ubuntu.com/community/Dovecot
 
@@ -104,7 +115,7 @@ sudo apt-get install dovecot-imapd
 - edit /etc/dovecot/conf.d/10-ssl.conf and change it to use the
   mattcaron.net cert:
 
-    ssl_cert = </etc/ssl/private/mattcaron.net/cert            
+    ssl_cert = </etc/ssl/private/mattcaron.net/crt
     ssl_key = </etc/ssl/private/mattcaron.net/key
 
   - and change ssl to "required"
@@ -114,6 +125,12 @@ sudo apt-get install dovecot-imapd
 - edit /etc/dovecot/conf.d/10-imap.conf and set:
     mail_max_userip_connections = 100
 - (because I have a ton of machines that poll for email)
+
+- edit /etc/dovecot/conf.d/15-lda.conf and set:
+    postmaster_address = postmaster
+- yes, this is kind of stupid, especially in light of the comment in
+  the config preceding this line, but I've been getting errors about
+  how it's not set, to just explicitly set it to the sane default.
 
 - Pre-create the maildir for new users
 
@@ -134,7 +151,7 @@ sudo chmod -R 700 /home/myuser/Maildir
 
 sudo ufw allow imaps
 
-11. Exim
+12. Exim
 
 - install it
 
@@ -148,7 +165,7 @@ domainlist local_domains = mattcaron.net : fishhousefishandgame.com
 domainlist relay_to_domains =
 hostlist   relay_from_hosts = localhost
 tls_advertise_hosts = *
-tls_certificate = /etc/ssl/private/mattcaron.net/cert
+tls_certificate = /etc/ssl/private/mattcaron.net/crt
 tls_privatekey = /etc/ssl/private/mattcaron.net/key
 daemon_smtp_ports = 25 : 465
 tls_on_connect_ports = 465
@@ -168,14 +185,13 @@ auth_advertise_hosts = ${if eq {$tls_cipher}{}{}{*}}
 auth_advertise_hosts = ${if eq {$tls_cipher}{}{}{*}}
 
 - ref: http://wiki2.dovecot.org/HowTo/EximAndDovecotSASL
-- and down at the bottom, at the end of the AUTHENTICATION CONDITION
+- and down at the bottom, at the end of the AUTHENTICATION CONFIGURATION
 
 dovecot_plain:
   driver = dovecot
   public_name = PLAIN
   server_socket = /var/run/dovecot/auth-client
   server_set_id = $auth1
-
 
 - Note that we don't use the default debian config, as it is annoying.
 
@@ -191,6 +207,7 @@ sudo usermod -a -G ssl-cert Debian-exim
 - and make a pam config for it - we'll just piggyback on the dovecot
   one, as it's reasonable and similar
 
+cd /etc/pam.d
 sudo ln -s dovecot exim4
 
 - allow through firewall
@@ -198,7 +215,7 @@ sudo ln -s dovecot exim4
 sudo ufw allow smtp
 sudo ufw allow ssmtp
 
-12. Integrate exim with dovecot
+13. Integrate exim with dovecot
 
 - ref: http://wiki2.dovecot.org/LDA/Exim
 - edit /etc/exim4/exim4.conf
@@ -211,6 +228,7 @@ localuser:
 # local_part_suffix = +* : -*
 # local_part_suffix_optional
   transport = dovecot_delivery
+  cannot_route_message = Unknown user
 
 - Next create a new transport for dovecot-lda:
 
@@ -255,13 +273,13 @@ Servers tab -> Add Exception -> servername:993
 
 (and then do the same for port 465 for smtp)
 
-13. Configure the time zone:
+14. Configure the time zone:
 
 sudo dpkg-reconfigure tzdata
 
 - and set it to US/Eastern
 
-14. Add spamassassin
+15. Add spamassassin
 
 - install
 
@@ -276,7 +294,8 @@ spamcheck_router:
   # When to scan a message :
   #   -   it isn't already flagged as spam
   #   -   it isn't already scanned
-  condition = "${if and { {!def:h_X-Spam-Flag:} {!eq {$received_protocol}{spam-scanned}}} {1}{0}}"
+  #   -   it isn't sent from my private home server
+  condition = "${if and { {!def:h_X-Spam-Flag:} {!eq {$received_protocol}{spam-scanned}} {!match {$sender_host_address} {${lookup dnsdb{a=mattandliz.dyndns.org}}}}} {1}{0}}"
   driver = accept
   transport = spamcheck
 
@@ -324,6 +343,10 @@ dovecot_spam_junk_delivery:
   #mode = 0660
   temp_errors = 64 : 69 : 70: 71 : 72 : 73 : 74 : 75 : 78
 
+- Edit /etc/spamassassin/local.cf and change as follows:
+
+rewrite_header Subject *****SPAM*****
+
 - Once all of the above is set up, edit /etc/default/spamassassin and set:
 
   ENABLED=1
@@ -332,13 +355,13 @@ dovecot_spam_junk_delivery:
 
   sudo service spamassassin restart
 
-15. Edit /etc/aliases
+16. Edit /etc/aliases
 
 - change root to go to matt:
 
 root: matt
 
-16. Add sympa
+17. Add sympa
 
 - This install kind of sucks, see bug here:
 https://bugs.launchpad.net/ubuntu/+source/sympa/+bug/1195044
@@ -389,14 +412,6 @@ sympa_aliases:
   file_transport = address_file
   pipe_transport = address_pipe
 
-sympa_aliases:
-  driver = redirect
-  allow_fail
-  allow_defer
-  data = ${lookup{$local_part}lsearch{/etc/mail/sympa_aliases}}
-  file_transport = address_file
-  pipe_transport = address_pipe
-
 - remove /etc/apache2/conf.d/sympa (it's just a symlink) and instead set up 
   /etc/apache2/sites-available/sympa as follows:
 
@@ -411,8 +426,14 @@ sympa_aliases:
     ServerAdmin matt@mattcaron.net
 
     SSLEngine on
-    SSLCertificateFile    /etc/ssl/private/mattcaron.net/cert
+    SSLCertificateFile    /etc/ssl/private/mattcaron.net/crt
     SSLCertificateKeyFile /etc/ssl/private/mattcaron.net/key
+
+    # Standard SSL protocol adustments for IE
+    BrowserMatch "MSIE [2-6]" \
+               nokeepalive ssl-unclean-shutdown \
+               downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
     Alias /static-sympa /var/lib/sympa/static_content
     ScriptAlias /wws /var/www/sympa/wwsympa.cgi
@@ -469,12 +490,170 @@ title Role Playing Games
 gaming/wargaming
 title Wargaming
 
+18. Second domain for sympa
+
+- in `/etc/exim4/exim4.conf`, add the following under ROUTERS
+  CONFIGURATION before the big comment block preceding system_aliases
+  (because order matters for exim):
+
+# This router does the same as system_aliases, except that it checks
+# the domain as well.
+#
+# IMPORTANT: Needs to go before things that match on ! +local_domains
+# and, most importantly, before the bl_server bit because that
+# forwards all non-local domains off to msex1.
+#
+# Remember - routers are run in order
+#
+system_aliases_domain:
+  driver = redirect
+  allow_fail
+  allow_defer
+  data = ${lookup{$local_part@$domain}lsearch{/etc/aliases}}
+# user = exim
+  file_transport = address_file
+  pipe_transport = address_pipe 
+
+Ref: http://www.sympa.org/manual/virtual-hosts
+
+- Add the following to /etc/aliases:
+
+sympa@fishhousefishandgame.com:      "| /usr/lib/sympa/bin/queue sympa@fishhousefishandgame.com"
+listmaster@fishhousefishandgame.com: "| /usr/lib/sympa/bin/queue listmaster@fishhousefishandgame.com"
+bounce+*@fishhousefishandgame.com:          "| /usr/lib/sympa/bin/bouncequeue sympa@fishhousefishandgame.com"
+
+- And add the following to /etc/exim4/exim4.conf, in the ROUTERS
+  CONFIGURATION section (doesn't matter where):
+
+# Aliases for sympa (robot virtual subdomains)
+sympa_aliases_robot:
+  driver = redirect
+  domains = +local_domains
+  allow_fail
+  allow_defer
+  data = ${lookup{$domain-$local_part}lsearch{/etc/mail/sympa/aliases}}
+  user = sympa
+  group = sympa
+  file_transport = address_file
+  pipe_transport = address_pipe
+
+- Add /etc/apache2/sites-available/sympa.fishhouse as follows:
+
+<VirtualHost *:80>
+    ServerName sympa.fishhousefishandgame.com
+    ServerAdmin webmaster@fishhousefishandgame.com
+    Redirect permanent / https://sympa.fishhousefishandgame/wws
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName sympa.fishhousefishandgame.com
+    ServerAdmin webmaster@fishhousefishandgame.com
+
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/private/fishhousefishandgame.com/crt
+    SSLCertificateKeyFile /etc/ssl/private/fishhousefishandgame.com/key
+
+    # Standard SSL protocol adustments for IE
+    BrowserMatch "MSIE [2-6]" \
+               nokeepalive ssl-unclean-shutdown \
+               downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+    Alias /static-sympa /var/lib/sympa/static_content
+    ScriptAlias /wws /var/www/sympa/wwsympa.cgi
+    SuexecUserGroup sympa sympa
+
+    # Use simple cgi here. It's not heavily used and base cgi is the most 
+    # compatible
+    AddHandler cgi-script .fcgi .cgi .pl .sh
+
+    RewriteEngine On
+    RewriteRule  ^/$                 /wws  [R,L]
+
+    <Directory "/var/www/sympa/">
+        AllowOverride None
+        Options ExecCGI
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>
+
+- enable
+
+sudo a2ensite sympa.fishhouse
+
+- reload
+
+sudo service apache2 reload
+
+- create bits / copy in defaults:
+
+sudo mkdir /etc/sympa/fishhousefishandgame.com
+sudo cp /usr/share/doc/sympa/examples/sample/robot.conf /etc/sympa/fishhousefishandgame.com/.
+sudo chown -R sympa:sympa /etc/sympa/fishhousefishandgame.com
+sudo chmod 750 /etc/sympa/fishhousefishandgame.com
+sudo chmod 640 /etc/sympa/fishhousefishandgame.com/robot.conf
+sudo mkdir /var/lib/sympa/fishhousefishandgame.com
+sudo chown sympa:sympa /var/lib/sympa/fishhousefishandgame.com
+sudo chmod 750 /var/lib/sympa/fishhousefishandgame.com
+
+- edit /etc/sympa/fishhousefishandgame.com/robot.conf and set as follows:
+
+http_host  sympa.fishhousefishandgame.com
+listmaster matt@mattcaron.net
+title Fish House Fish and Game MailingLists Service
+
+- and, below http_host, you'll want to add:
+
+wwsympa_url  https://sympa.fishhousefishandgame.com/wws
+
+- create /etc/sympa/fishhousefishandgame.com/topics.conf
+
+hunting
+title Hunting
+
+fishing
+title Fishing
+
+general
+title General Membership
+
+- restart
+
+sudo service sympa restart
+
+19. Install logcheck
+
+sudo apt-get install logcheck
+
+- edit /etc/cron.d/logcheck and set it to @daily and not every 2 hours
+
+20. Clone backup utils
+
+mkdir -p ~/workspace/code/scripts
+cd ~/workspace/code/scripts
+git clone https://github.com/mattcaron/backup_scripts.git
+mkdir ~/bin
+cd ~/bin
+ln -s ~/workspace/code/scripts/backup_scripts/mysql_backup .
+mkdir -p ~/attic/backup/`hostname`
+
+- create ~/attic/backup/`hostname`/mysql.pw and put the root password
+  into it.
+- fix perms:
+chmod 600 ~/attic/backup/`hostname`/mysql.pw
+
+- Add to crontab:
+@daily               /home/matt/bin/mysql_backup > /dev/null
+
 
 #### TODO ####
 
 - Backups
-- Other server setup stuff (logcheck, etc)
+  - rsync pull
+  - we likely want:
+   - /home
+   - /etc
+   - wherever mysql puts its db stuff
 - OwnCloud
-- Change the fishhousefishandgameclub.com to just be a redirect, not
-  an alias.
 
