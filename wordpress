@@ -169,12 +169,12 @@ a2ensite <site>
 
 
 /etc/init.d/apache2 reload
-(9) Backing up database
+(10) Backing up database
 
 mysqldump --add-drop-table -u fishhouse_wpuser -p fishhouse_wordpress | bzip2 \
 -c > fishhouse.bak.sql.bz2
 
-(10) Setting up a db on hosting machine
+(11) Setting up a db on hosting machine
 csoftadm
 db mysql useradd fishhouse_wpuser
 db mysql add fishhouse_wordpress
@@ -190,9 +190,15 @@ conf set errlog yes
 - turn on php5-fat
 web php select php5-fat
 
-(11) SSL
+(12) SSL
 
 See sslcerts
+
+(13) Fix file upload size
+
+- edit /etc/php5/apache2/php.ini and set:
+
+upload_max_filesize = 10M
 
 
 TODO:
