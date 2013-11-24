@@ -91,7 +91,7 @@ apt-get dist-upgrade
 sudo apt-get install tree unison atop texlive-binaries hpodder \
 system-config-printer-gnome cups synaptic brother-cups-wrapper-laser nmap \
 emacs wireshark lm-sensors ntp ssmtp logcheck wakeonlan gdisk git-core gitk \
-iftop
+iftop mailutils
 
 8.) Change DNS from OpenDNS to the router, which will pass queries up
     to the ISP:
@@ -413,6 +413,12 @@ sudo service nut start
 
 upsc ups
 
+31.) Set up nightly monitoring
+
+- add the following to crontab
+
+@daily               /usr/bin/ntpq -p; echo; df -lh; echo; cat /proc/mdstat
+
 II. Install and configure apps:
 
 (This may require going to the store and buying the non-free ones, etc.)
@@ -597,8 +603,6 @@ TODO:
 - Write out passwords, put in envelope in safe
 
 IV. Backup scripts
-
-
 
 To run a backup, insert the external drive in to the cradle and run:
 
