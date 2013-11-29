@@ -628,7 +628,9 @@ sudo apt-get install logcheck
 
 - edit /etc/cron.d/logcheck and set it to @daily and not every 2 hours
 
-20. Clone backup utils
+20. Set up mysql snapshot
+
+- Clone backup utils
 
 mkdir -p ~/workspace/code/scripts
 cd ~/workspace/code/scripts
@@ -646,14 +648,12 @@ chmod 600 ~/attic/backup/`hostname`/mysql.pw
 - Add to crontab:
 @daily               /home/matt/bin/mysql_backup > /dev/null
 
+21. Lock root account
+
+sudo usermod -L root
+
 
 #### TODO ####
 
-- Backups
-  - rsync pull
-  - we likely want:
-   - /home
-   - /etc
-   - wherever mysql puts its db stuff
 - OwnCloud
 
