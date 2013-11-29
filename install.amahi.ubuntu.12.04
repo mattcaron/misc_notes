@@ -317,10 +317,10 @@ sudo apt-get install rsnapshot
 
 and then set up crontab:
 
-#0 */1  * * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot_email.conf hourly
-#30 3   * * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot_email.conf daily
-#0  3   * * 1  /usr/bin/rsnapshot -c /home/matt/.rsnapshot_email.conf weekly
-#30 2   1 * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot_email.conf monthly
+#0 */1  * * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot.conf hourly
+#30 3   * * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot.conf daily
+#0  3   * * 1  /usr/bin/rsnapshot -c /home/matt/.rsnapshot.conf weekly
+#30 2   1 * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot.conf monthly
 
 23.) Set up sensors:
 
@@ -448,6 +448,24 @@ upsc ups
 - add the following to crontab
 
 @daily               /usr/bin/ntpq -p; echo; df -lh; echo; cat /proc/mdstat
+
+33.) Set up linode backups
+
+ - make target dir
+mkdir ~/attic/backup/linode
+
+- on the remote server, you need to add the public key to
+  authorized_keys, with the:
+
+command=rsync --server --sender -vlHogDtprRze.iLsf . /etc /home /var/lib/mysql /var/lib/syma
+
+- in front of it.
+
+- add to cron
+@daily               /home/matt/bin/linode_backup
+
+- add to rsync:
+backup  /home/matt/attic/backup/linode/         localhost/
 
 II. Install and configure apps:
 
