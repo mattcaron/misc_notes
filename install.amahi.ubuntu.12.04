@@ -467,6 +467,17 @@ command=rsync --server --sender -vlHogDtprRze.iLsf . /etc /home /var/lib/mysql /
 - add to rsync:
 backup  /home/matt/attic/backup/linode/         localhost/
 
+34.) Add monitoring:
+
+- make sure landscape is installed (to get landscape-sysinfo):
+
+sudo apt-get install landscape-common
+
+- Then add the following to my crontab:
+
+@daily               /usr/bin/ntpq -p; echo; df -lh; echo; cat /proc/mdstat; landscape-sysinfo
+
+
 II. Install and configure apps:
 
 (This may require going to the store and buying the non-free ones, etc.)

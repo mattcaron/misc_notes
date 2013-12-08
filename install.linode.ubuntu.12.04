@@ -652,6 +652,15 @@ chmod 600 ~/attic/backup/`hostname`/mysql.pw
 
 sudo usermod -L root
 
+22. Add monitoring:
+
+- make sure landscape is installed (to get landscape-sysinfo):
+
+sudo apt-get install landscape-common
+
+- Then add the following to my crontab:
+
+@daily               /usr/bin/ntpq -p; echo; df -lh; echo; landscape-sysinfo
 
 #### TODO ####
 
