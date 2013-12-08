@@ -662,6 +662,24 @@ sudo apt-get install landscape-common
 
 @daily               /usr/bin/ntpq -p; echo; df -lh; echo; landscape-sysinfo
 
+23. Fix up logcheck:
+
+Add to /etc/logcheck/ignore.d.server/local:
+
+^\w{3} [ :[:digit:]]{11} [._[:alnum:]-]+ dovecot: Fatal: Time just moved
+^\w{3} [ :[:digit:]]{11} [._[:alnum:]-]+ dovecot: imap-login: Warning:
+Time moved
+
+(catches:
+Dec  4 07:53:46 linode dovecot: imap: Fatal: Time just moved backwards
+by 6 seconds. This might cause a lot of problems, so I'll just kill
+myself now. http://wiki2.dovecot.org/TimeMovedBackwards
+Dec  4 07:53:46 linode dovecot: imap-login: Warning: Time moved
+backwards by 6 seconds.
+
+which are an issue because it's a VM and time is a bit squidgy.
+)
+
 #### TODO ####
 
 - OwnCloud
