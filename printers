@@ -1,0 +1,45 @@
+==== Dell 3000cn ====
+
+pxlcolor driver
+
+http://www.openprinting.org/printer/Dell/Dell-3000cn
+
+Firmware update requires Windows.
+
+http://www.dell.com/support/drivers/us/en/19/Product/dell-3000cn
+
+Has web interface.
+
+Default creds are:
+
+admin
+password
+
+Changed creds to common PW
+
+==== Brother HL-5250DN ====
+
+Postscript driver recommended, but has issues. pxlmono also works, but
+is much slower. I unstall both.
+
+http://www.openprinting.org/printer/Brother/Brother-HL-5250DN
+
+Firmware update requires Windows.
+
+http://welcome.solutions.brother.com/bsc/public/us/us/en/dlf/download_index.html?reg=us&c=us&lang=en&prod=hl5250dn_all&dlid=&flang=English&os=93&type2=-1
+
+Has web interface.
+
+Default creds are:
+
+admin
+access
+
+I changed it to admin and our common password.
+
+There is also a "user" account with the same password.
+
+The printer needs to be directly installed on the Windows machine in
+order for the firmware upgrade to work. It looks like it looks for
+locally installed brother printers - it doesn't just probe the network
+like Dell does.
