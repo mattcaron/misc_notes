@@ -295,7 +295,8 @@ spamcheck_router:
   #   -   it isn't already flagged as spam
   #   -   it isn't already scanned
   #   -   it isn't sent from my private home server
-  condition = "${if and { {!def:h_X-Spam-Flag:} {!eq {$received_protocol}{spam-scanned}} {!match {$sender_host_address} {${lookup dnsdb{a=mattandliz.dyndns.org}}}}} {1}{0}}"
+  #   -   it isn't sent from the server (linode or localhost)
+  condition = "${if and { {!def:h_X-Spam-Flag:} {!eq {$received_protocol}{spam-scanned}} {!match {$sender_host_address} {${lookup dnsdb{a=mattandliz.dyndns.org}}}} {!match {$sender_host_address} {${lookup dnsdb{a=mattcaron.net}}}}} {1}{0}}"
   driver = accept
   transport = spamcheck
 
