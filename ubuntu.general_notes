@@ -720,3 +720,12 @@ f.) regenerate the initramfs
 sudo dpkg-reconfigure linux-image-`uname -r`
 
 - FAILURE TO DO THIS WILL MAKE IT NOT BOOT!!!
+
+31.) rrsync
+
+This is a wrapper for rsync to restrict it to a specific subdir:
+
+sudo gunzip /usr/share/doc/rsync/scripts/rrsync.gz
+sudo chmod a+x /usr/share/doc/rsync/scripts/rrsync
+cd /usr/local/bin
+sudo ln -s /usr/share/doc/rsync/scripts/rrsync . 
