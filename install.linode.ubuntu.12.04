@@ -681,7 +681,110 @@ backwards by 6 seconds.
 which are an issue because it's a VM and time is a bit squidgy.
 )
 
-#### TODO ####
+24. OwnCloud
 
-- OwnCloud
+- Make sure to add owncloud.mattcaron.net to linode DNS
+
+- Install deps:
+
+sudo apt-get install apache2 php5 php5-gd php-xml-parser php5-intl \
+php5-sqlite php5-mysql curl libcurl3 php5-curl
+
+- download tarball (add to source control, etc.)
+  http://owncloud.org/install/
+- Copy in the user_pwauth plugin from: 
+  http://apps.owncloud.com/content/show.php/Unix+user+backend?content=148406
+- Unzip it and copy it in to owncloud/apps (add to source control, etc.)
+
+- Log in to the DB server and create a user and password
+
+CREATE DATABASE owncloud;
+
+GRANT ALL PRIVILEGES ON owncloud.* TO "owncloud"@"localhost" IDENTIFIED BY "password";
+
+- Make an /etc/apache2/sites-available/owncloud.mattcaron.net as follows:
+<VirtualHost *:80>
+    ServerName owncloud.mattcaron.net
+    ServerAdmin matt@mattcaron.net
+
+    RewriteEngine On
+    RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName owncloud.mattcaron.net
+    ServerAdmin matt@mattcaron.net
+
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/private/mattcaron.net/crt
+    SSLCertificateKeyFile /etc/ssl/private/mattcaron.net/key
+
+    # Standard SSL protocol adustments for IE
+    BrowserMatch "MSIE [2-6]" \
+               nokeepalive ssl-unclean-shutdown \
+               downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+    DocumentRoot /home/matt/public_html/owncloud.mattcaron.net
+    <Directory /home/matt/public_html/owncloud.mattcaron.net>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+    </Directory>
+</VirtualHost>
+
+- enable it:
+
+sudo a2ensite owncloud.mattcaron.net
+sudo service apache2 reload
+
+Go to:
+
+https://owncloud.mattcaron.net/
+
+and do the initial setup, entering random admin credentials and
+choosing MySQL for the DB. Enter the DB credentials for the owncloud
+user on the owncloud DB you established above.
+
+The data folder is /usr/share/owncloud/data (the default) which links
+to /var/lib/owncloud/data/ (which should be backed up).
+
+Anyway, once that's all done it will let you in.
+
+Once logged in:
+
+- Under the "Admin" menu, tick:
+ - Enforce HTTPS
+
+- Under the "Apps" menu
+ - Enable Bookmarks
+ - Enable Tasks
+ - Enable Unix User Backend
+
+- install pwauth
+
+sudo apt-get install pwauth
+
+- Under the "Users" menu
+ - Give appropriate people admin access
+ - Delete the admin account
+
+TODO:
+ - Disable stuff we don't need
+ - Migrate the conf file to an owncloud.mattcaron.net vhost w/ https redirect.
+
+- Thunderbird:
+ - Address books
+   http://doc.owncloud.org/server/5.0/user_manual/pim/sync_thunderbird.html
+   - Used URL:
+     http://owncloud.home/remote.php/carddav/addressbooks/matt/contacts
+   - You can't copy cards, you need to export/import them
+ - Calendar
+   http://forum.owncloud.org/viewtopic.php?f=23&t=14137
+   - Used URL:
+     http://owncloud.home/remote.php/caldav/calendars/matt/defaultcalendar
+
+
+sudo a2enmod headers
 

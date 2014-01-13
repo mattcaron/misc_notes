@@ -616,31 +616,6 @@ http://www.wikimatrix.org/compare/DokuWiki+PmWiki+WikkaWiki)
   - add:
     $conf['showuseras']  = 'loginname';
 
-5.) ownCloud
-- Log in using default creds
-- install pwauth
-
-sudo apt-get install pwauth
-
-- Click the "settings" gear at bottom left:
- - Click Apps
-  - Enable Unix User Backend
-  - Enable Bookmarks
-  - Enable Tasks
- - Click Users
-  - Delete the Admin account
-
-- Thunderbird:
- - Address books
-   http://doc.owncloud.org/server/5.0/user_manual/pim/sync_thunderbird.html
-   - Used URL:
-     http://owncloud.home/remote.php/carddav/addressbooks/matt/contacts
-   - You can't copy cards, you need to export/import them
- - Calendar
-   http://forum.owncloud.org/viewtopic.php?f=23&t=14137
-   - Used URL:
-     http://owncloud.home/remote.php/caldav/calendars/matt/defaultcalendar
-
 TODO:
 
 - Monitor stuff via SNP, etc.
