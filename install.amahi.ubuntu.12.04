@@ -300,13 +300,13 @@ so it will run every morning at 6am and log to nowhere
 
 22.) Set up email backups (amahi only)
 
-sudo apt-get install offlineimap
+sudo apt-get install offlineimap libexpect-perl
 
 crontab -e
 
 then add:
 
-@hourly              offlineimap -u quiet
+@hourly              /home/matt/bin/offlineimap_helper
 
 so it will sync email hourly
 
