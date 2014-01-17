@@ -531,6 +531,16 @@ sudo chmod +t /var/hda/files/dlna
 
 sudo chmod g+s /var/hda/files/dlna
 
+- And we need to set the amount of inodes that can be watched:
+
+sysctl fs.inotify.max_user_watches=100000
+
+- And it needs to persist:
+ - add /etc/sysctl.d/90-inotify.conf and set the contents to:
+
+# Increase inotify max watchs per user for local minidlna
+fs.inotify.max_user_watches = 100000
+
 - restart:
 
    sudo /etc/init.d/minidlna restart
@@ -538,6 +548,12 @@ sudo chmod g+s /var/hda/files/dlna
 - Allow through firewall
 
 sudo ufw allow from 192.168.9.0/24 to any port 8200
+
+- If you ever need to rebuld the DB:
+
+sudo service minidlna stop
+sudo -u nobody minidlna -R
+sudo service minidlna start
 
 2.) Amahi Time Machine
 
