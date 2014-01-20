@@ -757,10 +757,11 @@ Once logged in:
 - Under the "Admin" menu, tick:
  - Enforce HTTPS
 
-- Under the "Apps" menu
- - Enable Bookmarks
- - Enable Tasks
- - Enable Unix User Backend
+- Under the "Apps" menu, enable
+ - Bookmarks
+ - Tasks
+ - Unix User Backend
+ - Video
 
 - install pwauth
 
@@ -770,21 +771,68 @@ sudo apt-get install pwauth
  - Give appropriate people admin access
  - Delete the admin account
 
-TODO:
- - Disable stuff we don't need
- - Migrate the conf file to an owncloud.mattcaron.net vhost w/ https redirect.
+- A note on backups:
 
-- Thunderbird:
- - Address books
-   http://doc.owncloud.org/server/5.0/user_manual/pim/sync_thunderbird.html
-   - Used URL:
-     http://owncloud.home/remote.php/carddav/addressbooks/matt/contacts
-   - You can't copy cards, you need to export/import them
+    These are already handled by the mysql_backup script and backing
+    up homedirs. So, nothing additional need be done here, so long as
+    the previous stuff is set up.
+
+Configuring apps:
+- Thunderbird
+ - Address book
+  - Ref: http://doc.owncloud.org/server/6.0/user_manual/pim/sync_thunderbird.html
+  - Basically:
+   - Install the Sogo connector
+  - In Thunderbird, click Tools -> Address Book
+   - File -> New -> Remote Addressbook
+   - Name it whatever, but use addressbook:
+     https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts
+   - Close and reopen thunderbird to make it connect
+   - You may need to try to synchronize a couple of times - accept
+     cert, enter creds, etc.
  - Calendar
-   http://forum.owncloud.org/viewtopic.php?f=23&t=14137
-   - Used URL:
-     http://owncloud.home/remote.php/caldav/calendars/matt/defaultcalendar
+   - Ref: http://forum.owncloud.org/viewtopic.php?f=23&t=14137
+   - Basically
+    - Install Lightning
+    - In Thunderbird, click Events and Tasks -> Calendar
+    - Under "Calendar" right click -> New Calendar
+    - It's on the network
+    - It's CalDAV
+    - Used URL
+      https://owncloud.mattcaron.net/remote.php/caldav/calendars/matt/familycalendar
+    - Ticked "Offline Support"
+    - Named it "Family Calendar"
+    - Entered creds
 
+- Android
+ - Address book
+  - Install "CardDAV sync free" or "CardDAV sync" from Google play
+  - Launch CardDAV
+  - Add account
+  - Use the same URL as Thunderbird:
+  https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts
+  - Tick "Use SSL"
+  - Enter credentials
+  - Next
+  - Enter an appropriate name
+  - Untick "Sync from server to phone only"
+  - Next
+ - Calendar
+  - Install "CalDAV sync free" or "CalDAV sync" from google play  
+  - Open Calendar
+  - Top right corner, click "Add Account"
+  - Choose "CalDAV sync adapter"
+  - Enter creds, and use the same URL as Thunderbird: 
+    https://owncloud.mattcaron.net/remote.php/caldav/calendars/matt/familycalendar
+  - Of note - under account name, use your email, because htat's used
+    as the address of the organizer.
+  - Click "sign in or register"
+  - Once the account is there, click on it, and click "Accounts & sync"
+  - Click the "CalDav sync adapter" account when that comes up
+  - Tick the box next to the sync state to turn it on
+  - Calendar should now work.
+  - Theoretically, a long press on the calendar name during set up
+    will change the ugly poop color, but I couldn't get that to work,
+    so I left it.
 
-sudo a2enmod headers
 
