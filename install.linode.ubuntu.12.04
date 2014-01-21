@@ -352,6 +352,15 @@ rewrite_header Subject *****SPAM*****
 
   ENABLED=1
 
+- also, because we only have a couple of users, limit children - edit
+  /etc/default/spamassassin and set:
+
+OPTIONS="--create-prefs --max-children 5 --helper-home-dir"
+
+- to
+
+OPTIONS="--create-prefs --max-children 2 --helper-home-dir"
+
 - restart
 
   sudo service spamassassin restart
@@ -374,6 +383,7 @@ sudo apt-get install sympa apache2-suexec
 - enable it
 
 sudo a2enmod suexec
+sudo a2enmod cgi
 
 - it will ask:
  - about webserver, it's apache 2
@@ -734,6 +744,11 @@ GRANT ALL PRIVILEGES ON owncloud.* TO "owncloud"@"localhost" IDENTIFIED BY "pass
     </Directory>
 </VirtualHost>
 
+- enable headers and rewrite modules
+
+sudo a2enmod headers
+sudo a2enmod rewrite
+
 - enable it:
 
 sudo a2ensite owncloud.mattcaron.net
@@ -836,3 +851,76 @@ Configuring apps:
     so I left it.
 
 
+25. MySQL and Apache tuning
+
+The default MySQL and Apache configs that ship with Ubuntu do not seem
+particularly suited to "low RAM boxes" (though, the old curmudgeon in
+me is amazed that 1.5GB if "low ram" these days, but I don't build a
+box with less than 1GB, as it's so cheap....)
+
+## Apache ##
+
+Ref: http://emergent.urbanpug.com/?p=60
+
+- Disable unused modules
+
+sudo a2dismod auth_basic
+sudo a2dismod authn_file
+sudo a2dismod authz_groupfile
+sudo a2dismod authz_user
+sudo a2dismod fcgid
+sudo a2dismod status
+
+- edit /etc/apache2/apache2.conf and tweak values thusly. Original:
+
+<IfModule mpm_prefork_module>
+    StartServers          5
+    MinSpareServers       5
+    MaxSpareServers      10
+    MaxClients          150
+    MaxRequestsPerChild   0
+</IfModule>
+
+- revised:
+
+<IfModule mpm_prefork_module>
+    StartServers          2
+    MinSpareServers       1
+    MaxSpareServers       5
+    MaxClients           50
+    MaxRequestsPerChild   0
+</IfModule>
+
+- restart:
+
+sudo service apache2 restart
+
+## MySQL ##
+
+Refs:
+
+http://emergent.urbanpug.com/?p=61
+http://lowendbox.com/blog/reducing-mysql-memory-usage-for-low-end-boxes/
+http://opensourcehacker.com/2011/03/31/reducing-mysql-memory-usage-on-ubuntu-debian-linux/
+
+- edit /etc/mysql/my.conf and change parameters as follows:
+
+- original
+
+key_buffer              = 16M
+thread_stack            = 192K
+#max_connections        = 100
+query_cache_size        = 16M
+
+
+- modified
+
+key_buffer              = 8M
+thread_stack            = 128K
+max_connections         = 50
+query_cache_size        = 8M
+
+
+- restart
+
+sudo service mysql restart
