@@ -632,6 +632,46 @@ http://www.wikimatrix.org/compare/DokuWiki+PmWiki+WikkaWiki)
   - add:
     $conf['showuseras']  = 'loginname';
 
+- Fix it to be SSL:
+
+cd /etc/httpd/conf.d
+sudo cp 1001-dokuwiki.conf 1001-dokuwiki-ssl.conf
+
+- Edit 1001-dokuwiki-ssl.conf and change "<Virtualhost *:80>" to:
+
+<VirtualHost *:443>
+   SSLEngine on
+   SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+   SSLCertificateFile /etc/httpd/ssl.crt/server.crt
+   SSLCertificateKeyFile /etc/httpd/ssl.key/server.key
+
+- Change the rewrite rules at the bottom of the rewrite rules in
+  1001-dokuwiki.conf
+
+  RewriteEngine on
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,L]
+
+5.) Fix calendar to be SSL:
+
+cd /etc/httpd/conf.d
+sudo cp 03-calendar.conf 03-calendar-ssl.conf
+
+- Edit 03-calendar-ssl.conf and change "<Virtualhost *:80>" to:
+
+<VirtualHost *:443>
+   SSLEngine on
+   SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+   SSLCertificateFile /etc/httpd/ssl.crt/server.crt
+   SSLCertificateKeyFile /etc/httpd/ssl.key/server.key
+
+- Change the rewrite rules at the bottom of the rewrite rules in
+  03-calendar.conf
+
+  RewriteEngine on
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,L]
+
 TODO:
 
 - Monitor stuff via SNP, etc.
