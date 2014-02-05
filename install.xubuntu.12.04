@@ -78,7 +78,7 @@ apt-get update
 apt-get dist-upgrade
 
 5.) Install things:
-apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar openoffice.org xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-6-demo openjdk-6-doc openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib openjdk-6-jdk gqview konqueror kaffeine xine-ui mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop gkrellm xfce4-goodies tomboy mail-notification ubuntu-restricted-extras ia32-libs libc6-i386 acroread mercurial icewm icewm-themes icewm-gnome-support skype hpodder icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools libav-tools openvpn gdisk wakeonlan wine kdenlive dvdstyler tesseract-ocr
+apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar openoffice.org xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-7-jdk icedtea-7-plugin gqview konqueror kaffeine xine-ui mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop gkrellm xfce4-goodies tomboy mail-notification ubuntu-restricted-extras ia32-libs libc6-i386 acroread mercurial icewm icewm-themes icewm-gnome-support skype hpodder icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools libav-tools openvpn gdisk wakeonlan wine kdenlive dvdstyler tesseract-ocr davfs2 sshfs
 
 6.) Set up static IP's (for machines with them)
 - edit /etc/network/interfaces, and add lines like:
@@ -347,7 +347,7 @@ sudo apt-get install gcdemu
 cd /usr/share/games/quake/
 sudo ln -s ~/dosbox/games/quake/id1 .
 
-35.) symlink rott data where it expects it
+38.) symlink rott data where it expects it
 cd /usr/share/games/
 sudo ln -s ~/dosbox/games/rott .
 
@@ -355,11 +355,34 @@ also, fix the default symlink:
 
 sudo update-alternatives --set rott /usr/games/rott-commercial
 
-36.) Add firewall exception for iperf
+39.) Add firewall exception for iperf
 
 sudo ufw allow from 192.168.9.0/24 to any port 5001
 
-37.) Allow firewall exception for ktorrent:
+40.) Allow firewall exception for ktorrent:
 
 sudo ufw allow 6881
 sudo ufw allow 8881
+
+41.) Fix Java to use Java 7.
+
+sudo update-alternatives --config java
+
+- and choose java-7
+
+42.) Install owncloud sync client (laptop only)
+
+sudo sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/xUbuntu_12.04/ /' >> /etc/apt/sources.list.d/owncloud-client.list"
+wget http://download.opensuse.org/repositories/isv:ownCloud:desktop/xUbuntu_12.04/Release.key
+sudo apt-key add - < Release.key  
+sudo chmod a+r owncloud-client.list 
+sudo apt-get update
+sudo apt-get install owncloud-client
+
+43.) Install updated kernels
+
+sudo apt-get install linux-generic-lts-raring-eol-upgrade
+
+(the saucy upgrade seems to have a really dodgy scheduler, so I'm not
+installing it)
+
