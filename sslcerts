@@ -37,4 +37,6 @@ openssl x509 -noout -text -in crt
 openssl rsa -noout -text -in ca.key
 openssl x509 -noout -text -in ca.crt
 
+f.) convert to pem
 
+openssl x509 -noout -text -in ca.crt -out ca.pem
