@@ -717,8 +717,13 @@ GRANT ALL PRIVILEGES ON owncloud.* TO "owncloud"@"localhost" IDENTIFIED BY "pass
     ServerName owncloud.mattcaron.net
     ServerAdmin matt@mattcaron.net
 
-    RewriteEngine On
-    RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,L]
+    DocumentRoot /home/matt/public_html/owncloud.mattcaron.net
+    <Directory /home/matt/public_html/owncloud.mattcaron.net>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+    </Directory>
 </VirtualHost>
 
 <VirtualHost *:443>
