@@ -695,10 +695,15 @@ which are an issue because it's a VM and time is a bit squidgy.
 
 - Make sure to add owncloud.mattcaron.net to linode DNS
 
+- Optimization ref:
+
+http://forum.owncloud.org/viewtopic.php?f=8&t=10692
+
 - Install deps:
 
 sudo apt-get install apache2 php5 php5-gd php-xml-parser php5-intl \
-php5-sqlite php5-mysql curl libcurl3 php5-curl
+php5-sqlite php5-mysql curl libcurl3 php5-curl php-apc \
+libapache2-mod-xsendfile
 
 - download tarball (add to source control, etc.)
   http://owncloud.org/install/
@@ -707,6 +712,11 @@ php5-sqlite php5-mysql curl libcurl3 php5-curl
 - Unzip it and copy it in to owncloud/apps (add to source control, etc.)
 
 - Log in to the DB server and create a user and password
+
+- Make the xsendfile cache:
+
+sudo mkdir /tmp/oc-noclean
+sudo chown www-data:www-data /tmp/oc-noclean
 
 CREATE DATABASE owncloud;
 
@@ -723,6 +733,10 @@ GRANT ALL PRIVILEGES ON owncloud.* TO "owncloud"@"localhost" IDENTIFIED BY "pass
         AllowOverride All
         Order allow,deny
         allow from all
+
+	SetEnv MOD_X_SENDFILE_ENABLED 1
+	XSendFile On
+    	XSendFilePath /tmp/oc-noclean
     </Directory>
 </VirtualHost>
 
@@ -746,6 +760,10 @@ GRANT ALL PRIVILEGES ON owncloud.* TO "owncloud"@"localhost" IDENTIFIED BY "pass
         AllowOverride All
         Order allow,deny
         allow from all
+
+	SetEnv MOD_X_SENDFILE_ENABLED 1
+	XSendFile On
+    	XSendFilePath /tmp/oc-noclean
     </Directory>
 </VirtualHost>
 
@@ -782,6 +800,7 @@ Once logged in:
  - Tasks
  - Unix User Backend
  - Video
+ - ownCloud dependencies info
 
 - install pwauth
 
@@ -790,6 +809,17 @@ sudo apt-get install pwauth
 - Under the "Users" menu
  - Give appropriate people admin access
  - Delete the admin account
+
+- Set up cron:
+
+sudo -u www-data crontab -e
+
+and add:
+
+*/15  *  *  *  * php -f
+/home/matt/public_html/owncloud.mattcaron.net/cron.php
+
+- Then, in the Admin panel, tell it to use cron.
 
 - A note on backups:
 
@@ -929,3 +959,4 @@ query_cache_size        = 8M
 - restart
 
 sudo service mysql restart
+
