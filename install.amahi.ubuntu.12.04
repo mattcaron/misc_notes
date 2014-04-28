@@ -477,6 +477,17 @@ sudo apt-get install landscape-common
 
 @daily               /usr/bin/ntpq -p; echo; df -lh; echo; cat /proc/mdstat; landscape-sysinfo
 
+35.) Add epson XP-610 printer driver:
+
+Download the epson escpr driver .deb from epson's website and manually
+install. But, it needs lsb, which needs other stuff, so do:
+
+sudo dpkg -i epson-inkjet-printer-escpr_1.4.0-1lsb3.2_amd64.deb
+sudo apt-get install lsb
+sudo apt-get -f install
+
+And that will install everything.
+
 
 II. Install and configure apps:
 
@@ -652,25 +663,9 @@ sudo cp 1001-dokuwiki.conf 1001-dokuwiki-ssl.conf
   RewriteCond %{HTTPS} !=on
   RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,L]
 
-5.) Fix calendar to be SSL:
+5.) Remove calendar (we don't use it):
 
-cd /etc/httpd/conf.d
-sudo cp 03-calendar.conf 03-calendar-ssl.conf
-
-- Edit 03-calendar-ssl.conf and change "<Virtualhost *:80>" to:
-
-<VirtualHost *:443>
-   SSLEngine on
-   SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
-   SSLCertificateFile /etc/httpd/ssl.crt/server.crt
-   SSLCertificateKeyFile /etc/httpd/ssl.key/server.key
-
-- Change the rewrite rules at the bottom of the rewrite rules in
-  03-calendar.conf
-
-  RewriteEngine on
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^(.*) https://%{SERVER_NAME}$1 [R,L]
+sudo rm /etc/httpd/conf.d/03-calendar.conf
 
 TODO:
 
