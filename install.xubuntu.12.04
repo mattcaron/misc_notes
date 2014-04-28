@@ -78,7 +78,7 @@ apt-get update
 apt-get dist-upgrade
 
 5.) Install things:
-apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar openoffice.org xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-7-jdk icedtea-7-plugin gqview konqueror kaffeine xine-ui mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop gkrellm xfce4-goodies tomboy mail-notification ubuntu-restricted-extras ia32-libs libc6-i386 acroread mercurial icewm icewm-themes icewm-gnome-support skype hpodder icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools libav-tools openvpn gdisk wakeonlan wine kdenlive dvdstyler tesseract-ocr davfs2 sshfs
+apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop mii-diag gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba smbfs libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar openoffice.org xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-7-jdk icedtea-7-plugin gqview konqueror kaffeine xine-ui mpg123 sox rhythmbox openoffice.org-help-en-us kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu usb-imagewriter iftop pidgin-skype wireshark atop gkrellm xfce4-goodies tomboy mail-notification ubuntu-restricted-extras ia32-libs libc6-i386 acroread mercurial icewm icewm-themes icewm-gnome-support skype hpodder icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools libav-tools openvpn gdisk wakeonlan wine kdenlive dvdstyler tesseract-ocr davfs2 sshfs ffmpeg2theora mp3info
 
 6.) Set up static IP's (for machines with them)
 - edit /etc/network/interfaces, and add lines like:
@@ -259,7 +259,7 @@ apt-get install virtualbox-4.2
 Make sure to add necessary users to the vboxusers group, ie:
 sudo usermod -a -G vboxusers matt
 
-26.) Install tf101 support (mtpfs)
+26.) Install modern android device support (mtpfs)
 
 apt-get install mtpfs mtp-tools
 mkdir /media/transformer
@@ -370,19 +370,52 @@ sudo update-alternatives --config java
 
 - and choose java-7
 
-42.) Install owncloud sync client (laptop only)
+- and make it pretty. Edit
+  /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/swing.properties and uncomment:
 
-sudo sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/xUbuntu_12.04/ /' >> /etc/apt/sources.list.d/owncloud-client.list"
-wget http://download.opensuse.org/repositories/isv:ownCloud:desktop/xUbuntu_12.04/Release.key
-sudo apt-key add - < Release.key  
-sudo chmod a+r owncloud-client.list 
-sudo apt-get update
-sudo apt-get install owncloud-client
+swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
 
-43.) Install updated kernels
+42.) Install updated kernels
 
 sudo apt-get install linux-generic-lts-raring-eol-upgrade
 
 (the saucy upgrade seems to have a really dodgy scheduler, so I'm not
 installing it)
+
+43.) Fix dirty pages amount:
+
+Ref: http://lwn.net/Articles/572911/ 
+
+- as root:
+cat > /etc/sysctl.d/90-dirty-ratio.conf <<EOD
+vm.dirty_background_ratio = 2
+vm.dirty_ratio = 2
+EOD 
+
+44.) Install epson scanner driver
+
+Download the .deb packages from their website.
+
+- it depends on xsltproc, so install that:
+
+sudo apt-get install xsltproc
+
+- It also depends on sane, but we installed that as a dependency of
+  xsane during base system setup.
+
+- and then install the packages:
+
+sudo dpkg -i iscan_2.29.3-1~usb0.1.ltdl7_amd64.deb iscan-data_1.26.0-1_all.deb iscan-network-nt_1.1.1-1_amd64.deb
+
+- Edit the /etc/sane.d/epkowa.conf file and add:
+
+net EPSON632112.home
+
+- because that's the printer.
+
+- The documentation says to comment out `epson2` in
+  /etc/sane.d/dll.conf, but I didn't need to do that.
+
+- This adds an `iscan` app which will find the printer on the network
+  and try to use it, or you can just use xsane....
 
