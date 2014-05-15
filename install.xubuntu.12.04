@@ -262,7 +262,7 @@ sudo usermod -a -G vboxusers matt
 26.) Install modern android device support (mtpfs)
 
 apt-get install mtpfs mtp-tools
-mkdir /media/transformer
+mkdir /media/android
 
 27.) Updated xfce
 
