@@ -1,0 +1,84 @@
+SCH-I535 Android 4.3 Verizon -> PP conversion and rooting
+
+== Add developer menu ==
+
+Add developer options menu item:
+ - Settings -> About Phone
+ - Tap build number 7 times
+ - Back
+ - Developer options menu appears (yay) 
+
+== Root ==
+
+Root with SafeRoot
+
+ 1. Install SafeRoot
+ 2. Install Samsung ADB drivers
+ 3. Turn on USB debugging in developer menu (unlocked above)
+ 4. Allow loading of insecure apks in security menu
+ 5. Run the "install" program
+ 
+== Manual Recovery Mode ==
+
+Boot while holding the volume up, home button and power button
+simultaneously.
+
+== Diagnostic mode ==
+
+Verizon SPH-I535 (Galaxy S III) and SCH-I605 (Note 2) 4.3 Android Version
+
+Dial ##DMMODE#
+Tap On
+(Remember after flashing to return and Tap OFF) 
+
+== Flashing to Page Plus ==
+
+Note1: This takes 2 flashes, but they only charge you for 1 (because
+       it's one phone).
+Note2: Make sure to scroll down to the FULL FLASH instructions, and
+       not do the half flash. The instructions are different.
+
+ 1. Remove the SIM card
+ 2. Sign up for Wireless Workshop
+ 3. Buy some credit (minimum $50)
+ 4. Install Wireless Workshop
+ 5. Install the Samsung ADB Drivers (if not already installed
+    previously)
+ 6. Enable Diagnostic Mode (see above)
+ 7. Enable Developer Options (see above)
+ 8. Enable USB Debugging in developer options
+ 9. In the stock messaging app, bring up the menu -> settings, and
+    disable notifications.
+10. Fire up Wireless Workshop
+11. Select the phone, to from, etc on the Flashing tab
+12. If the phone asks, allow USB debugging (likely already done when
+    rooting)
+13. Click "Refresh"
+14. Under "Connect", Select SAMSUNG Mobile USB Serial Port"
+15. Click "Open Port"
+16. Go to Page Plus (or a dealer) and have them change the existing
+    MEID for your number to the new MEID (retrieved from the phone). I
+    used PagePlusDirect and paid the $5 because they answered some
+    questions for me, and I'd feel like a dick if I used their time and
+    didn't use at least one of their services. Plus, I hate talking
+    with people on the phone and this is fully automated.
+
+    Results:
+     MDN = My phone number
+     MIN = You should be able to get this from the old phone - if not,
+           ask. It's unique to your number, like the phone number, but
+           it's not always the same. As the phone number moves, so
+           does the MIN.
+     SID list = I chose 78, which is Albany/Schenectady/Troy 
+     	 (Chosen from http://www.pageplusdirect.com/sidlist.html)
+
+17. Click "Provision"
+18. Click "Flash"
+19. Let the phone reboot
+20. It will report failure to calculate 3G stuff, but that's okay - it
+    needs to be flashed twice, remember?
+21. Click "Open Port"
+22. Click "Flash" again
+23. Let the phone reboot again.
+24. Put the SIM card back in (I'm not sure if this is necessary, but it
+     at least makes the annoying messages go away)
