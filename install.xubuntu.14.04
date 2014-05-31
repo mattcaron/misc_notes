@@ -1,0 +1,392 @@
+From a clean Xubuntu 14.04 install, minimal install CD (mini.iso).
+
+1.) Base install
+
+Boot the install cd and follow instructions to do the base
+install. Make sure to select "Download updates while installing" and
+"install third party software".
+
+Set up machine as desired. Fairly self-explanatory. Partitioning
+should be roughly as follows, adjusted for available disk size as
+appropriate (including for RAID). Disk labels should be representative
+of the mount point. Manual partitioning is likely required.
+
+Pysical Partitions (on both drives):
+1	1GB	Physical volume for RAID -> ext4 -> /boot
+
+2	Rest	physical volume for RAID -> physical volume for
+                encryption, containing a single LVM partition.
+
+For the RAID you want the above physical partition scheme across all
+drives, with each one set up for "Physical volume for RAID". Then you
+create MD devices for each pairing (same partition on each drive) and
+then define it to be whatever filesystem you want, and continue on as
+normal from there.
+
+IMPORTANT: If upgrading the installer NOW WILL ACTIVATE ENCRYPTED
+VOLUMES, which is nice, because before it would just delete them.
+
+- These should represent MINIMUM sizes, and is sized for 500GB
+  HDD's. More is often better.
+
+LVM Partitions
+swap		Amount of RAM + a bit[1]
+tmp		10GB	/tmp
+var		10GB	/var
+root		20GB	/
+home		Rest	/home
+
+[1] This is mainly important for machines where you want to
+hibernate. You need at least as much swap space as you have RAM, so do
+that plus a bit. Old standard is 2 * RAM, which is plenty, but is a
+bit overkill with modern machines. On the other hand, if you never do
+a full hibernate (because it just takes too long to read back 16GB of
+RAM from disk), set it to something reasonable. Swap kind of sucks
+anyway..
+
+(For some machines, a common area of /pub, or /shared, might be
+appropriate, and should be taken out of /home)
+
+Once all that is done, you'll get the "Choose software to install"
+screen, where you should choose "Xubuntu desktop" and let it install
+(we'll install everything else later)
+
+IMPORTANT: If your grub-install fails, chances are you came up with an
+invalid partitioning scheme. Go back to the partitioning menu and
+ensure that you set your /boot partition to a non-encrypted non-LVM
+parition which doesn't use a RAID greater than 1 (if any). That is
+likely the culprit (otherwise, you'll spend 3 hours trying to manually
+install grub only to realize that the partition which is supposed to
+contain boot info is empty).
+
+## NOTE: All this stuff assumes that you're root, such as with "sudo -s"
+
+2.) Install useful base things
+
+sudo apt-get install emacs synaptic
+
+3.) After machine is up, run synaptic, go to settings->repositories
+make sure the following are enabled:
+
+- main
+- universe
+- restricted
+- multiverse
+- source code
+
+Select other software tab and enable/add:
+- partner
+- partner (Source Code)
+- independent
+- independent (Source code)
+
+Select updates tab and enable:
+- trusty-security
+- trusty-updates
+- trusty-backports
+
+(or just grab sources.list from some reasonable machine)
+
+4.) Do:
+apt-get update
+apt-get dist-upgrade
+
+5.) Install things:
+apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba cifs-utils libsane-extras xsane scribus scribus-template texlive texlive-fonts-extra texlive-latex-extra latex2html latex2rtf gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack openjdk-7-jdk icedtea-7-plugin geeqie konqueror kaffeine xine-ui mpg123 sox rhythmbox kcachegrind kcachegrind-converters graphviz hfsplus normalize-audio audacity libsox-fmt-all input-utils mysql-client nant sqlite3 libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate powertop latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger flashplugin-installer eclipse clusterssh pssh dh-make devscripts chromium-browser chromium-codecs-ffmpeg-extra ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu iftop pidgin-skype wireshark atop gkrellm tomboy mail-notification ubuntu-restricted-extras libc6-i386 mercurial skype icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools libav-tools openvpn gdisk wakeonlan wine kdenlive dvdstyler tesseract-ocr davfs2 sshfs ffmpeg2theora mp3info libreoffice xfce4-goodies xfce4-battery-plugin xfce4-battery-plugin xfce4-cellmodem-plugin xfce4-clipman-plugin xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-datetime-plugin xfce4-dict xfce4-diskperf-plugin xfce4-eyes-plugin xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-hdaps xfce4-indicator-plugin xfce4-linelight-plugin xfce4-mailwatch-plugin xfce4-messenger-plugin xfce4-mount-plugin xfce4-mpc-plugin xfce4-netload-plugin xfce4-notes-plugin xfce4-places-plugin xfce4-power-manager-plugins xfce4-quicklauncher-plugin xfce4-radio-plugin xfce4-screenshooter-plugin xfce4-sensors-plugin xfce4-smartbookmark-plugin xfce4-systemload-plugin xfce4-time-out-plugin xfce4-timer-plugin xfce4-verve-plugin xfce4-wavelan-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-wmdock-plugin xfce4-xkb-plugin xfswitch-plugin handbrake virtualbox playonlinux icewm icewm-themes icewm-gnome-support jmtpfs doomsday
+
+seem to have been removed:
+
+ia32-libs (but libc6-i386 seems to be there, so it may be okay)
+usb-imagewriter
+acroread
+hpodder
+
+6.) Set up static IP's (for machines with them)
+- edit /etc/network/interfaces, and add lines like:
+auto iface eth0 inet static
+	address 192.168.9.1
+        netmask 255.255.255.0
+	gateway 192.168.9.254
+
+ifdown eth0
+ifup eth0
+
+- and set the DNS server in /etc/resolvconf/resolv.conf.d/base
+
+- Then restart it:
+
+sudo service resolvconf restart
+
+7.) Make ssh work:
+## For an old machine, use the old keys - you did save /etc, didn't you?
+
+## For a new machine, use the new keys generated by the distro.
+
+- make sure to add to the firewall
+ufw allow ssh
+
+- In /etc/ssh/sshd_config, set:
+- PermitRootLogin no
+
+- once you've set up public key auth, turn off password access. edit
+    /etc/ssh/sshd_config
+and set
+    PasswordAuthentication no
+
+service ssh restart
+
+8.) Turn on the firewall.
+
+ufw enable
+
+9.) Fix cron - add the following to the top of personal crontab:
+
+MAILTO="matt@mattcaron.net"
+
+10.) Install dvd decoder
+
+echo "deb http://download.videolan.org/pub/debian/stable/ /" | sudo tee /etc/apt/sources.list.d/libdvdcss.list
+echo "deb-src http://download.videolan.org/pub/debian/stable/ /" | sudo tee -a /etc/apt/sources.list.d/libdvdcss.list
+sudo chmod a+r /etc/apt/sources.list.d/libdvdcss.list
+wget -O - http://download.videolan.org/pub/debian/videolan-apt.asc|sudo apt-key add -
+sudo apt-get update
+sudo apt-get install libdvdcss2
+
+11.) latex
+    cd /usr/share/texmf/tex/latex
+    cp -a ~/system_stuff/latex/local .
+    chown -R root:root local
+    cp -a ~/system_stuff/latex/fonts/cookingsymbols.tfm /usr/share/texmf/fonts/tfm/public/.
+    mkdir -p /usr/share/texmf/fonts/source/public/
+    chmod a+rx /usr/share/texmf/fonts/source/public/
+    cp -a ~/system_stuff/latex/fonts/cookingsymbols.mf /usr/share/texmf/fonts/source/public/.
+- then run texconfig and select "rehash"
+- Also, set the paper to US
+
+12.) ntpd (for fixed machines only, for mobile, the default is fine)
+
+## for server, make sure to add to ufw
+ufw allow ntp
+
+## for client
+- edit /etc/ntpd.conf and comment out the line:
+server ntp.ubuntu.com
+- and add the line:
+server router
+
+13.) cups
+- sudo system-config-printer
+- add printers as appropriate
+- For servers, under Server->Settings, select:
+    Publish shared printers conected to this system
+- make sure to enable it in the ufw
+    sudo ufw allow ipp
+
+14.) Set up samba:
+
+- Servers
+    cd /etc/samba
+    mv smb.conf smb.conf.old
+    cp ~/system_stuff/samba/smb.conf.`hostname` ./smb.conf
+    update-rc.d smbd defaults
+    update-rc.d nmbd defaults
+    service smbd start
+    service nmbd start
+
+- make sure to add ufw rules for it
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-ns
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-dgm
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-ssn
+    sudo ufw allow from 192.168.9.0/24 to any port microsoft-ds
+
+- Other machines
+  - Remember to turn it off on places you don't want it.
+    echo "manual" >> /etc/init/smbd.override
+    echo "manual" >> /etc/init/nmbd.override
+    service smbd stop
+    service nmbd stop
+
+15.) Set up ssmtp
+    cd /etc/ssmtp
+    mv ssmtp.conf ssmtp.conf.old
+    cp ~/system_stuff/ssmtp/ssmtp.conf .
+    chmod a+r ssmtp.conf
+
+16.) Set up apache (if applicable)
+
+- see install.apache
+
+17.) Set up video editing:
+
+- Add user to video group so I can capture video
+sudo usermod -a -G video matt
+
+18.) Set up sensors (if not set up automagically) for case
+
+- For case / Gigabyte X48-DQ6 board
+- add the following to /etc/modules:
+it87
+coretemp
+
+- For hiro / Thinkpad T530:
+- add the following to /etc/modules:
+coretemp
+
+(For new machines, this is accomplished by running sensors-detect and
+following prompts - the defaults are typically fine.)
+
+# FIXME - edit the conf file to fix scaling, etc.
+
+19.) Add temperature monitoring script to crontab (servers only):
+
+@hourly              /home/matt/bin/tempChecker
+
+20.) Set up logcheck
+- edit /etc/cron.d/logcheck and set it to @daily and not every 2 hours
+
+21.) Install d stuff:
+
+apt-get install gdc-4.8 libphobos-4.8-dev libsqlite3-dev
+
+22.) Install qbrew build dependencies:
+
+apt-get install qt4-qmake libqt4-dev qt4-designer
+
+23.) Add necessary users to the vboxusers group, ie:
+
+sudo usermod -a -G vboxusers matt
+
+24.) In fixed systems, remove network-manager
+
+sudo apt-get remove network-manager
+
+25.) Proprietary drivers (optional, for systems with ATI cards)
+
+sudo apt-get install fglrx-updates
+
+26.) Pulseaudio equalizer:
+
+sudo apt-add-repository ppa:nilarimogard/webupd8
+
+sudo apt-get update && sudo apt-get install pulseaudio-equalizer
+
+27.) Add Steam:
+
+echo "deb http://repo.steampowered.com/steam/ precise steam" >> /etc/apt/sources.list.d/steam.list
+chmod a+r /etc/apt/sources.list.d/steam.list
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F24AEA9FB05498B7
+
+sudo apt-get update
+sudo apt-get install steam
+
+28.) Add GetDeb games repo (PlayDeb)
+sudo add-apt-repository "deb http://archive.getdeb.net/ubuntu lucid-getdeb games"
+wget -q -O - http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
+
+29.) Add gcdemu
+
+sudo apt-add-repository ppa:cdemu/ppa 
+sudo apt-get update
+sudo apt-get install gcdemu
+
+30.) symlink quake data to where it expects it.
+cd /usr/share/games/quake/
+sudo ln -s ~/dosbox/games/quake/id1 .
+
+31.) symlink rott data where it expects it
+cd /usr/share/games/
+sudo ln -s ~/dosbox/games/rott .
+
+also, fix the default symlink:
+
+sudo update-alternatives --set rott /usr/games/rott-commercial
+
+32.) Add firewall exception for iperf
+
+sudo ufw allow from 192.168.9.0/24 to any port 5001
+
+33.) Allow firewall exception for ktorrent:
+
+sudo ufw allow 6881
+sudo ufw allow 8881
+
+34.) Make java pretty
+
+-  Edit /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/swing.properties
+   and uncomment:
+
+swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
+
+35.) Install epson scanner driver
+
+Download the .deb packages from their website.
+
+- it depends on xsltproc, so install that:
+
+sudo apt-get install xsltproc
+
+- It also depends on sane, but we installed that as a dependency of
+  xsane during base system setup.
+
+- and then install the packages:
+
+sudo dpkg -i iscan_2.29.3-1~usb0.1.ltdl7_amd64.deb iscan-data_1.26.0-1_all.deb iscan-network-nt_1.1.1-1_amd64.deb
+
+- Edit the /etc/sane.d/epkowa.conf file and add:
+
+net EPSON632112.home
+
+- because that's the printer.
+
+- The documentation says to comment out `epson2` in
+  /etc/sane.d/dll.conf, but I didn't need to do that.
+
+- This adds an `iscan` app which will find the printer on the network
+  and try to use it, or you can just use xsane....
+
+36.) Stop the stupid GNOME SSH agent thing from working.
+
+NOTE: This is a stupid hack to get around the fact that, apparently,
+the gnome keyring is started unconditionally with all components if
+any gnome services are run (and we would like to run them, just not
+this specific one).
+
+To fix, do:
+
+cd /usr/bin
+sudo mv gnome-keyring-daemon gnome-keyring-daemon-wrapped
+
+Then create a new gnome-keyring-daemon and set its contents to:
+
+#!/bin/sh
+exec /usr/bin/gnome-keyring-daemon-wrapped --components=pkcs11,secrets,gpg "$@"
+
+and make it executable:
+
+sudo chmod a+rx /usr/bin/gnome-keyring-daemon
+
+37.) Fix systemd from taking over power events (XFce has a fine power
+manager - let it do the work):
+
+- edit /etc/systemd/logind.conf and add the following to the end:
+
+HandlePowerKey=ignore
+HandleSuspendKey=ignore
+HandleHibernateKey=ignore
+HandleLidSwitch=ignore
+
+- Since systemd is like the new init, a reboot is likely required to
+  make this change active (not sure if there is a daemon you can HUP
+  or not, I gave up looking after about 2 seconds)
+
+38.) Replace the new-but-doesn't-work-quite-right lightlocker with
+xscreensaver.
+
+(Ref:
+  https://bugs.launchpad.net/ubuntu/+source/xfce4-power-manager/+bug/1303736)
+
+sudo apt-get install xscreensaver
+sudo apt-get remove light-locker
+
+(configure with xscreensaver-demo)
+
