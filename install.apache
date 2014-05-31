@@ -16,10 +16,6 @@ Listen *:443
 
 Listen 127.0.0.1:443
 
-- Also, before the Listen 443 command, add
-
-NameVirtualHost *:443
-
 - enable the userdir and rewrite modules
 
 a2enmod userdir
@@ -37,5 +33,5 @@ a2enmod ssl
 sudo service apache2 restart
 
 - for dev machines, you may not want it to start at boot
-update-rc.d -f apache2 remove
+sudo update-rc.d -f apache2 remove
 echo manual > /etc/init/mysql.override
