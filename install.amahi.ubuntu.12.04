@@ -616,6 +616,10 @@ sudo chmod a+x /usr/local/bin/timemachine_restart
 
 sudo ufw allow openvpn
 
+- Fix up incorrect permissions on server key:
+
+sudo chmod go-r /etc/openvpn/amahi/server.key
+
 4.) DokuWiki
 
 (Picked docuwiki after looking at the syntax examples in
