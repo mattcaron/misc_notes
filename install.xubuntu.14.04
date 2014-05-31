@@ -390,3 +390,43 @@ sudo apt-get remove light-locker
 
 (configure with xscreensaver-demo)
 
+39.) Install go-mtpfs
+
+- Ref:
+https://github.com/hanwen/go-mtpfs
+
+- Dependencies:
+sudo apt-get install golang-go libusb-1.0-0-dev
+
+- Instructions:
+
+mkdir ~/workspace/code/go-mtpfs
+export GOPATH=~/workspace/code/go-mtpfs
+go get github.com/hanwen/go-mtpfs
+
+- The binary is in ~/workspace/code/go-mtpfs/bin. Clever.
+
+- Link in place:
+
+cd ~/bin/
+ln -s ~/workspace/code/go-mtpfs/bin/go-mtpfs .
+
+- Add required users to fuse group, e.g.:
+sudo usermod -a -G matt fuse
+
+(log off and log back in)
+
+Now, this makes it all work, but, of course, rsync fails with messages like:
+
+2014/05/31 10:00:48 2070822 bytes in 256.459887ms: 8 mb/s
+2014/05/31 10:00:48 basenameRename failed: RetCode 1
+
+Which I suspect is a problem because of the following from the README:
+
+CAVEATS
+
+* It does not implement rename between directories, because the
+  Android stack does not implement it.
+
+As such, --inplace needs to be specified to rsync when going over an
+MTP interface.
