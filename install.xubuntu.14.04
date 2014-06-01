@@ -379,18 +379,7 @@ HandleLidSwitch=ignore
   make this change active (not sure if there is a daemon you can HUP
   or not, I gave up looking after about 2 seconds)
 
-38.) Replace the new-but-doesn't-work-quite-right lightlocker with
-xscreensaver.
-
-(Ref:
-  https://bugs.launchpad.net/ubuntu/+source/xfce4-power-manager/+bug/1303736)
-
-sudo apt-get install xscreensaver
-sudo apt-get remove light-locker
-
-(configure with xscreensaver-demo)
-
-39.) Install go-mtpfs
+38.) Install go-mtpfs
 
 - Ref:
 https://github.com/hanwen/go-mtpfs
