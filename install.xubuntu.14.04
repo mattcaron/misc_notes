@@ -370,10 +370,9 @@ manager - let it do the work):
 
 - edit /etc/systemd/logind.conf and add the following to the end:
 
-HandlePowerKey=ignore
-HandleSuspendKey=ignore
-HandleHibernateKey=ignore
 HandleLidSwitch=ignore
+
+- Because I don't want it to suspend in lid close.
 
 - Since systemd is like the new init, a reboot is likely required to
   make this change active (not sure if there is a daemon you can HUP
@@ -419,3 +418,60 @@ CAVEATS
 
 As such, --inplace needs to be specified to rsync when going over an
 MTP interface.
+
+39.) Fix grub2 "diskfilter writes not supported" message + 5 second delay.
+
+Refs: https://bugs.launchpad.net/ubuntu/+source/grub2/+bug/1274320
+
+Edit /etc/grub.d/00_header and find the "recordfail" section, and change it to:
+
+===
+if [ "$quick_boot" = 1 ]; then
+    cat <<EOF
+function recordfail {
+  set recordfail=1
+EOF
+    GRUBMDDEVICE="$(grub-probe --target=disk "${grubdir}")"
+    GRUBLVMDEVICE="$(grub-probe --target=disk "${grubdir}")"
+    if echo "$GRUBMDDEVICE" | grep "/dev/md" > /dev/null; then
+        cat <<EOF
+  # GRUB lacks write support for $GRUBMDDEVICE, so recordfail support is disabled.
+EOF
+    elif echo "$GRUBLVMDEVICE" | grep "/dev/mapper" > /dev/null; then
+        cat <<EOF
+  # GRUB lacks write support for $GRUBLVMDEVICE, so recordfail support is disabled.
+EOF
+    else
+        FS="$(grub-probe --target=fs "${grubdir}")"
+        case "$FS" in
+          btrfs | cpiofs | newc | odc | romfs | squash4 | tarfs | zfs)
+            cat <<EOF
+  # GRUB lacks write support for $FS, so recordfail support is disabled.
+EOF
+          ;;
+          *)
+            cat <<EOF
+  if [ -n "\${have_grubenv}" ]; then if [ -z "\${boot_once}" ]; then save_env recordfail; fi; fi
+EOF
+        esac
+    fi
+    cat <<EOF
+}
+EOF
+fi
+===
+
+Then run:
+
+sudo update-grub
+
+(From: https://bugs.launchpad.net/ubuntu/+source/grub2/+bug/1274320/comments/34)
+
+40.) Install updated XFce settings
+
+Refs: https://bugs.launchpad.net/xfce4-power-manager/+bug/1303736
+
+sudo apt-add-repository ppa:xubuntu-dev/ppa
+
+sudo apt-get update
+sudo apt-get dist-upgrade
