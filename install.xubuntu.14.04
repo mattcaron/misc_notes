@@ -474,3 +474,25 @@ sudo chmod a+rx wolf3d
 cd wolf3d
 sudo ln -s ~/dosbox/games/wolf3d/* .
 sudo ln -s ~/dosbox/games/spear_of_destiny/* .
+
+41.) Install openxcom
+
+sudo apt-add-repository ppa:knapsu/openxcom
+sudo apt-get upsate
+sudo apt-get install openxcom
+
+- Patch files (DO ONLY ONCE):
+ - grab the patch from: http://openxcom.org/downloads-extras/
+ - Make a copy of the vanilla data files, ie:
+
+   mkdir ~/games/games/openxcom_data
+   cp -a ~/dosbox/games/ufo/* ~/games/games/openxcom_data
+   cd ~/games/games/openxcom_data
+   unzip ~/dowload/universal-patch.zip
+
+ - When it asks to replace all files, do so.
+
+- Link files to where they're expected to be:
+
+cd /usr/share/openxcom/data
+sudo ln -s ~/games/games/openxcom_data/* .
