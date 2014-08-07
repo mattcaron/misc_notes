@@ -501,3 +501,21 @@ sudo apt-get install openxcom
 
 cd /usr/share/openxcom/data
 sudo ln -s ~/games/games/openxcom_data/* .
+
+42.) Install pithos
+
+sudo add-apt-repository ppa:pithos/ppa
+sudo apt-get update
+sudo apt-get install pithos
+
+43.) Uninstall light-locker and install xscreensaver
+
+The XUbuntu folks have declared their unsuspend problem "fixed", yet
+it is most certainly not. Still, they don't seem to want to fix it, so
+we're left with workarounds. See
+https://bugs.launchpad.net/bugs/1303736 for full details
+
+sudo apt-get remove light-locker
+sudo apt-get install xscreensaver
+
+A reboot is likely in order to stop the old daemon and start the new.
