@@ -110,7 +110,10 @@ auto iface eth0 inet static
 ifdown eth0
 ifup eth0
 
-- and set the DNS server in /etc/resolvconf/resolv.conf.d/base
+- and set the DNS server in /etc/resolvconf/resolv.conf.d/base:
+
+nameserver 192.168.9.254
+search home
 
 - Then restart it:
 
@@ -173,7 +176,7 @@ sudo apt-get install --install-suggests texlive-full
 ufw allow ntp
 
 ## for client
-- edit /etc/ntpd.conf and comment out the line:
+- edit /etc/ntp.conf and comment out the line:
 server ntp.ubuntu.com
 - and add the line:
 server router
@@ -276,7 +279,7 @@ sudo apt-get update && sudo apt-get install pulseaudio-equalizer
 
 27.) Add Steam:
 
-echo "deb http://repo.steampowered.com/steam/ precise steam" >> /etc/apt/sources.list.d/steam.list
+echo "deb http://repo.steampowered.com/steam/ precise steam" | sudo tee /etc/apt/sources.list.d/steam.list
 chmod a+r /etc/apt/sources.list.d/steam.list
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F24AEA9FB05498B7
 
@@ -284,7 +287,7 @@ sudo apt-get update
 sudo apt-get install steam
 
 28.) Add GetDeb games repo (PlayDeb)
-sudo add-apt-repository "deb http://archive.getdeb.net/ubuntu lucid-getdeb games"
+sudo add-apt-repository "deb http://archive.getdeb.net/ubuntu trusty-getdeb games"
 wget -q -O - http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
 
 29.) Add gcdemu
@@ -483,7 +486,7 @@ sudo ln -s ~/dosbox/games/spear_of_destiny/* .
 41.) Install openxcom
 
 sudo apt-add-repository ppa:knapsu/openxcom
-sudo apt-get upsate
+sudo apt-get update
 sudo apt-get install openxcom
 
 - Patch files (DO ONLY ONCE):
