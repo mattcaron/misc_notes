@@ -960,3 +960,165 @@ query_cache_size        = 8M
 
 sudo service mysql restart
 
+26. Upgrade Sympa to something more recent.
+
+Once upon a time, email worked great, and then Yahoo and AOL went and
+broke things, so install the latest from source.
+
+Refs:
+http://postmaster-blog.aol.com/2014/04/22/aol-mail-updates-dmarc-policy-to-reject/
+https://help.yahoo.com/kb/SLN7253.html?impressions=true
+
+This breaks how email lists have worked for like 25 years.
+
+Anyway, so we need to install an updated version
+
+A.) Establish base checkout:
+cd ~/workspace/code
+git svn clone -s http://svn.cru.fr/sympa/
+cd sympa
+git-tag-svn 
+git checkout sympa-6.1.23
+git checkout -b production
+
+B.) Copy this whole mess over to the linode server:
+cd ~/workspace/code
+scp -rp sympa/ linode.mattcaron.net:~/workspace/code/.
+
+=== all the rest of this is on the linode server ===
+
+C.) Create a user w/ now shell (this was the last next available number)
+
+sudo adduser sympa --uid 110 --gid 117 --disabled-logn
+sudo usermod -s /bin/false sympa
+
+D.) Install deps
+
+sudo apt-get install apache2-suexec intltool
+
+E.) Enable apache modules
+
+sudo a2enmod suexec
+sudo a2enmod cgi
+
+F.) Make the destination directory:
+
+sudo mkdir /opt/sympa-6.1.23
+sudo chown matt:matt /opt/sympa-6.1.23
+
+G.) Build and install it:
+
+cd ~/workspace/code/sympa
+autoreconf -i
+./configure --prefix=/opt/sympa-6.1.23 --with-initdir=/opt/sympa-6.1.23/etc/init.d --with-cgidir=/opt/sympa-6.1.23/cgi-bin
+make
+make install
+
+H.) Fix permissions
+
+sudo chown -R sympa:sympa /opt/sympa-6.1.23
+sudo chmod a+rX -R /opt/sympa-6.1.23
+
+I.) Make some compatibilty symlinks:
+
+cd /opt
+sudo ln -s sympa-6.1.23/ sympa
+sudo -u sympa
+cd /opt/sympa
+ln -s /var/lib/sympa/expl .
+ln -s /var/lib/sympa/wwsarchive .
+ln -s /var/lib/sympa/x509-user-certs .
+cd /opt/sympa/etc
+ln -s /etc/sympa .
+cd /opt/sympa/static_content
+sudo ln -s /var/lib/sympa/static_content/css .
+sudo ln -s /etc/mail/sympa/aliases /etc/mail/sympa_aliases
+
+J.) Auto-install a pile of perl modules:
+
+sudo /opt/sympa-6.1.23/bin/sympa_wizard.pl --check
+
+(hit enter a bunch of times)
+
+And mhonarc doesn't put itself where it needs to, so do so:
+
+cd /usr/share/perl5/
+sudo ln -s /usr/share/mhonarc/* .
+
+K.) Now remove the old sympa
+
+sudo apt-get remove sympa
+
+Do not remove the database, we still want it.
+
+L.) Now symlink in the start scripts - the old one is there, so we'll
+save it, just in case.
+
+cd /etc/init.d
+sudo mv sympa sympa.ubuntu
+sudo ln -s /opt/sympa/etc/init.d/sympa .
+
+Of course, that script is wrong, so symlink some files where it expects them
+
+cd /etc
+sudo ln -s /etc/sympa/sympa.conf .
+sudo ln -s /etc/sympa/wwsympa.conf .
+
+M.) Run the upgrade script
+
+sudo -u sympa /opt/sympa-6.1.23/bin/sympa.pl --upgrade 
+
+N.) Fix up supporting bits and bobs
+
+sudo touch /etc/sympa/facility
+sudo chown sympa:sympa /etc/sympa/facility
+sudo mkdir -p /var/lock/subsys/sympa
+sudo chown sympa:sympa /var/lock/subsys/sympa
+sudo mkdir /var/spool/sympa/wwsbounce
+sudo chown sympa:sympa /var/spool/sympa/wwsbounce
+
+O.) Fix up the webserver CGI wrapper
+
+sudo -e /var/www/sympa/wwsympa.cgi
+
+- and change it to:
+
+exec /opt/sympa/cgi-bin/wwsympa.fcgi
+
+P.) fix up the two webserver files (sympa and sympa.fishhouse) where they do:
+
+Alias /static-sympa /var/lib/sympa/static_content
+
+and change it to:
+
+Alias /static-sympa /opt/sympa/static_content
+
+Q.) Comment out all the deprecated bits of /etc/sympa/sympa.conf
+
+ - dkim_header_list 
+ - pidfile
+ - pidfile_bulk
+ - pidfile_creation
+ - pidfile_distribute
+
+and the same for /etc/sympa/wwsympa.conf
+ - archived_pidfile
+ - bounced_pidfile
+ - task_manager_pidfile
+
+R.) Also add the dmarc_protection_mode to the config, which is why we
+upgraded in the first place.
+
+Add this to the bottom of /etc/sympa/sympa.conf:
+
+# Munge email which would otherwise be dropped.                                 
+dmarc_protection_mode dmarc_any
+
+S.) Fix up the mailserver aliases /etc/aliases and
+    /etc/mail/sympa/aliases and replace /usr/lib/sympa/lib/sympa with
+    /opt/sympa/bin
+
+T.) Start it:
+
+sudo service sympa start
+
