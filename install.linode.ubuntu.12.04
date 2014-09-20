@@ -553,7 +553,7 @@ sympa_aliases_robot:
 <VirtualHost *:80>
     ServerName sympa.fishhousefishandgame.com
     ServerAdmin webmaster@fishhousefishandgame.com
-    Redirect permanent / https://sympa.fishhousefishandgame/wws
+    Redirect permanent / https://sympa.fishhousefishandgame.com/wws
 </VirtualHost>
 
 <VirtualHost *:443>
@@ -1118,7 +1118,15 @@ S.) Fix up the mailserver aliases /etc/aliases and
     /etc/mail/sympa/aliases and replace /usr/lib/sympa/lib/sympa with
     /opt/sympa/bin
 
-T.) Start it:
+T.) And the queue needs to be suid root so that the mail server works
+when it calls queue and bouncequeue. Some of the routers call the
+filter and that needs to be as sympa, but we still want them to run
+other actions as exim.
+
+sudo chmod u+s /opt/sympa/bin/queue /opt/sympa/bin/bouncequeue
+
+
+U.) Start it:
 
 sudo service sympa start
 
