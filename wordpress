@@ -30,6 +30,14 @@ GRANT ALL PRIVILEGES ON mattcaron_wordpress.* TO "mattcaron_wpuser"@"localhost" 
   
 FLUSH PRIVILEGES;
 
+---
+
+CREATE DATABASE sarahdipitysweets_wordpress;
+
+GRANT ALL PRIVILEGES ON sarahdipitysweets_wordpress.* TO "sarahdipity_wpuser"@"localhost" IDENTIFIED by "password";
+
+FLUSH PRIVILEGES;
+
 (5) set up the config
 
 cd wordpress
@@ -163,6 +171,44 @@ and:
     ServerAdmin webmaster@fishhousefishandgame.com
     RewriteEngine on
     RewriteRule ^/(.*)$  http://www.fishhousefishandgame.com/$1  [R,L]
+</VirtualHost>
+
+and:
+
+<VirtualHost *:80>
+    ServerName www.sarahdipitysweets.com
+    ServerAlias sarahdipitysweets.com
+    ServerAdmin webmaster@sarahdipitysweets.com
+
+    DocumentRoot /home/matt/public_html/www.sarahdipitysweets.com
+    <Directory /home/matt/public_html/www.sarahdipitysweets.com>
+        Options Indexes FollowSymLinks MultiViews
+        Order allow,deny
+        allow from all
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName www.sarahdipitysweets.com
+    ServerAlias sarahdipitysweets.com
+    ServerAdmin webmaster@sarahdipitysweets.com
+
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/private/sarahdipitysweets.com/crt
+    SSLCertificateKeyFile /etc/ssl/private/sarahdipitysweets.com/key
+
+    # Standard SSL protocol adustments for IE
+    BrowserMatch "MSIE [2-6]" \
+               nokeepalive ssl-unclean-shutdown \
+               downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+    
+    DocumentRoot /home/matt/public_html/www.sarahdipitysweets.com
+    <Directory /home/matt/public_html/www.sarahdipitysweets.com>
+        Options Indexes FollowSymLinks MultiViews
+        Order allow,deny
+        allow from all
+    </Directory>
 </VirtualHost>
 
 - 
