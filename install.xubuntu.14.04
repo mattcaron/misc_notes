@@ -326,18 +326,7 @@ swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
 
 35.) Install epson scanner driver
 
-Download the .deb packages from their website.
-
-- it depends on xsltproc, so install that:
-
-sudo apt-get install xsltproc
-
-- It also depends on sane, but we installed that as a dependency of
-  xsane during base system setup.
-
-- and then install the packages:
-
-sudo dpkg -i iscan_2.29.3-1~usb0.1.ltdl7_amd64.deb iscan-data_1.26.0-1_all.deb iscan-network-nt_1.1.1-1_amd64.deb
+sudo apt-get install iscan iscan-network-nt
 
 - Edit the /etc/sane.d/epkowa.conf file and add:
 
