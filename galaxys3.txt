@@ -82,3 +82,42 @@ Note2: Make sure to scroll down to the FULL FLASH instructions, and
 23. Let the phone reboot again.
 24. Put the SIM card back in (I'm not sure if this is necessary, but it
      at least makes the annoying messages go away)
+
+== MMS Fix ==
+
+0. Install 8sms
+
+1. Launch 8sms app.
+
+2. Press Menu button on your phone.
+
+3. Choose Settings
+
+4. Choose Multimedia (MMS) Messages
+
+5. Press "MMS Settings"
+
+6. Choose "MMSC"
+
+7. Type in "http://mms.vtext.com/servlets/mms?X-VZW-MDN=Your Phone
+number including area code" do not include the double quotes. Press OK
+button. EXample:
+http://mms.vtext.com/servlets/mms?X-VZW-MDN=7792559415
+
+8. Press "MMS PROXY".
+
+9. Make it Blank
+
+10. Press "MMS PORT".
+
+11. Make it Blank
+
+Press OK button.
+
+Press the Phones Back Button
+
+Choose Phone number under the extra settings and enter your 10 digit phone number then press the ok button.....
+
+Restart the Phone.........
+
+DONE..................
