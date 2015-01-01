@@ -537,3 +537,19 @@ Also, this guy has some handy info on how to encode for broad compatibility:
 http://www.rokoding.com/
 
 (look at the guides)
+
+45.) Restore old-style Linux grognard boot messages.
+
+Edit /etc/default/grub
+
+Change:
+
+    GRUB_CMDLINE_LINUX_DEFAULT="splash quiet"
+
+to:
+
+    GRUB_CMDLINE_LINUX_DEFAULT=""
+
+Then do:
+
+sudo update-grub
