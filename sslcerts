@@ -22,7 +22,7 @@ openssl req -new -key key -out csr
 c.) Sign it with the cert. This set a 1 year expiry. Also, you need to
 increment the serial number each time you issue a new cert
 
-openssl x509 -req -days 365 -in csr -CA ../ca.crt -CAkey ../ca.key -set_serial 0002 -out crt
+openssl x509 -req -days 365 -in csr -CA ../ca.crt -CAkey ../ca.key -set_serial 0003 -out crt
 
 d.) clean the password out of server key:
 
