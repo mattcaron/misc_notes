@@ -361,6 +361,14 @@ and make it executable:
 
 sudo chmod a+rx /usr/bin/gnome-keyring-daemon
 
+Also, you need to go into ~/.config/autostart/gnome-keyring-ssh.desktop and add:
+
+[Desktop Entry]
+X-GNOME-Autostart-enabled=false
+
+so that it doesn't get started by the ancillary (and likely redundant)
+separate invoker.
+
 37.) Fix systemd from taking over power events (XFce has a fine power
 manager - let it do the work):
 
