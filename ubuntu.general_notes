@@ -297,14 +297,15 @@ xrandr --output DVI-0 --auto --right-of VGA-0
 
 xrandr --prop
 
-29.) ReplayGain normalization of audio.
+29.) Normalization of audio.
 
-This uses two programs - mp3gain and vorbisgain. It runs ahead of time
-and writes modified tags which are then used by the programs to sound
-good. It is probably good to script this...
+You wrote a normalize_music script, dummy.
 
-vorbisgain -arfs ~/Music/*
-find -type d -exec sh -c "mp3gain "{}"~/Music/*.mp3" ;
+However, it only works reliably across one type (ogg, mp3, etc.) Since
+most of what you have is ogg, you need to convert anything else to ogg
+first.
+
+dir2ogg --recursive --smart-mp3 --delete-input ~/pub/music
 
 30.) Useful raid/md commands
 
