@@ -711,12 +711,18 @@ libapache2-mod-xsendfile
   http://apps.owncloud.com/content/show.php/Unix+user+backend?content=148406
 - Unzip it and copy it in to owncloud/apps (add to source control, etc.)
 
-- Log in to the DB server and create a user and password
-
 - Make the xsendfile cache:
 
 sudo mkdir /tmp/oc-noclean
 sudo chown www-data:www-data /tmp/oc-noclean
+
+- Enable UTF-8 in php.ini
+ - edit /etc/php5/apache2
+ - uncomment:
+   default_charset = "UTF-8"
+
+
+- Log in to the DB server and create a user and password
 
 CREATE DATABASE owncloud;
 
@@ -796,11 +802,13 @@ Once logged in:
  - Enforce HTTPS
 
 - Under the "Apps" menu, enable
+ - Calendar
+ - Contacts
  - Bookmarks
  - Tasks
+ - Documents
  - Unix User Backend
  - Video
- - ownCloud dependencies info
 
 - install pwauth
 
@@ -860,7 +868,7 @@ Configuring apps:
   - Launch CardDAV
   - Add account
   - Use the same URL as Thunderbird:
-  https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts
+    https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts
   - Tick "Use SSL"
   - Enter credentials
   - Next
