@@ -1,0 +1,35 @@
+This is a "bottom up" description.
+
+1.) Printer
+
+http://www.muve3d.net/press/product/muve-1-dlp/
+
+version 1.5 w/ Flex Vat.
+
+2.) Printer/projector control software:
+
+http://www.envisionlabs.net/
+
+Note that support structures are generated here.
+
+3.) STL validator / fixer / etc.
+
+meshlab 
+
+in repos or from http://meshlab.sourceforge.net/
+
+The important things here are apparently:
+  Render -> Show Non Manif Edges
+  Render -> Show Non Manif Vertices
+
+4.) OpenSCAD - programmer's CAD program
+
+In repos, or from:
+
+    http://www.openscad.org/downloads.html
+
+which includes a PPA.
+
+OpenSCAD tutorial:
+
+http://edutechwiki.unige.ch/en/OpenScad_beginners_tutorial
