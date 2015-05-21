@@ -33,3 +33,11 @@ which includes a PPA.
 OpenSCAD tutorial:
 
 http://edutechwiki.unige.ch/en/OpenScad_beginners_tutorial
+
+Using it with an external editor:
+
+http://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_an_external_Editor_with_OpenSCAD 
+
+Emacs Mode:
+
+https://github.com/openscad/openscad/blob/master/contrib/scad-mode.el 
