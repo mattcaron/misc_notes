@@ -352,6 +352,39 @@ rewrite_header Subject *****SPAM*****
 
   ENABLED=1
 
+and:
+
+  CRON=1
+
+- set up the global bayes learning directory. It will be group rw for
+  the adm group, as it's assumed that only those users would ssh in
+  and teach it things. Also, spamd changes uid to Debian-exim, so make
+  sure that user owns the DB and can read things. (You may have to run
+  the chown again after creating the databases with sa-learn). It also
+  likes to change group IDs on the files, so you need to make sure
+  that all those are correct, and that any users who are going to
+  train SA are in the Debian-exim group (which implies that you trust
+  them)
+
+sudo mkdir -p /var/spamassassin/bayes_db
+sudo chmod -R g+rwX /var/spamassassin
+sudo chown -R Debian-exim:Debian-exim /var/spamassassin
+sudo usermod -a -G Debian-exim <user list>
+
+- And you need to fix permissions on /var/lib/spamassassin so the users doing that 
+sudo chgrp Debian-exim  /var/lib/spamassassin
+sudo chmod g+rx /var/lib/spamassassin
+sudo chgrp Debian-exim /var/lib/spamassassin/3.003002/updates_spamassassin_org.cf
+sudo chmod g+r /var/lib/spamassassin/3.003002/updates_spamassassin_org.cf
+
+- add the following to /etc/spamassassing/local.cf, so that it uses
+  the above (note that the last part of bayes_path is a prefix, not a
+  directory)
+
+use_bayes 1
+bayes_path /var/spamassassin/bayes_db/bayes
+bayes_file_mode 0660
+
 - also, because we only have a couple of users, limit children - edit
   /etc/default/spamassassin and set:
 
