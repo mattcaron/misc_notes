@@ -565,7 +565,8 @@ sudo update-grub
 46.) Install real chrome
 
 The ubuntu packaged chromium is broken in a couple of ways - NaCL
-support, etc. Install Chrome from a PPA.
+support, etc. NaCL support is required for Hangouts to work. Solution:
+Install Chrome from a PPA.
 
 Instructions from:
   http://www.google.com/linuxrepositories/
