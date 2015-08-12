@@ -586,3 +586,6 @@ https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/882942
 
 sudo add-apt-repository ppa:openscad/releases
 
+48.) Change wodim to be suid root to limit sudo.
+
+sudo chmod u+s `which wodim`

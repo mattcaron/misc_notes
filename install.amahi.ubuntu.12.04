@@ -196,7 +196,7 @@ mysql -u amahihda hda_production -pAmahiHDARulez
 
 INSERT INTO hosts (host,mac,address) VALUES
  ("brother-hl5250dn","00:80:77:E5:9B:E6",112),
- ("dell3000","08:00:37:32:08:75",111),
+ ("xerox-8580","9c:93:4e:60:03:a8",111),
  ("bridge-office","00:0F:66:0A:96:23",253),
  ("bridge-bedroom","68:7F:74:1B:79:F6",252),
  ("bridge-garage","00:12:17:ba:54:3f",251),
@@ -287,6 +287,11 @@ Set workgroup to HOME
     Publish shared printers conected to this system
 - make sure to enable it in the ufw
     sudo ufw allow from 192.168.9.0/24 to any port ipp
+
+Note that we install the Xerox 8580 as the recommended Phaser 8500DN,
+using the recommended postscript driver. This seems to work. The Xerox
+driver creates a queue, but does not actually create something to
+which you can print.
 
 21.) Set up hpodder (installed above)
 
@@ -487,7 +492,6 @@ sudo apt-get install lsb
 sudo apt-get -f install
 
 And that will install everything.
-
 
 II. Install and configure apps:
 
