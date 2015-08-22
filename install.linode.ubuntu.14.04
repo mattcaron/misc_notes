@@ -1017,8 +1017,7 @@ git checkout sympa-6.1.23
 git checkout -b production
 
 B.) Copy this whole mess over to the linode server:
-cd ~/workspace/code
-scp -rp sympa/ linode.mattcaron.net:~/workspace/code/.
+push_sympa
 
 === all the rest of this is on the linode server ===
 
