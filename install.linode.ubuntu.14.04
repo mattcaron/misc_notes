@@ -368,14 +368,8 @@ and:
 
 sudo mkdir -p /var/spamassassin/bayes_db
 sudo chmod -R g+rwX /var/spamassassin
-sudo chown -R Debian-exim:Debian-exim /var/spamassassin
-sudo usermod -a -G Debian-exim <user list>
-
-- And you need to fix permissions on /var/lib/spamassassin so the users doing that 
-sudo chgrp Debian-exim  /var/lib/spamassassin
-sudo chmod g+rx /var/lib/spamassassin
-sudo chgrp Debian-exim /var/lib/spamassassin/3.003002/updates_spamassassin_org.cf
-sudo chmod g+r /var/lib/spamassassin/3.003002/updates_spamassassin_org.cf
+sudo chown -R debian-spamd:debian-spamd /var/spamassassin
+sudo usermod -a -G debian-spamd <user list>
 
 - add the following to /etc/spamassassing/local.cf, so that it uses
   the above (note that the last part of bayes_path is a prefix, not a
