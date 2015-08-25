@@ -279,11 +279,17 @@ sudo dpkg-reconfigure tzdata
 
 - and set it to US/Eastern
 
-15. Add spamassassin
+15. Add spamassassin and other optional dependencies:
 
 - install
 
-sudo apt-get install spamassassin
+sudo apt-get install spamassassin libdigest-sha-perl libgeo-ip-perl
+libio-socket-ip-perl libencode-detect-perl libnet-patricia-perl
+libmodule-install-perl
+
+- this is also helpful for debugging:
+
+spamassassin -D --lint 2>&1 | grep -i failed
 
 - add the following router right before "localuser"
 
@@ -319,11 +325,14 @@ spamcheck:
   driver = pipe
   command = /usr/sbin/exim4 -oMr spam-scanned -bS
   use_bsmtp
-  transport_filter = /usr/bin/spamc
+  # run the filter as debian-spamd because it has access to all of the
+  # spamassassin files
+  transport_filter = /usr/bin/spamc -u debian-spamd
   home_directory = "/tmp"
   current_directory = "/tmp"
+  # must use a privileged user to set $received_protocol on the way back in!
   user = Debian-exim
-  group = Debian-exim
+  group = Debian-spamd
   return_fail_output
   message_prefix =
   message_suffix =
@@ -367,9 +376,21 @@ and:
   them)
 
 sudo mkdir -p /var/spamassassin/bayes_db
+sudo chown -R Debian-exim:debian-spamd /var/spamassassin
 sudo chmod -R g+rwX /var/spamassassin
-sudo chown -R debian-spamd:debian-spamd /var/spamassassin
+sudo chmod g+s /var/spamassassin
 sudo usermod -a -G debian-spamd <user list>
+
+- The g+s looks a little odd here, but let me explain. The spamcheck
+  transport runs as Debian-exim, which will create
+  /var/spamassassin/bayes_journal if it does not exist. However, the
+  spamd process likes to run as debian-spamd (so it can access all its
+  files), which won't be able to read said journal and will complain
+  bitterly. By setting the directory to be setgid, all created files
+  will have the correct gid set, ensuring that both Debian-exim and
+  debian-spamd can read and write everything in it. This also means
+  that the sa_learn run periodically will work, because I am in the
+  debian-spamd group.
 
 - add the following to /etc/spamassassing/local.cf, so that it uses
   the above (note that the last part of bayes_path is a prefix, not a
