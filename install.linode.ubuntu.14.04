@@ -751,7 +751,7 @@ http://forum.owncloud.org/viewtopic.php?f=8&t=10692
 
 sudo apt-get install apache2 php5 php5-gd php-xml-parser php5-intl \
 php5-sqlite php5-mysql curl libcurl3 php5-curl php-apc \
-libapache2-mod-xsendfile
+libapache2-mod-xsendfile php5-apcu
 
 - download tarball (add to source control, etc.)
   http://owncloud.org/install/
