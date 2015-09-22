@@ -11,9 +11,9 @@
     ns5.linode.com
 - And make sure to add an SPF record - it's a text record. By default,
   it's just:
-  "v=spf1 mx -all"
-- Which says "accept mail from the server listed in our mx record" (as
-  if that wasn't obvious)
+  "v=spf1 mx ~all"
+- Which says "accept mail from any servers which have an a record, and
+  if it's not, soft fail it."
 
 1. Updates!
 
