@@ -35,3 +35,7 @@ sudo service apache2 restart
 - for dev machines, you may not want it to start at boot
 sudo update-rc.d -f apache2 remove
 echo manual > /etc/init/mysql.override
+
+Go through this and apply all settings:
+
+https://www.insecure.ws/linux/apache_ssl.html
