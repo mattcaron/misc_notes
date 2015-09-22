@@ -41,3 +41,10 @@ http://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_an_external_Editor_with_
 Emacs Mode:
 
 https://github.com/openscad/openscad/blob/master/contrib/scad-mode.el 
+
+5.) Arduino 
+
+Need to install arduino to work on printer firmware.
+
+The version in the repos is old. Download latest from 
+https://www.arduino.cc
