@@ -88,7 +88,8 @@ apt-get update
 apt-get dist-upgrade
 
 7.) Install more useful things
-sudo apt-get install tree unison atop texlive-binaries hpodder \
+
+sudo apt-get install tree unison atop hpodder \
 system-config-printer-gnome cups synaptic brother-cups-wrapper-laser nmap \
 emacs wireshark lm-sensors ntp ssmtp logcheck wakeonlan gdisk git-core gitk \
 iftop mailutils
