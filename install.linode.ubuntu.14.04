@@ -1,4 +1,4 @@
-- I picked Newark for the location
+ I picked Newark for the location
 - I picked 512MB swap and used the rest for the single server
 - Assigned IP is 162.216.16.102 (li605-102.members.linode.com)
 - IPv6 2600:3c03::f03c:91ff:fedb:abd1/64
@@ -25,6 +25,12 @@ sudo apt-get dist-upgrade
     usermod -a -G sudo,adm matt
     adduser liz
     usermod -a -G sudo,adm liz
+
+- and for the boys' emails:
+    adduser miles18
+    usermod -L miles18
+    adduser max18
+    usermod -L max18
 
 3. Install users authorized_keys files in to ~/.ssh
 
