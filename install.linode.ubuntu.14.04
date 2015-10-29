@@ -270,6 +270,37 @@ dovecot_delivery_junk:
   #mode = 0660
   temp_errors = 64 : 69 : 70: 71 : 72 : 73 : 74 : 75 : 78
 
+- set up DKIM signing (because, you know, spammers won't sign messages
+  or spoofing is a problem or, something..)
+  From: https://www.debian-administration.org/article/718/DKIM-signing_outgoing_mail_with_exim4
+
+sudo mkdir /etc/exim4/dkim
+cd /etc/exim4/dkim
+
+- Generate keys for each domain:
+
+sudo openssl genrsa -out mattcaron.net.private.pem 2048 -outform PEM
+sudo openssl rsa -in mattcaron.net.private.pem -out mattcaron.net.pem -pubout -outform PEM
+
+sudo openssl genrsa -out fishhousefishandgame.com.private.pem 2048 -outform PEM
+sudo openssl rsa -in fishhousefishandgame.com.private.pem -out fishhousefishandgame.com.pem -pubout -outform PEM
+
+- publish the private keys in DNS using the date as the selector
+
+- Fix perms
+
+sudo chown -R Debian-exim:Debian-exim /etc/exim4/dkim
+sudo chmod -R go-rwx /etc/exim4/dkim
+
+- Change the remote_smtp section to be like this:
+
+remote_smtp:
+  driver = smtp
+  dkim_canon = relaxed
+  dkim_selector = 20151029
+  dkim_domain = ${sg{${lc:${domain:$h_from:}}}{^www\.}{}}
+  dkim_private_key = ${if exists{/etc/exim4/dkim/${dkim_domain}.private.pem}{/etc/exim4/dkim/${dkim_domain}.private.pem}{0}}
+
 14. Configure the time zone:
 
 sudo dpkg-reconfigure tzdata
