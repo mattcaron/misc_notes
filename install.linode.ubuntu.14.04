@@ -270,15 +270,6 @@ dovecot_delivery_junk:
   #mode = 0660
   temp_errors = 64 : 69 : 70: 71 : 72 : 73 : 74 : 75 : 78
 
-- IMPORTANT: 
-In recent TBs, you need to add the exception in TB in order to
-progress past the "probe" UI.
-
-Edit->Preferences->Advanced->Certificates->View Certificates
-Servers tab -> Add Exception -> servername:993
-
-(and then do the same for port 465 for smtp)
-
 14. Configure the time zone:
 
 sudo dpkg-reconfigure tzdata
