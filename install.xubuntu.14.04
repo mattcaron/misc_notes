@@ -579,3 +579,13 @@ sudo dpkg -i ZoomInstaller_i386.deb
 
 Run with:
     zoom
+
+52.) Install meshmixer (for 3D printing stuff):
+
+- Download from http://www.meshmixer.com/linux.html
+
+sudo dpkg -i meshmixer_2.9_amd64.deb
+
+- Install dependencies:
+
+sudo apt-get -f install

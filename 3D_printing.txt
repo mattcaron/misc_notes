@@ -10,7 +10,7 @@ version 1.5 w/ Flex Vat.
 
 http://www.envisionlabs.net/
 
-Note that support structures are generated here.
+Note that this can generate support structures.
 
 3.) STL validator / fixer / etc.
 
@@ -48,3 +48,26 @@ Need to install arduino to work on printer firmware.
 
 The version in the repos is old. Download latest from 
 https://www.arduino.cc
+
+6.) MeshMixer: http://www.meshmixer.com/linux.html
+
+To use to generate supports and optimal positioning:
+
+  1. Click Import
+  2. Open your file.
+  3. Click "print".
+  4. Click the little toolbox icon next to "Add Supports"
+  5. On the "overhangs" menu, select "SLA/DLP Printer"
+  6. Click "Optimize Orientation"
+  7. Click "Generate Support"
+  8. Do File->Save Scene as
+  9. Save it
+ 10. Close MeshMixer
+ 11. Open MeshMixer
+ 12. Open the file you saved in step 9.
+ 13. Export it to .stl ASCII
+
+You can then open this in Creation Workshop, orient and print it.
+
+The reason for the goofy two step is that, once you're in the support
+generation section, it likes to crash if you back out of it.
