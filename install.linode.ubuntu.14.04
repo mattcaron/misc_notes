@@ -301,6 +301,14 @@ remote_smtp:
   dkim_domain = ${sg{${lc:${domain:$h_from:}}}{^www\.}{}}
   dkim_private_key = ${if exists{/etc/exim4/dkim/${dkim_domain}.private.pem}{/etc/exim4/dkim/${dkim_domain}.private.pem}{0}}
 
+- Allow remote MUA's to set the sender for the envelope. This stops
+  exim from stripping it and forcing it to be the canonical domain (so
+  we can support multiple virtual domains). Anyway, go to the end of
+  the Main Configuration section, right above ACL CONFIGURATION and add:
+
+local_sender_retain = true
+local_from_check = false
+
 14. Configure the time zone:
 
 sudo dpkg-reconfigure tzdata
