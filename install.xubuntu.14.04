@@ -589,3 +589,18 @@ sudo dpkg -i meshmixer_2.9_amd64.deb
 - Install dependencies:
 
 sudo apt-get -f install
+
+53.) Work around Wasteland 2 Director's cut hang because someone
+     forgot a close somewhere.
+
+From:
+https://forums.inxile-entertainment.com/viewtopic.php?f=34&t=14060#p159807
+
+- edit /etc/security/limits.conf
+
+add the following (limits fix to me):
+
+matt soft nofile 4096
+matt hard nofile 8192
+
+Reboot.
