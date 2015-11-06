@@ -38,6 +38,14 @@ GRANT ALL PRIVILEGES ON sarahdipitysweets_wordpress.* TO "sarahdipity_wpuser"@"l
 
 FLUSH PRIVILEGES;
 
+---
+
+CREATE DATABASE kimcaron_wordpress;
+
+GRANT ALL PRIVILEGES ON kimcaron_wordpress.* TO "kimcaron_wpuser"@"localhost" IDENTIFIED by "password";
+
+FLUSH PRIVILEGES;
+
 (5) set up the config
 
 cd wordpress
@@ -46,7 +54,7 @@ mv wp-config-sample.php wp-config.php
 
 - edit wp-config.php and 
   - set it up to reflect your db stuff.
-  - generate 4 unique keys and populate the various _KEY values. You
+  - generate the unique keys and populate the various _KEY values. You
     don't need to remember or save them or anything.
 
 (6) Run the installer by going to something wordpress-ey.
