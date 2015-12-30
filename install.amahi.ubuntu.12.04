@@ -568,7 +568,8 @@ sudo ufw allow from 192.168.9.0/24 to any port 8200
 - If you ever need to rebuld the DB:
 
 sudo service minidlna stop
-sudo -u nobody minidlna -R
+sudo -u minidlna minidlna -R
+   (and this can take awhile, so you kind of need to wait for it to finish)
 sudo service minidlna start
 
 2.) Amahi Time Machine
