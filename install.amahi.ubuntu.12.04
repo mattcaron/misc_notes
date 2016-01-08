@@ -494,6 +494,33 @@ sudo apt-get -f install
 
 And that will install everything.
 
+36.) Upgrade minidlna server to one that does transcoding:
+
+sudo apt-add-repository ppa:pneu/readymedia-transcode
+sudo apt-get update
+sudo apt-get install readymedia-transcode libav-tools libavcodec-extra-53
+sudo apt-get remove minidlna
+
+cd /usr/bin
+sudo ln -s minidlnatc minidlna
+
+cd /etc
+sudo mv minidlna.conf minidlna.conf.old
+sudo ln -s minidlnatc.conf minidlna.conf
+
+cd /etc/init.d
+sudo mv minidlna minidlna.old
+sudo ln -s minidlnatc minidlna
+
+And then you need to configure the transcoding on the file types you
+want to transcode in the config file.
+
+IMPORTANT: This transcoding only happens when the file is accessed. If
+you server queries the file metadata or name and filters out things it
+doesn't think it can play based on that, you won't see those files, so
+the transcoding won't even get a chance to happen. This means it works
+on stuff like my Onkyo receiver, but not on my Roku.
+
 II. Install and configure apps:
 
 (This may require going to the store and buying the non-free ones, etc.)
