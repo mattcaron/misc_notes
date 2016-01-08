@@ -13,7 +13,20 @@ have multiple firewire ports. Pass it info as follows:
   ^ for Canopus ADVC 100
 
 
+For DVDs:
+
 In kdenlive:
-To render DVD files, choose "render" and render to DVD (easy enough)
-Then you import these files into dvdstyler
+  - Choose "render" and render to DVD (easy enough)
+  - Then you import these files into dvdstyler
+
+For general clips:
+
+In Kdenlive:
+  - Choose "render" and select "Lossless/HQ", and pick "H.264 lossless
+    fast(video) + PCM(sound)."
+  - Once rendered, you can use GHB to convert it to one of the predefined
+    profiles.
+  - I note that this is likely a higher quality output than most
+    recording devices will output, but we can be reasonably assured
+    that we're not making it worse. via the intermediary conversion.
 
