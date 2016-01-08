@@ -71,3 +71,12 @@ You can then open this in Creation Workshop, orient and print it.
 
 The reason for the goofy two step is that, once you're in the support
 generation section, it likes to crash if you back out of it.
+
+7.) slic3r
+
+Used to slice for beta RPi2 controller w/ NanoDLP. Eliminates need for
+Stomp via Wine.
+
+sudo apt-add-repository http://ppa.launchpad.net/hyperair/3dprinter/ubuntu
+sudo apt-get update
+sudo apt-get install slic3r
