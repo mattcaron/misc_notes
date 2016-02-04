@@ -167,7 +167,7 @@ sudo apt-get install exim4-daemon-heavy exim4
   and found in the src/ directory of the source code and modify it as follows:
 
 primary_hostname = mattcaron.net
-domainlist local_domains = mattcaron.net : fishhousefishandgame.com
+domainlist local_domains = mattcaron.net : pfmbonsai.com
 domainlist relay_to_domains =
 hostlist   relay_from_hosts = localhost
 tls_advertise_hosts = *
@@ -282,10 +282,12 @@ cd /etc/exim4/dkim
 sudo openssl genrsa -out mattcaron.net.private.pem 2048 -outform PEM
 sudo openssl rsa -in mattcaron.net.private.pem -out mattcaron.net.pem -pubout -outform PEM
 
-sudo openssl genrsa -out fishhousefishandgame.com.private.pem 2048 -outform PEM
-sudo openssl rsa -in fishhousefishandgame.com.private.pem -out fishhousefishandgame.com.pem -pubout -outform PEM
+sudo openssl genrsa -out pfmbonsai.com.private.pem 2048 -outform PEM
+sudo openssl rsa -in pfmbonsai.com.private.pem -out pfmbonsai.com.pem -pubout -outform PEM
 
-- publish the private keys in DNS using the date as the selector
+- publish the public keys in DNS using the date as the selector.
+- IMPORTANT - my current exim config exim uses the same selector
+  (date) for ALL domains, so they all need to match.
 
 - Fix perms
 
@@ -611,11 +613,11 @@ system_aliases_domain:
 
 Ref: http://www.sympa.org/manual/virtual-hosts
 
-- Add the following to /etc/aliases:
+- Add any new domains to /etc/aliases, as necessary. As in:
 
-sympa@fishhousefishandgame.com:      "| /usr/lib/sympa/bin/queue sympa@fishhousefishandgame.com"
-listmaster@fishhousefishandgame.com: "| /usr/lib/sympa/bin/queue listmaster@fishhousefishandgame.com"
-bounce+*@fishhousefishandgame.com:          "| /usr/lib/sympa/bin/bouncequeue sympa@fishhousefishandgame.com"
+sympa@domain.com:      "| /usr/lib/sympa/bin/queue sympa@domain.com"
+listmaster@domain.com: "| /usr/lib/sympa/bin/queue listmaster@domain.com"
+bounce+*@domain.com:          "| /usr/lib/sympa/bin/bouncequeue sympa@domain.com"
 
 - And add the following to /etc/exim4/exim4.conf, in the ROUTERS
   CONFIGURATION section (doesn't matter where):
@@ -632,83 +634,34 @@ sympa_aliases_robot:
   file_transport = address_file
   pipe_transport = address_pipe
 
-- Add /etc/apache2/sites-available/sympa.fishhouse as follows:
-
-<VirtualHost *:80>
-    ServerName sympa.fishhousefishandgame.com
-    ServerAdmin webmaster@fishhousefishandgame.com
-    Redirect permanent / https://sympa.fishhousefishandgame.com/wws
-</VirtualHost>
-
-<VirtualHost *:443>
-    ServerName sympa.fishhousefishandgame.com
-    ServerAdmin webmaster@fishhousefishandgame.com
-
-    SSLEngine on
-    SSLCertificateFile    /etc/ssl/private/fishhousefishandgame.com/crt
-    SSLCertificateKeyFile /etc/ssl/private/fishhousefishandgame.com/key
-
-    # Standard SSL protocol adustments for IE
-    BrowserMatch "MSIE [2-6]" \
-               nokeepalive ssl-unclean-shutdown \
-               downgrade-1.0 force-response-1.0
-    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-
-    Alias /static-sympa /var/lib/sympa/static_content
-    ScriptAlias /wws /var/www/sympa/wwsympa.cgi
-    SuexecUserGroup sympa sympa
-
-    # Use simple cgi here. It's not heavily used and base cgi is the most 
-    # compatible
-    AddHandler cgi-script .fcgi .cgi .pl .sh
-
-    RewriteEngine On
-    RewriteRule  ^/$                 /wws  [R,L]
-
-    <Directory "/var/www/sympa/">
-        AllowOverride None
-        Options ExecCGI
-        Order allow,deny
-        Allow from all
-    </Directory>
-</VirtualHost>
-
-- enable
-
-sudo a2ensite sympa.fishhouse
-
-- reload
-
-sudo service apache2 reload
-
 - create bits / copy in defaults:
 
-sudo mkdir /etc/sympa/fishhousefishandgame.com
-sudo cp /usr/share/doc/sympa/examples/sample/robot.conf /etc/sympa/fishhousefishandgame.com/.
-sudo chown -R sympa:sympa /etc/sympa/fishhousefishandgame.com
-sudo chmod 750 /etc/sympa/fishhousefishandgame.com
-sudo chmod 640 /etc/sympa/fishhousefishandgame.com/robot.conf
-sudo mkdir /var/lib/sympa/fishhousefishandgame.com
-sudo chown sympa:sympa /var/lib/sympa/fishhousefishandgame.com
-sudo chmod 750 /var/lib/sympa/fishhousefishandgame.com
+sudo mkdir /etc/sympa/domain.com
+sudo cp /usr/share/doc/sympa/examples/sample/robot.conf /etc/sympa/domain.com/.
+sudo chown -R sympa:sympa /etc/sympa/domain.com
+sudo chmod 750 /etc/sympa/domain.com
+sudo chmod 640 /etc/sympa/domain.com/robot.conf
+sudo mkdir /var/lib/sympa/domain.com
+sudo chown sympa:sympa /var/lib/sympa/domain.com
+sudo chmod 750 /var/lib/sympa/domain.com
 
-- edit /etc/sympa/fishhousefishandgame.com/robot.conf and set as follows:
+- edit /etc/sympa/domain.com/robot.conf and set as follows:
 
-http_host  sympa.fishhousefishandgame.com
+http_host  sympa.domain.com
 listmaster matt@mattcaron.net
-title Fish House Fish and Game MailingLists Service
+title New Domain MailingLists Service
 
 - and, below http_host, you'll want to add:
 
-wwsympa_url  https://sympa.fishhousefishandgame.com/wws
+wwsympa_url  https://sympa.domain.com/wws
 
-- create /etc/sympa/fishhousefishandgame.com/topics.conf
+- create /etc/sympa/domain.com/topics.conf
 
-hunting
-title Hunting
+topic1
+title Some Topic
 
-fishing
-title Fishing
+topic2
+title Some other topic
 
 general
 title General Membership
