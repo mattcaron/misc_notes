@@ -615,9 +615,9 @@ Ref: http://www.sympa.org/manual/virtual-hosts
 
 - Add any new domains to /etc/aliases, as necessary. As in:
 
-sympa@domain.com:      "| /usr/lib/sympa/bin/queue sympa@domain.com"
-listmaster@domain.com: "| /usr/lib/sympa/bin/queue listmaster@domain.com"
-bounce+*@domain.com:          "| /usr/lib/sympa/bin/bouncequeue sympa@domain.com"
+sympa@domain.com:      "| /opt/sympa/bin/queue sympa@domain.com"
+listmaster@domain.com: "| /opt/sympa/bin/queue listmaster@domain.com"
+bounce+*@domain.com:   "| /opt/sympa/bin/bouncequeue sympa@domain.com"
 
 - And add the following to /etc/exim4/exim4.conf, in the ROUTERS
   CONFIGURATION section (doesn't matter where):
@@ -637,7 +637,7 @@ sympa_aliases_robot:
 - create bits / copy in defaults:
 
 sudo mkdir /etc/sympa/domain.com
-sudo cp /usr/share/doc/sympa/examples/sample/robot.conf /etc/sympa/domain.com/.
+sudo cp /home/matt/workspace/code/sympa/doc/samples/robot.conf /etc/sympa/domain.com/.
 sudo chown -R sympa:sympa /etc/sympa/domain.com
 sudo chmod 750 /etc/sympa/domain.com
 sudo chmod 640 /etc/sympa/domain.com/robot.conf
@@ -1023,7 +1023,7 @@ cd ~/workspace/code
 git svn clone -s http://svn.cru.fr/sympa/
 cd sympa
 git-tag-svn 
-git checkout sympa-6.1.23
+git checkout sympa-6.2.14
 git checkout -b production
 
 - upgrade later
@@ -1032,9 +1032,9 @@ git svn fetch
 git-svn-merge-branches
 git-tag-svn
 git checkout production
-git merge sympa-6.2.12
+git merge sympa-6.2.14
 
-(where 6.2.12 is the current version)
+(where 6.2.14 is the current version)
 
 B.) Copy this whole mess over to the linode server:
 push_sympa
@@ -1057,15 +1057,15 @@ sudo a2enmod cgi
 
 F.) Make the destination directory:
 
-sudo mkdir /opt/sympa-6.2.12
-sudo chown matt:matt /opt/sympa-6.2.12
+sudo mkdir /opt/sympa-6.2.14
+sudo chown matt:matt /opt/sympa-6.2.14
 
 G.) Build and install it:
 
 cd ~/workspace/code/sympa
 autoreconf -i
 make distclean
-./configure --prefix=/opt/sympa-6.2.12 --with-initdir=/opt/sympa-6.2.12/etc/init.d --with-cgidir=/opt/sympa-6.2.12/cgi-bin
+./configure --prefix=/opt/sympa-6.2.14 --with-initdir=/opt/sympa-6.2.14/etc/init.d --with-cgidir=/opt/sympa-6.2.14/cgi-bin
 make
 make install
 
@@ -1090,33 +1090,33 @@ make install
 
 H.) Fix permissions
 
-sudo chown -R sympa:sympa /opt/sympa-6.2.12
-sudo chmod a+rX -R /opt/sympa-6.2.12
+sudo chown -R sympa:sympa /opt/sympa-6.2.14
+sudo chmod a+rX -R /opt/sympa-6.2.14
 
 I.) Make some compatibilty symlinks:
 
 cd /opt
 sudo -u sympa -s
-cd /opt/sympa-6.2.12
+cd /opt/sympa-6.2.14
 ln -s /var/lib/sympa/expl .
 ln -s /var/lib/sympa/wwsarchive .
 ln -s /var/lib/sympa/x509-user-certs .
-cd /opt/sympa-6.2.12/etc
+cd /opt/sympa-6.2.14/etc
 ln -s /etc/sympa .
-mkdir /opt/sympa-6.2.12/static_content
-cd /opt/sympa-6.2.12/static_content
+mkdir /opt/sympa-6.2.14/static_content
+cd /opt/sympa-6.2.14/static_content
 ln -s /var/lib/sympa/static_content/css .
 ln -s /etc/mail/sympa/aliases /etc/mail/sympa_aliases
-cp -a /opt/sympa-6.2.6/spool /opt/sympa-6.2.12
+cp -a /opt/sympa-6.2.12/spool /opt/sympa-6.2.14
 exit
 sudo /etc/init.d/sympa stop
 sudo rm sympa
-sudo ln -s sympa-6.2.12/ sympa
+sudo ln -s sympa-6.2.14/ sympa
 sudo /etc/init.d/sympa start
 
 J.) Auto-install a pile of perl modules:
 
-sudo /opt/sympa-6.2.12/bin/sympa_wizard.pl --check
+sudo /opt/sympa-6.2.14/bin/sympa_wizard.pl --check
 
 (hit enter a bunch of times)
 
@@ -1145,7 +1145,7 @@ sudo ln -s /etc/sympa/sympa.conf .
 
 M.) Run the upgrade script
 
-sudo -u sympa /opt/sympa-6.2.12/bin/sympa.pl --upgrade
+sudo -u sympa /opt/sympa-6.2.14/bin/sympa.pl --upgrade
 
 N.) Fix up supporting bits and bobs
 
@@ -1155,6 +1155,12 @@ sudo mkdir -p /var/lock/subsys/sympa
 sudo chown sympa:sympa /var/lock/subsys/sympa
 sudo mkdir /var/spool/sympa/wwsbounce
 sudo chown sympa:sympa /var/spool/sympa/wwsbounce
+sudo chmod u+s /opt/sympa/bin/queue /opt/sympa/bin/bouncequeue
+
+The queue needs to be suid root so that the mail server works when it
+calls queue and bouncequeue. Some of the routers call the filter and
+that needs to be as sympa, but we still want them to run other actions
+as exim.
 
 O.) Fix up the webserver CGI wrapper
 
@@ -1196,14 +1202,6 @@ dmarc_protection_mode dmarc_any
 S.) Fix up the mailserver aliases /etc/aliases and
     /etc/mail/sympa/aliases and replace /usr/lib/sympa/lib/sympa with
     /opt/sympa/bin
-
-T.) And the queue needs to be suid root so that the mail server works
-when it calls queue and bouncequeue. Some of the routers call the
-filter and that needs to be as sympa, but we still want them to run
-other actions as exim.
-
-sudo chmod u+s /opt/sympa/bin/queue /opt/sympa/bin/bouncequeue
-
 
 U.) Start it:
 
