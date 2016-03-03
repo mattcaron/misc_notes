@@ -1,0 +1,53 @@
+On RAID-ed SSDs:
+
+(matt@hiro) ~/workspace/code/tiobench (mattcaron)$ sudo ./tiobench.pl --flushCaches
+
+Unit information
+================
+File size = megabytes (2^20 bytes, 1,048,576 bytes)
+Blk Size  = bytes
+Rate      = megabytes per second
+CPU%      = percentage of CPU used during the test
+Latency   = milliseconds
+Lat%      = percent of requests that took longer than X seconds
+CPU Eff   = Rate divided by CPU% - throughput per cpu load
+
+Sequential Reads
+================
+                              File   Blk   Num                     Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size   Size  Thr    Rate   (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ------ ---  -------- ------ --------- -----------  -------- -------- -----
+3.13.0-77-generic            31498   4096    1    407.27 23.64%     0.010       12.58   0.00000  0.00000  1723
+3.13.0-77-generic            31498   4096    2    582.40 30.60%     0.013       23.58   0.00000  0.00000  1903
+3.13.0-77-generic            31498   4096    4    824.27 39.08%     0.019       14.50   0.00000  0.00000  2109
+3.13.0-77-generic            31498   4096    8    928.40 40.33%     0.033      299.67   0.00000  0.00000  2302
+
+Random Reads
+============
+                              File   Blk   Num                     Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size   Size  Thr    Rate   (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ------ ---  -------- ------ --------- -----------  -------- -------- -----
+3.13.0-77-generic            31498   4096    1  38000.68 6.140%     0.150        1.07   0.00000  0.00000 #####
+3.13.0-77-generic            31498   4096    2  57964.67     0%     0.162        4.35   0.00000  0.00000 #####
+3.13.0-77-generic            31498   4096    4  61145.41     0%     0.188        9.29   0.00000  0.00000 #####
+3.13.0-77-generic            31498   4096    8  69058.06     0%     0.220       13.61   0.00000  0.00000 #####
+
+Sequential Writes
+=================
+                              File   Blk   Num                     Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size   Size  Thr    Rate   (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ------ ---  -------- ------ --------- -----------  -------- -------- -----
+3.13.0-77-generic            31498   4096    1    383.82 26.44%     0.010      749.71   0.00000  0.00000  1451
+3.13.0-77-generic            31498   4096    2    325.99 26.36%     0.024     1841.72   0.00000  0.00000  1236
+3.13.0-77-generic            31498   4096    4    292.44 23.65%     0.052     1511.37   0.00000  0.00000  1236
+3.13.0-77-generic            31498   4096    8    256.29 20.38%     0.118     1492.93   0.00000  0.00000  1257
+
+Random Writes
+=============
+                              File   Blk   Num                     Avg      Maximum      Lat%     Lat%    CPU
+Identifier                    Size   Size  Thr    Rate   (CPU%)  Latency    Latency      >2s      >10s    Eff
+---------------------------- ------ ------ ---  -------- ------ --------- -----------  -------- -------- -----
+3.13.0-77-generic            31498   4096    1  85483.21     0%     0.002        0.03   0.00000  0.00000 #####
+3.13.0-77-generic            31498   4096    2  77623.34     0%     0.003        0.02   0.00000  0.00000 #####
+3.13.0-77-generic            31498   4096    4  73434.37     0%     0.004        0.11   0.00000  0.00000 #####
+3.13.0-77-generic            31498   4096    8  58647.40     0%     0.016       18.49   0.00000  0.00000 #####
