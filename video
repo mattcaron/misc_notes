@@ -1,5 +1,6 @@
 kdenlive dvdstyler
 
+dvgrab - capture DV/HDV vua firewire
 kdenlive - for video editing
 dvdstyler - for menu creation and chaptering (kdenlive kind of sucks at this)
 
@@ -17,6 +18,8 @@ For DVDs:
 
 In kdenlive:
   - Choose "render" and render to DVD (easy enough)
+  - You may need to tick the box for "show all profiles" and select
+    the one which you want to use (eg NTSC 16:9)
   - Then you import these files into dvdstyler
 
 For general clips:
