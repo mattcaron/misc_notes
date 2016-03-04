@@ -627,3 +627,10 @@ sudo ufw allow in 27036/udp
 sudo ufw allow in 27036/tcp
 sudo ufw allow in 27037/tcp
 
+56.) Newer DVDStyler
+
+The one that comes with 14.04 likes to crash a lot:
+
+sudo add-apt-repository ppa:ubuntuhandbook1/dvdstyler
+sudo apt-get update
+sudo apt-get dist-upgrade
