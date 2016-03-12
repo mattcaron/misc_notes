@@ -90,7 +90,13 @@ instructions.. more or less. However, we need to do it as pi, not as me:
 
 sudo -u pi -i
 
-(and then do the install process).
+(and then do the install process). The TL:DR and update is:
+
+sudo killall pigpiod
+(wget http://www.nanodlp.com/nanodlp.muve3d.tar.gz -O - | \
+tar -C /home/pi -xz) && cd /home/pi/printer && sudo ./setup.sh
+
+(the answers are yes, yes, yes and no)
 
 Once it's installed, go to:
 
