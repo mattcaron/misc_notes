@@ -94,9 +94,8 @@ sudo -u pi -i
 
 (and then do the install process). The TL:DR and update is:
 
-sudo killall pigpiod
 (wget http://www.nanodlp.com/nanodlp.tar.gz -O - | \
-tar -C /home/pi -xz) && cd /home/pi/printer && sudo ./setup.sh
+tar -C /home/pi -xz) && cd /home/pi/printer && sudo ./setup.sh muve3d
 
 (the answers are:
 Do you want to optimize Raspberry Pi settings for nanoDLP automatically? [Y/n] Y
