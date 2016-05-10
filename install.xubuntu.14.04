@@ -634,3 +634,11 @@ The one that comes with 14.04 likes to crash a lot:
 sudo add-apt-repository ppa:ubuntuhandbook1/dvdstyler
 sudo apt-get update
 sudo apt-get dist-upgrade
+
+57.) Lutris
+
+echo "deb http://download.opensuse.org/repositories/home:/strycore/xUbuntu_14.04/ ./" | sudo tee /etc/apt/sources.list.d/lutris.list
+sudo chmod a+r /etc/apt/sources.list.d/lutris.list
+wget -q http://download.opensuse.org/repositories/home:/strycore/xUbuntu_14.04/Release.key -O- | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install lutris
