@@ -744,9 +744,6 @@ libapache2-mod-xsendfile php5-apcu
 
 - download tarball (add to source control, etc.)
   http://owncloud.org/install/
-- Copy in the user_pwauth plugin from: 
-  http://apps.owncloud.com/content/show.php/Unix+user+backend?content=148406
-- Unzip it and copy it in to owncloud/apps (add to source control, etc.)
 
 - Make the xsendfile cache:
 
@@ -757,7 +754,6 @@ sudo chown www-data:www-data /tmp/oc-noclean
  - edit /etc/php5/apache2
  - uncomment:
    default_charset = "UTF-8"
-
 
 - Log in to the DB server and create a user and password
 
@@ -839,17 +835,10 @@ Once logged in:
  - Enforce HTTPS
 
 - Under the "Apps" menu, enable
+ - Bookmarks
  - Calendar
  - Contacts
- - Bookmarks
- - Tasks
  - Documents
- - Unix User Backend
- - Video
-
-- install pwauth
-
-sudo apt-get install pwauth
 
 - Under the "Users" menu
  - Give appropriate people admin access
