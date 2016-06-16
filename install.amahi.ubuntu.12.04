@@ -521,6 +521,16 @@ doesn't think it can play based on that, you won't see those files, so
 the transcoding won't even get a chance to happen. This means it works
 on stuff like my Onkyo receiver, but not on my Roku.
 
+37.) Set up proper Unix behavior for CIFS shares
+
+- edit /etc/samba/smb.conf and set:
+
+unix extensions = yes
+case sensitive = yes
+
+Note that "unix extensions = yes" might break some windows
+machines. However, we don't have any, so we don't care.
+
 II. Install and configure apps:
 
 (This may require going to the store and buying the non-free ones, etc.)
