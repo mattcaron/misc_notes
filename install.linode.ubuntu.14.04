@@ -1196,3 +1196,73 @@ U.) Start it:
 
 sudo service sympa start
 
+27.) Prosody
+
+    sudo apt-get install prosody lua-dbi-mysql
+
+a.) Combine the certs into one combined cert because prosody wants
+them that way:
+
+sudo -s
+cd /etc/ssl/private/mattcaron.net#
+cp crt crt_ca_combined
+cat ../startssl_ca.pem >> crt_ca_combined
+cat ../startssl_sub.class1.server.ca.pem >> crt_ca_combined 
+chgrp ssl-cert crt_ca_combined 
+exit
+
+b.) change the certs to point at the base domain name. In
+/etc/prosody/prosody.conf.lua, set the ssl block to be:
+
+ssl = {
+        key = "/etc/ssl/private/mattcaron.net/key";
+        certificate = "/etc/ssl/private/mattcaron.net/crt_ca_combined";
+}
+
+c.) Change c2s_require_encryption to true.
+
+d.) Below it add: s2s_require_encryption set to true
+
+e.) change s2s_secure_auth to true (we don't do any server federation,
+so this likely doesn't matter)
+
+f.) Set authentication to "internal_hashed"
+
+g.) Make a user and database in MySQL
+CREATE DATABASE prosody;
+CREATE USER prosody@localhost IDENTIFIED BY "password";
+GRANT ALL PRIVILEGES ON prosody.* to prosody;
+
+h.) And then set up the sql line based on the above:
+storage = "sql"
+sql = { driver = "MySQL", database = "prosody", username = "prosody", password = "password", host = "localhost" }
+
+
+i.) add a virtualhost section:
+
+VirtualHost "mattcaron.net"
+        enabled = true
+        ssl = {
+                key = "/etc/ssl/private/mattcaron.net/key";
+                certificate = "/etc/ssl/private/mattcaron.net/crt_ca_combined";
+        }
+
+j.) Enable multi user conference and file proxying:
+
+Component "conference.mattcaron.net" "muc"
+Component "proxy.mattcaron.net" "proxy65"
+
+Note that DNS entries are not necessary because mod_disco takes care
+of service discovery, etc. (or so it claims).
+
+k.) Allow through the firewall
+
+XMPP:
+    sudo ufw allow 5222/tcp
+
+XMPP proxy:
+    sudo ufw allow 5000/tcp
+
+l.) add users with:
+
+    sudo prosodyctl adduser user@mattcaron.net
