@@ -104,12 +104,6 @@ Do you want to enable i2c to enable communication with LCD and other hardware wi
 Do you want to add nanoDLP to startup by replacing rc.local? [Y/n] y
 To expand file system and enable camera module you need to use raspi-config. Do you want to use it now? [Y/n] n
 
-Once it's installed, go to:
-
-http://muve3d/printer/distro/change
-
-and click "change to mUVe3D version"
-
 Once that's done, go to:
 
 http://muve3d
