@@ -1,5 +1,5 @@
 From a clean Xubuntu 14.04 install. I used the minimal install CD and
-installed the XUbuntu Desktop and SSH server.
+installed the XUbuntu Desktop and SSH server. (This was for Daisy)
 
 1.) Base install
 
@@ -38,7 +38,7 @@ apt-get dist-upgrade
 
 5.) Install base useful things
 
-apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp powertop gif2png units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba cifs-utils meld ntp unrar subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade mono-gmcs smartmontools vnc4server xvnc4viewer aspell aspell-en openjdk-7-jdk icedtea-7-plugin libmono-i18n2.0-cil libmono-microsoft8.0-cil p7zip latencytop apt-show-versions git-core gitk git-svn speedcrunch  apt-file manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc logcheck preload iftop atop libc6-i386 libc6-dev-i386 lib32z1 lib32ncurses5 lib32bz2-1.0 arandr tree meshlab lm-sensors gkrellm xfce4-goodies xfce4-battery-plugin xfce4-battery-plugin xfce4-cellmodem-plugin xfce4-clipman-plugin xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-datetime-plugin xfce4-dict xfce4-diskperf-plugin xfce4-eyes-plugin xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-hdaps xfce4-indicator-plugin xfce4-linelight-plugin xfce4-mailwatch-plugin xfce4-messenger-plugin xfce4-mount-plugin xfce4-mpc-plugin xfce4-netload-plugin xfce4-notes-plugin xfce4-places-plugin xfce4-power-manager-plugins xfce4-quicklauncher-plugin xfce4-radio-plugin xfce4-screenshooter-plugin xfce4-sensors-plugin xfce4-smartbookmark-plugin xfce4-systemload-plugin xfce4-time-out-plugin xfce4-timer-plugin xfce4-verve-plugin xfce4-wavelan-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-wmdock-plugin xfce4-xkb-plugin xfswitch-plugin
+apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp powertop gif2png units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev meld ntp unrar subversion smartmontools vnc4server xvnc4viewer aspell aspell-en openjdk-7-jdk icedtea-7-plugin p7zip latencytop apt-show-versions git-core gitk git-svn speedcrunch  apt-file manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc logcheck preload iftop atop libc6-i386 libc6-dev-i386 lib32z1 lib32ncurses5 lib32bz2-1.0 arandr tree meshlab lm-sensors gkrellm xfce4-goodies xfce4-battery-plugin xfce4-battery-plugin xfce4-cellmodem-plugin xfce4-clipman-plugin xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-datetime-plugin xfce4-dict xfce4-diskperf-plugin xfce4-eyes-plugin xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-hdaps xfce4-indicator-plugin xfce4-linelight-plugin xfce4-mailwatch-plugin xfce4-messenger-plugin xfce4-mount-plugin xfce4-mpc-plugin xfce4-netload-plugin xfce4-notes-plugin xfce4-places-plugin xfce4-power-manager-plugins xfce4-quicklauncher-plugin xfce4-radio-plugin xfce4-screenshooter-plugin xfce4-sensors-plugin xfce4-smartbookmark-plugin xfce4-systemload-plugin xfce4-time-out-plugin xfce4-timer-plugin xfce4-verve-plugin xfce4-wavelan-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-wmdock-plugin xfce4-xkb-plugin xfswitch-plugin ppa-purge
 
 6.) Set up ssh
 
@@ -67,39 +67,35 @@ ufw enable
 
 MAILTO="matt@mattcaron.net"
 
-9.) Set up samba:
-
-TBD
-
-10.) Set up ssmtp
+9.) Set up ssmtp
     cd /etc/ssmtp
     mv ssmtp.conf ssmtp.conf.old
     cp ~/system_stuff/ssmtp/ssmtp.conf .
     chmod a+r ssmtp.conf
 
-11.) Set up sensors
+10.) Set up sensors
 
 - Add the following to /etc/modules:
 coretemp
 smsc47m1
 
-12.) Set up logcheck
+11.) Set up logcheck
 - edit /etc/cron.d/logcheck and set it to @daily and not every 2 hours
 
-13.) Pulseaudio equalizer:
+12.) Pulseaudio equalizer:
 
 sudo apt-add-repository ppa:nilarimogard/webupd8
 
 sudo apt-get update && sudo apt-get install pulseaudio-equalizer
 
-14.) Make java pretty
+13.) Make java pretty
 
 -  Edit /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/swing.properties
    and uncomment:
 
 swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
 
-15.) Stop the stupid GNOME SSH agent thing from working.
+14.) Stop the stupid GNOME SSH agent thing from working.
 
 NOTE: This is a stupid hack to get around the fact that, apparently,
 the gnome keyring is started unconditionally with all components if
@@ -128,7 +124,7 @@ X-GNOME-Autostart-enabled=false
 so that it doesn't get started by the ancillary (and likely redundant)
 separate invoker.
 
-16.) Restore old-style Linux grognard boot messages.
+15.) Restore old-style Linux grognard boot messages.
 
 Edit /etc/default/grub
 
@@ -144,7 +140,7 @@ Then do:
 
 sudo update-grub
 
-17.) Install real chrome
+16.) Install real chrome
 
 The ubuntu packaged chromium is broken in a couple of ways - NaCL
 support, etc. NaCL support is required for Hangouts to work. Solution:
@@ -163,61 +159,3 @@ sudo apt-get install google-chrome-stable
 
 See the following for more info on chromium fail
 https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/882942
-
-18.) Install latest OpenSCAD
-
-sudo add-apt-repository ppa:openscad/releases
-sudo apt-get update
-sudo apt-get install openscad
-
-19.) Update to latest mono (necessary for best Creation Workshop functioning)
-
-From: http://www.mono-project.com/docs/getting-started/install/linux/
-
-- Note that we don't install anything here explicitly, because it's
-  all installed above.
-
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list
-sudo chmod a+r /etc/apt/sources.list.d/mono-xamarin.list
-sudo apt-get update
-sudo apt-get dist-upgrade
-
-20.) Configure for pam automount homedir from central house server:
-
-- edit /etc/security/pam_mount.conf.xml
-- add the following under the "Volume definitions" comment:
-
-<volume fstype="cifs" server="amahi" path="%(USER)" mountpoint="/home/%(USER)" user="*" options="rw,auto"/>
-
-21.) On the Amahi server, edit /etc/samba/smb.conf, and make sure the
-following are set to ensure proper Unix behavior.
-
-unix extensions = yes
-case sensitive = yes
-
-Note that "unix extensions = yes" might break some windows
-machines. However, we don't have any, so we don't care.
-
-22.) Make a muve3d bind mount share:
-
-Make the dir, user group, setgid set, sticky bit set:
-
-mkdir /mnt/shared/muve3d
-sudo chgrp users /mnt/shared/muve3d
-sudo chmod go+s /mnt/shared/muve3d
-
-- Add the following to /etc/fstab
-
-/mnt/shared/muve3d      /mnt/muve3d           none   bind             0       0
-/mnt/muve3d             /home/matt/muve3d/    none   bind             0       0
-/mnt/muve3d             /home/liz/muve3d/     none   bind             0       0
-
-23.) Make sure to set access on serial devices for users:
-
-sudo usermod -a -G dialout matt
-
-24.) From this point on, everything is in the network mapped homedir,
-in ~/workspace/3d_printing. If this becomes a multiuser system, I
-likely need to move it to /usr/local or something, but, for now,
-having it in the shared homedir is quite convenient.
