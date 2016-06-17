@@ -1257,12 +1257,28 @@ of service discovery, etc. (or so it claims).
 
 k.) Allow through the firewall
 
-XMPP:
-    sudo ufw allow 5222/tcp
+XMPP client:
+    sudo ufw allow xmpp-client/tcp
 
 XMPP proxy:
     sudo ufw allow 5000/tcp
 
-l.) add users with:
+l.) Install mod_carbon:
+
+get the module source somewhere:
+
+    hg clone https://hg.prosody.im/prosody-modules/ prosody-modules
+
+- copy mod_carbons/mod_carbons.lua to the server and put it in
+  /usr/lib/prosody/modules. Make sure to:
+    chown root:root mod_carbons.lua 
+    chmod a+r mod_carbons.lua 
+
+- then enable it on the server by adding this to the modules section
+  of the config file (at the end):
+
+  "carbons"; -- Carbon copy messages to all devices
+
+z.) add users with:
 
     sudo prosodyctl adduser user@mattcaron.net
