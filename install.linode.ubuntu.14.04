@@ -118,10 +118,16 @@ sudo apt-get install dovecot-imapd
 
     mail_location = maildir:/home/%u/Maildir
 
+- combine the cert files into one, because that's how dovecot wants it
+cp crt aggregate_crt
+cat ../startssl_sub.class1.server.ca.pem >> aggregate_crt
+cat ../startssl_ca.pem >> aggregate_crt
+chgrp ssl-cert aggregate_crt 
+
 - edit /etc/dovecot/conf.d/10-ssl.conf and change it to use the
   mattcaron.net cert:
 
-    ssl_cert = </etc/ssl/private/mattcaron.net/crt
+    ssl_cert = </etc/ssl/private/mattcaron.net/aggregate_crt
     ssl_key = </etc/ssl/private/mattcaron.net/key
 
   - and change ssl to "required"
@@ -1206,8 +1212,8 @@ them that way:
 sudo -s
 cd /etc/ssl/private/mattcaron.net#
 cp crt crt_ca_combined
-cat ../startssl_ca.pem >> crt_ca_combined
 cat ../startssl_sub.class1.server.ca.pem >> crt_ca_combined 
+cat ../startssl_ca.pem >> crt_ca_combined
 chgrp ssl-cert crt_ca_combined 
 exit
 
