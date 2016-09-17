@@ -626,3 +626,19 @@ to
 
 	GtkScrollbar		::has-backward-stepper 			= 1
 	GtkScrollbar		::has-forward-stepper			= 1 
+
+48.) Replace a failed drive:
+
+a.) Copy the partition from an existing drive
+
+- small drives (< 3TB)
+
+sfdisk -d /dev/sdX | sfdisk /dev/sdY
+
+- larger, GPT drives (>= 3TB)
+
+sgdisk -R /dev/sdY /dev/sdY && sgdisk -G /dev/sdY
+
+b.) add in the replacement drive
+
+sudo mdadm --add /dev/mdX /dev/sdXn
