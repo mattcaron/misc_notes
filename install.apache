@@ -1,4 +1,6 @@
-apt-get install apache2 php5 php5-cli php-pear php-db php5-mysql php5-mcrypt mysql-server
+sudo apt-get install apache2 libapache2-mod-php7.0 php7.0 php7.0-cli php-pear php-db php7.0-mysql php7.0-mcrypt mysql-server
+
+(on upgrade, don't forget to check for and remove the PHP5 stuff)
 
 - edit /etc/apache2/ports.conf and change:
 
@@ -18,12 +20,13 @@ Listen 127.0.0.1:443
 
 - enable the userdir and rewrite modules
 
-a2enmod userdir
-a2enmod rewrite
-a2enmod ssl
+sudo a2enmod userdir
+sudo a2enmod rewrite
+sudo a2enmod ssl
+sudo a2enmod php5
 
 - fix up the php configuration by editing
-  /etc/apache2/mods-enabled/php5.conf and commenting out this bit:
+  /etc/apache2/mods-available/php7.0.conf and commenting out this bit:
 #    <IfModule mod_userdir.c>
 #        <Directory /home/*/public_html>
 #            php_admin_value engine Off
@@ -34,7 +37,7 @@ sudo service apache2 restart
 
 - for dev machines, you may not want it to start at boot
 sudo update-rc.d -f apache2 remove
-echo manual > /etc/init/mysql.override
+echo manual | sudo tee /etc/init/mysql.override
 
 Go through this and apply all settings:
 
