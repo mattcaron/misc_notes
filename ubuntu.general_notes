@@ -642,3 +642,7 @@ sgdisk -R /dev/sdY /dev/sdY && sgdisk -G /dev/sdY
 b.) add in the replacement drive
 
 sudo mdadm --add /dev/mdX /dev/sdXn
+
+49.) ecryptfs tutorial
+
+https://www.howtoforge.com/tutorial/how-to-encrypt-directories-with-ecryptfs-on-ubuntu-16-04/
