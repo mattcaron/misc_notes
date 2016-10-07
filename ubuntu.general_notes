@@ -6,12 +6,12 @@
 
 - Generate a key:
 
-ssh-keygen -t dsa -f ~/.ssh/id_dsa
+ssh-keygen -t rsa -f ~/.ssh/id_rsa
 
 - (don't set a passphrase for passwordless auth)
 - note that this is a bit dangerous
 
-cat .ssh/id_dsa.pub | ssh server "cat - >> .ssh/authorized_keys"
+cat .ssh/id_rsa.pub | ssh server "cat - >> .ssh/authorized_keys"
 ssh server "chmod go-rwx .ssh/authorized_keys"
 
 2.) to set DVD region code (only necessary once, per drive, EVER!!!)
@@ -449,11 +449,11 @@ http://blog.ganneff.de/blog/2007/12/29/ssh-triggers.html
 
 (1) generate the key:
 
-ssh-keygen -t dsa -f ~/.ssh/id_dsa_cmd
+ssh-keygen -t rsa -f ~/.ssh/id_rsa_cmd
 
 (and don't enter a passphrase)
 
-echo -n "command=\"command\" "| cat - .ssh/id_dsa_cmd.pub | \
+echo -n "command=\"command\" "| cat - .ssh/id_rsa_cmd.pub | \
 ssh server cat - >> .ssh/authorized_keys
 
 - where server is the server and command is the command you want to run
@@ -536,7 +536,7 @@ sudo cryptsetup luksKillSlot /dev/sda2 <old slot number>
 
 40.) Changing ssh passphrases:
 
-ssh-keygen -f id_dsa -p
+ssh-keygen -f id_rsa -p
 
 41.) Bootsplash reconfigure on 11.04
 
@@ -642,6 +642,10 @@ sgdisk -R /dev/sdY /dev/sdY && sgdisk -G /dev/sdY
 b.) add in the replacement drive
 
 sudo mdadm --add /dev/mdX /dev/sdXn
+
+c.) If the drive is to be bootable, make sure to install grub on it
+
+sudo grub-install /dev/sdX
 
 49.) ecryptfs tutorial
 
