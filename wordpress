@@ -2,8 +2,8 @@ Wordpress
 
 (1) Install webserver 
 	See install.apache
-- also, needs the php5-gd and curl libraries
-  apt-get install php5-gd php5-curl
+- also, needs the gd and curl libraries
+  sudo apt-get install php7.0-gd php7.0-curl php7.0-mbstring
 
 (2) Install mysql-server
 apt-get install mysql-server
