@@ -90,7 +90,7 @@ apt-get update
 apt-get dist-upgrade
 
 5.) Install things:
-sudo apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba cifs-utils libsane-extras xsane scribus scribus-template gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade smartmontools gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack geeqie konqueror kaffeine xine-ui mpg123 sox rhythmbox kcachegrind kcachegrind-converters graphviz hfsplus audacity libsox-fmt-all input-utils mysql-client nant sqlite3 p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger eclipse pssh dh-make devscripts ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu iftop pidgin-skype wireshark atop gkrellm tomboy mail-notification ubuntu-restricted-extras libc6-i386 libc6-dev-i386 lib32z1 lib32ncurses5 lib32bz2-1.0 mercurial skype icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools libav-tools openvpn gdisk wakeonlan wine kdenlive tesseract-ocr davfs2 sshfs ffmpeg2theora mp3info libreoffice xfce4-goodies xfce4-battery-plugin xfce4-battery-plugin xfce4-cellmodem-plugin xfce4-clipman-plugin xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-datetime-plugin xfce4-dict xfce4-diskperf-plugin xfce4-eyes-plugin xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-hdaps xfce4-indicator-plugin xfce4-linelight-plugin xfce4-mailwatch-plugin xfce4-messenger-plugin xfce4-mount-plugin xfce4-mpc-plugin xfce4-netload-plugin xfce4-notes-plugin xfce4-places-plugin xfce4-power-manager-plugins xfce4-quicklauncher-plugin xfce4-radio-plugin xfce4-screenshooter-plugin xfce4-sensors-plugin xfce4-smartbookmark-plugin xfce4-systemload-plugin xfce4-time-out-plugin xfce4-timer-plugin xfce4-verve-plugin xfce4-wavelan-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-wmdock-plugin xfce4-xkb-plugin xfswitch-plugin playonlinux jmtpfs gzdoom xubuntu-restricted-extras pepperflashplugin-nonfree wolf4sdl exfat-utils exfat-fuse meshlab chromium-browser chromium-codecs-ffmpeg-extra lm-sensors libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk2.8-dev libwxbase2.8-dev libhunspell-1.3-0 libwxbase2.8-0 libwxgtk2.8-0 libboost-system1.54.0 libboost-regex1.54.0 ccache photoprint ecryptfs-utils libdvd-pkg pulseaudio-equalizer steam pithos lutris
+sudo apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop gif2png cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba cifs-utils xsane scribus scribus-template gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade smartmontools gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack geeqie konqueror kaffeine xine-ui mpg123 sox rhythmbox kcachegrind kcachegrind-converters graphviz hfsplus audacity libsox-fmt-all input-utils mysql-client nant sqlite3 p7zip dvdbackup dia-gnome gsfonts-x11 ubuntustudio-font-meta fontmatrix kate latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger eclipse pssh dh-make devscripts ktorrent shutter libgoo-canvas-perl gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu iftop pidgin-skype wireshark atop gkrellm tomboy mail-notification ubuntu-restricted-extras libc6-i386 libc6-dev-i386 lib32z1 lib32ncurses5 lib32bz2-1.0 mercurial skype icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools libav-tools openvpn gdisk wakeonlan wine kdenlive tesseract-ocr davfs2 sshfs ffmpeg2theora mp3info libreoffice xfce4-goodies xfce4-battery-plugin xfce4-battery-plugin xfce4-cellmodem-plugin xfce4-clipman-plugin xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-datetime-plugin xfce4-dict xfce4-diskperf-plugin xfce4-eyes-plugin xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-hdaps xfce4-indicator-plugin xfce4-linelight-plugin xfce4-mailwatch-plugin xfce4-messenger-plugin xfce4-mount-plugin xfce4-mpc-plugin xfce4-netload-plugin xfce4-notes-plugin xfce4-places-plugin xfce4-power-manager-plugins xfce4-quicklauncher-plugin xfce4-radio-plugin xfce4-screenshooter-plugin xfce4-sensors-plugin xfce4-smartbookmark-plugin xfce4-systemload-plugin xfce4-time-out-plugin xfce4-timer-plugin xfce4-verve-plugin xfce4-wavelan-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-wmdock-plugin xfce4-xkb-plugin xfswitch-plugin playonlinux jmtpfs gzdoom xubuntu-restricted-extras pepperflashplugin-nonfree wolf4sdl exfat-utils exfat-fuse meshlab chromium-browser chromium-codecs-ffmpeg-extra lm-sensors libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk2.8-dev libwxbase2.8-dev libhunspell-1.3-0 libwxbase2.8-0 libwxgtk2.8-0 libboost-system1.54.0 libboost-regex1.54.0 ccache photoprint ecryptfs-utils libdvd-pkg pulseaudio-equalizer steam pithos lutris
 
 6.) Set up static IP's (for machines with them)
 - edit /etc/network/interfaces, and add lines like:
@@ -289,9 +289,16 @@ sudo ufw allow 8881
 
 swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
 
-31.) Install epson scanner driver
+31.) Install epson scanner and printer driver (Epson XP-610)
 
-sudo apt-get install iscan iscan-network-nt
+http://support.epson.net/linux/en/iscan_c.html
+
+- Download it from Epson (above, not in repos), then install uncompress it
+  and cd into the dir, then install the packages:
+
+sudo dpkg -i core/iscan_2.30.2-2_amd64.deb data/iscan-data_1.37.0-3_all.deb plugins/iscan-network-nt_1.1.1-1_amd64.deb 
+
+- at the bottom
 
 - Edit the /etc/sane.d/epkowa.conf file and add:
 
@@ -299,11 +306,47 @@ net EPSON632112.home
 
 - because that's the printer.
 
-- The documentation says to comment out `epson2` in
-  /etc/sane.d/dll.conf, but I didn't need to do that.
+- edit /etc/sane.d/dll.conf and comment out the 'epson2' driver to
+  prevent a false positive.
 
 - This adds an `iscan` app which will find the printer on the network
   and try to use it, or you can just use xsane....
+
+- IMPORTANT - it takes close to 5 minutes to find everything and start
+  up, and it's not always reliable, but, once up, it does work. Not
+  sure how to make it faster. Tried commenting out extra dlls,
+  etc. Needs further investigation. I do see this log entry:
+  ==
+  Oct  6 22:48:00 hiro kernel: [48176.543355] TCP: request_sock_TCP: Possible SYN flooding on port 40796. Dropping request.  Check SNMP counters.
+  ==
+
+  This can be fixed, and speedy startup restored, by making sure syn
+  flood protection is enabled by setting:
+
+     net.ipv4.tcp_syncookies=1
+
+  in /etc/sysctl.conf and then doing `sysctl -p` to reread it.
+
+  Based on /etc/sysctl.d/10-network-security.conf, this SHOULD be set,
+  yet it isn't, because of the firewall. Edit /etc/ufw/sysctl.conf and
+  set:
+
+  net/ipv4/tcp_syncookies=1
+
+  Basically, by default, the system turns syn cookies on, but, if you
+  turn the firewall on, it turns them off. Not sure why. But, having
+  it on breaks my scanner because it drops packets, which is
+  annoying. There seems to be some serious discussion as to whether or
+  not it's better to have it on or off. See:
+
+  https://bugs.launchpad.net/ubuntu/+source/ufw/+bug/189565
+
+  and
+
+  https://bugs.launchpad.net/ubuntu/+source/procps/+bug/57091
+  
+  
+
 
 32.) Put data where wolfenstein 3D 4 SDL (wolf4sdl) expects it to be:
 
@@ -411,8 +454,8 @@ https://forums.inxile-entertainment.com/viewtopic.php?f=34&t=14060#p159807
 
 add the following (limits fix to me):
 
-matt soft nofile 4096
-matt hard nofile 8192
+matt soft nofile 65536
+matt hard nofile 65536
 
 Reboot.
 
@@ -449,12 +492,6 @@ sudo apt-get install dvdstyler
 
 43.) Stop the stupid GNOME SSH agent thing from working.
 
-TODO - NEED TO REGEN KEYS!!!!, then disable the add to ssh_config...
-
-https://www.digitalocean.com/community/questions/ssh-refused-sshd-2444-userauth_pubkey-key-type-ssh-dss-not-in-pubkeyacceptedkeytypes-preauth
-
-STILL NEED TO DO THE BELOW
-
 NOTE: This is a stupid hack to get around the fact that, apparently,
 the gnome keyring is started unconditionally with all components if
 any gnome services are run (and we would like to run them, just not
@@ -484,7 +521,10 @@ separate invoker.
 
 TODO:
 
-- Fix emacs startup issue w/ csharp and d modes. They are currently
-  disabled in .emacs file
-
-
+- Propagage keys to:
+  - router
+  - garage bridge
+  - office bridge
+  - bedroom bridge (is this still even there?)
+  - raspberry pi
+  - daisy
