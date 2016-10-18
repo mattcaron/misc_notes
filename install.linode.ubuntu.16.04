@@ -463,29 +463,136 @@ root: matt
 
 17. Add sympa
 
-- This install kind of sucks, see bug here:
-https://bugs.launchpad.net/ubuntu/+source/sympa/+bug/1195044
+A.) Establish base checkout:
+cd ~/workspace/code
+git svn clone -s http://svn.cru.fr/sympa/
+cd sympa
+git-tag-svn 
+git checkout sympa-6.2.16
+git checkout -b production
 
-- Install
+- upgrade later
+cd ~/workspace/code
+git svn fetch
+git-svn-merge-branches
+git-tag-svn
+git checkout production
+git merge sympa-6.2.16
 
-sudo apt-get install libapache2-mod-fcgid libdbd-mysql-perl apache2-suexec-pristine
+(where 6.2.16 is the current version)
 
-- enable it
+B.) Copy this whole mess over to the linode server:
+push_sympa
+
+=== all the rest of this is on the linode server ===
+
+C.) Install prerequisites
+
+sudo apt-get install libapache2-mod-fcgid libdbd-mysql-perl apache2-suexec-pristine apache2-suexec-pristine intltool libclass-singleton-perl libdatetime-format-mail-perl libemail-simple-perl libnet-cidr-perl libproc-processtable-perl libcrypt-openssl-x509-perl libcrypt-smime-perl libdata-password-perl
+
+D.) Create a user w/ now shell (this was the last next available number)
+
+sudo adduser sympa --uid 110 --gid 117 --disabled-login
+sudo usermod -s /bin/false sympa
+
+E.) Enable apache modules
 
 sudo a2enmod suexec
 sudo a2enmod cgi
 
-- it will ask:
- - about webserver, it's apache 2
- - whether to restart it, choose no.
- - whether to use dbconfig-common to configure it, choose yes, and
-   give it the credentials it's asking for
- - At this point, the install will fail because of the bug described
-   above. Fix it
+F.) Make the destination directory:
+
+sudo mkdir /opt/sympa-6.2.16
+sudo chown matt:matt /opt/sympa-6.2.16
+
+G.) Build and install it:
+
+cd ~/workspace/code/sympa
+autoreconf -i
+./configure --prefix=/opt/sympa-6.2.16 --with-initdir=/opt/sympa-6.2.16/etc/init.d --with-cgidir=/opt/sympa-6.2.16/cgi-bin
+make
+make install
+
+the make install is slightly broken on new versions. Install things manually:
+
+cd src/bin
+make install
+cd ../sbin
+make install
+cd ../lib
+make install
+cd ../etc
+make install
+cd ../libexec
+make install
+cd ../../default
+make install
+cd ../www
+make install
+
+H.) Fix permissions
+
+sudo chown -R sympa:sympa /opt/sympa-6.2.16
+sudo chmod a+rX -R /opt/sympa-6.2.16
 
 sudo chown -R sympa:sympa /var/spool/sympa
-sudo chown -R sympa:sympa /usr/lib/sympa
 sudo chown -R sympa:sympa /var/lib/sympa
+
+I.) Make some compatibilty symlinks:
+
+cd /opt
+sudo -u sympa -s
+cd /opt/sympa-6.2.16
+ln -s /var/lib/sympa/expl .
+ln -s /var/lib/sympa/wwsarchive .
+ln -s /var/lib/sympa/x509-user-certs .
+cd /opt/sympa-6.2.16/etc
+ln -s /etc/sympa .
+mkdir /opt/sympa-6.2.16/static_content
+cd /opt/sympa-6.2.16/static_content
+ln -s /var/lib/sympa/static_content/css .
+ln -s /etc/mail/sympa/aliases /etc/mail/sympa_aliases
+cp -a /opt/sympa-6.2.14/spool /opt/sympa-6.2.16
+exit
+sudo /etc/init.d/sympa stop
+sudo rm sympa
+sudo ln -s sympa-6.2.16/ sympa
+cd /etc/init.d
+sudo ln -s /opt/sympa/etc/init.d/sympa .
+cd /etc
+sudo ln -s /etc/sympa/sympa.conf .
+
+J.) Run the upgrade script (on upgrade)
+
+sudo -u sympa /opt/sympa-6.2.14/bin/sympa.pl --upgrade
+
+K.) Auto-install a pile of perl modules:
+
+sudo /opt/sympa-6.2.16/bin/sympa_wizard.pl --check
+
+(hit enter a bunch of times)
+
+And mhonarc doesn't put itself where it needs to, so do so:
+
+cd /usr/share/perl5/
+sudo ln -s /usr/share/mhonarc/* .
+
+L.) Fix up supporting bits and bobs
+
+sudo touch /etc/sympa/facility
+sudo chown sympa:sympa /etc/sympa/facility
+sudo mkdir -p /var/lock/subsys/sympa
+sudo chown sympa:sympa /var/lock/subsys/sympa
+sudo mkdir /var/spool/sympa/wwsbounce
+sudo chown sympa:sympa /var/spool/sympa/wwsbounce
+sudo chmod u+s /opt/sympa/bin/queue /opt/sympa/bin/bouncequeue
+
+The queue needs to be suid root so that the mail server works when it
+calls queue and bouncequeue. Some of the routers call the filter and
+that needs to be as sympa, but we still want them to run other actions
+as exim.
+
+M.) Set up the configs:
 
   - edit /etc/sympa/wwsympa.conf
   - comment out:
@@ -547,7 +654,7 @@ sympa_aliases:
                downgrade-1.0 force-response-1.0
     BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
-    Alias /static-sympa /var/lib/sympa/static_content
+    Alias /static-sympa /opt/sympa/static_content
     ScriptAlias /wws /var/www/sympa/wwsympa.cgi
     SuexecUserGroup sympa sympa
 
@@ -566,7 +673,6 @@ sympa_aliases:
     </Directory>
  </VirtualHost>
 
-
 - Fake out suexec, because it is hardcoded to want things in /var/www
  - make dir
 sudo mkdir /var/www/sympa/
@@ -578,17 +684,31 @@ sudo chown sympa:sympa /var/www/sympa/
 # The script we want Sympa to execute is accessed via a symlink but
 # suexec doesn't like that so this script is a wrapper which gets
 # executed directly to avoid that problem.
-exec /usr/lib/cgi-bin/sympa/wwsympa.fcgi
+exec  /opt/sympa/cgi-bin/wwsympa.fcgi
 
 - fix the perms on it
 
 sudo chown sympa:sympa /var/www/sympa/wwsympa.cgi
-sudo chmod u+x /var/www/sympa//wwsympa.cgi
+sudo chmod u+x /var/www/sympa/wwsympa.cgi
 
-- Restart things
+N.) Make sure dmarc_protection_mode is set in the config - add this to
+the bottom of /etc/sympa/sympa.conf:
+
+# Munge email which would otherwise be dropped.                                 
+dmarc_protection_mode dmarc_any
+
+O.) Fix up the mailserver aliases /etc/aliases and
+    /etc/mail/sympa/aliases and replace /usr/lib/sympa/lib/sympa with
+    /opt/sympa/bin
+
+P.) Restart things
 
 sudo service apache2 restart
 sudo service sympa restart
+
+Q.) Start it:
+
+sudo /etc/init.d/sympa start
 
 - Don't forget to add sympa.mattcaron.net to DNS
 
@@ -1009,208 +1129,6 @@ query_cache_size        = 8M
 - restart
 
 sudo service mysql restart
-
-26. Upgrade Sympa to something more recent.
-
-Once upon a time, email worked great, and then Yahoo and AOL went and
-broke things, so install the latest from source.
-
-Refs:
-http://postmaster-blog.aol.com/2014/04/22/aol-mail-updates-dmarc-policy-to-reject/
-https://help.yahoo.com/kb/SLN7253.html?impressions=true
-
-This breaks how email lists have worked for like 25 years.
-
-Anyway, so we need to install an updated version
-
-A.) Establish base checkout:
-cd ~/workspace/code
-git svn clone -s http://svn.cru.fr/sympa/
-cd sympa
-git-tag-svn 
-git checkout sympa-6.2.14
-git checkout -b production
-
-- upgrade later
-cd ~/workspace/code
-git svn fetch
-git-svn-merge-branches
-git-tag-svn
-git checkout production
-git merge sympa-6.2.14
-
-(where 6.2.14 is the current version)
-
-B.) Copy this whole mess over to the linode server:
-push_sympa
-
-=== all the rest of this is on the linode server ===
-
-C.) Create a user w/ now shell (this was the last next available number)
-
-sudo adduser sympa --uid 110 --gid 117 --disabled-logn
-sudo usermod -s /bin/false sympa
-
-D.) Install deps
-
-sudo apt-get install apache2-suexec-pristine intltool libclass-singleton-perl libdatetime-format-mail-perl libemail-simple-perl libnet-cidr-perl libproc-processtable-perl libcrypt-openssl-x509-perl libcrypt-smime-perl libdata-password-perl
-
-E.) Enable apache modules
-
-sudo a2enmod suexec
-sudo a2enmod cgi
-
-F.) Make the destination directory:
-
-sudo mkdir /opt/sympa-6.2.14
-sudo chown matt:matt /opt/sympa-6.2.14
-
-G.) Build and install it:
-
-cd ~/workspace/code/sympa
-autoreconf -i
-make distclean
-./configure --prefix=/opt/sympa-6.2.14 --with-initdir=/opt/sympa-6.2.14/etc/init.d --with-cgidir=/opt/sympa-6.2.14/cgi-bin
-make
-make install
-
-the make install is slightly broken on new versions. Install things manually:
-
-cd src/bin
-make install
-cd ../sbin
-make install
-cd ../lib
-make install
-cd ../etc
-make install
-cd ../libexec
-make install
-cd ../../default
-make install
-cd ../www
-make install
-
-(you'll get a lot of perms errors because you're not root. That is okay)
-
-H.) Fix permissions
-
-sudo chown -R sympa:sympa /opt/sympa-6.2.14
-sudo chmod a+rX -R /opt/sympa-6.2.14
-
-I.) Make some compatibilty symlinks:
-
-cd /opt
-sudo -u sympa -s
-cd /opt/sympa-6.2.14
-ln -s /var/lib/sympa/expl .
-ln -s /var/lib/sympa/wwsarchive .
-ln -s /var/lib/sympa/x509-user-certs .
-cd /opt/sympa-6.2.14/etc
-ln -s /etc/sympa .
-mkdir /opt/sympa-6.2.14/static_content
-cd /opt/sympa-6.2.14/static_content
-ln -s /var/lib/sympa/static_content/css .
-ln -s /etc/mail/sympa/aliases /etc/mail/sympa_aliases
-cp -a /opt/sympa-6.2.12/spool /opt/sympa-6.2.14
-exit
-sudo /etc/init.d/sympa stop
-sudo rm sympa
-sudo ln -s sympa-6.2.14/ sympa
-sudo /etc/init.d/sympa start
-
-J.) Auto-install a pile of perl modules:
-
-sudo /opt/sympa-6.2.14/bin/sympa_wizard.pl --check
-
-(hit enter a bunch of times)
-
-And mhonarc doesn't put itself where it needs to, so do so:
-
-cd /usr/share/perl5/
-sudo ln -s /usr/share/mhonarc/* .
-
-K.) Now remove the old sympa
-
-sudo apt-get remove sympa
-
-Do not remove the database, we still want it.
-
-L.) Now symlink in the start scripts - the old one is there, so we'll
-save it, just in case.
-
-cd /etc/init.d
-sudo mv sympa sympa.ubuntu
-sudo ln -s /opt/sympa/etc/init.d/sympa .
-
-Of course, that script is wrong, so symlink some files where it expects them
-
-cd /etc
-sudo ln -s /etc/sympa/sympa.conf .
-
-M.) Run the upgrade script
-
-sudo -u sympa /opt/sympa-6.2.14/bin/sympa.pl --upgrade
-
-N.) Fix up supporting bits and bobs
-
-sudo touch /etc/sympa/facility
-sudo chown sympa:sympa /etc/sympa/facility
-sudo mkdir -p /var/lock/subsys/sympa
-sudo chown sympa:sympa /var/lock/subsys/sympa
-sudo mkdir /var/spool/sympa/wwsbounce
-sudo chown sympa:sympa /var/spool/sympa/wwsbounce
-sudo chmod u+s /opt/sympa/bin/queue /opt/sympa/bin/bouncequeue
-
-The queue needs to be suid root so that the mail server works when it
-calls queue and bouncequeue. Some of the routers call the filter and
-that needs to be as sympa, but we still want them to run other actions
-as exim.
-
-O.) Fix up the webserver CGI wrapper
-
-sudo -e /var/www/sympa/wwsympa.cgi
-
-- and change it to:
-
-exec /opt/sympa/cgi-bin/wwsympa.fcgi
-
-P.) fix up the two webserver files (sympa and sympa.fishhouse) where they do:
-
-Alias /static-sympa /var/lib/sympa/static_content
-
-and change it to:
-
-Alias /static-sympa /opt/sympa/static_content
-
-Q.) Comment out all the deprecated bits of /etc/sympa/sympa.conf
-
- - dkim_header_list 
- - pidfile
- - pidfile_bulk
- - pidfile_creation
- - pidfile_distribute
-
-and the same for /etc/sympa/wwsympa.conf
- - archived_pidfile
- - bounced_pidfile
- - task_manager_pidfile
-
-R.) Also add the dmarc_protection_mode to the config, which is why we
-upgraded in the first place.
-
-Add this to the bottom of /etc/sympa/sympa.conf:
-
-# Munge email which would otherwise be dropped.                                 
-dmarc_protection_mode dmarc_any
-
-S.) Fix up the mailserver aliases /etc/aliases and
-    /etc/mail/sympa/aliases and replace /usr/lib/sympa/lib/sympa with
-    /opt/sympa/bin
-
-U.) Start it:
-
-sudo service sympa start
 
 27.) Prosody
 
