@@ -4,6 +4,7 @@ kino - all in one capture/edit/etc.
 dvgrab - capture DV/HDV via firewire
 kdenlive - for video editing (more featureful than Kino, and has some
            effects kino lacks, but doesn't do capturing)
+	   - ### New version might do capturing. Need to check on that.
 dvdstyler - for menu creation and chaptering (kdenlive kind of sucks at this)
 
 1. Add to video group:
@@ -40,3 +41,6 @@ In Kdenlive:
     recording devices will output, but we can be reasonably assured
     that we're not making it worse. via the intermediary conversion.
 
+For uploading to the world:
+
+ghb is a converter to more broadly compatible formats.
