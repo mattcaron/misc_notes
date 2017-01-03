@@ -1216,3 +1216,14 @@ get the module source somewhere:
 z.) add users with:
 
     sudo prosodyctl adduser user@mattcaron.net
+
+28.) Fix things not starting
+
+After the upgrade, SpamAssassin, Prosody and Sympa don't like to start
+correctly, I think because mysql isn't up yet. Rather than fight with
+the whole Ubuntu config infrastructure, just add something to bounce
+them at the end, so add the following to /etc/rc.local:
+
+sudo service spamassassin restart
+sudo service prosody restart
+sudo service sympa restart
