@@ -302,7 +302,7 @@ sudo dpkg -i core/iscan_2.30.2-2_amd64.deb data/iscan-data_1.37.0-3_all.deb plug
 
 - Edit the /etc/sane.d/epkowa.conf file and add:
 
-net EPSON632112.home
+net EPSON632112
 
 - because that's the printer.
 
@@ -344,9 +344,11 @@ net EPSON632112.home
   and
 
   https://bugs.launchpad.net/ubuntu/+source/procps/+bug/57091
-  
-  
 
+- Also, in /etc/default/ufw, add nf_conntrack_sane to the end of
+  the IPT_MODULES line, then do:
+  
+   sudo ufw reload
 
 32.) Put data where wolfenstein 3D 4 SDL (wolf4sdl) expects it to be:
 
