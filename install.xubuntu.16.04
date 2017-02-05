@@ -521,10 +521,6 @@ X-GNOME-Autostart-enabled=false
 so that it doesn't get started by the ancillary (and likely redundant)
 separate invoker.
 
-44.) Set up udev rule for powermate.
- - Add an /etc/udev/rules.d/60-powermate.rules, with this line:
- 
- ACTION=="add", ENV{ID_USB_DRIVER}=="powermate", SYMLINK+="input/powermate", MODE="0666"
 
 
 
