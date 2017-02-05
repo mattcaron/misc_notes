@@ -1,7 +1,7 @@
 sudo apt-get install kino kdenlive dvdstyler
 
 kino - all in one capture/edit/etc.
-dvgrab - capture DV/HDV via firewire
+dvgrab - capture DV/HDV via firewire (CLI - use kino as a frontend)
 kdenlive - for video editing (more featureful than Kino, and has some
            effects kino lacks, but doesn't do capturing)
 	   - ### New version might do capturing. Need to check on that.
@@ -22,19 +22,20 @@ with:
 
 padsp kino
 
+- May no longer be accurate in Ubuntu 16.04; not sure.
+
 For DVDs:
 
 In kdenlive:
   - Choose "render" and render to DVD (easy enough)
   - You may need to tick the box for "show all profiles" and select
-    the one which you want to use (eg NTSC 16:9)
+    the one which you want to use (eg NTSC 16:9 or 4:3)
   - Then you import these files into dvdstyler
 
 For general clips:
 
 In Kdenlive:
-  - Choose "render" and select "Lossless/HQ", and pick "H.264 lossless
-    fast(video) + PCM(sound)."
+  - Choose "render" and select "Lossless/HQ", and pick "FFV1 (ffv1 + flac)"
   - Once rendered, you can use GHB to convert it to one of the predefined
     profiles.
   - I note that this is likely a higher quality output than most
