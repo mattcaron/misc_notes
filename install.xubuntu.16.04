@@ -521,7 +521,9 @@ X-GNOME-Autostart-enabled=false
 so that it doesn't get started by the ancillary (and likely redundant)
 separate invoker.
 
+44.) Add to wireshark group
 
+sudo usermod -a -G wireshark matt
 
 
 TODO:
