@@ -114,6 +114,8 @@ http://muve3d
  2. Click Password Protection
   a. add user "muve3d" and generic password
  3. Go into printer profiles and add as necessary.
+ 4. Go into the setup and make sure to delete the mask (current bulb
+  is quite good)
 
 6.) Slicing software:
 
