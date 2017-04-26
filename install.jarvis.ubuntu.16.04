@@ -270,6 +270,15 @@ sudo systemctl restart nut-client
 
 upsc ups
 
+- To do control things (changing batteries, etc.) you need to:
+
+sudo apt-get install apcupsd
+
+- then edit /etc/apcupsd/apcupsd.conf and find the UPSTYPE
+  line. Commend out that and the DEVICE line, and set it as follows:
+
+UPSTYPE usb
+
 19.) Set up linode backups
 
  - make target dir
