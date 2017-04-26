@@ -40,8 +40,22 @@ In Kdenlive:
     profiles.
   - I note that this is likely a higher quality output than most
     recording devices will output, but we can be reasonably assured
-    that we're not making it worse. via the intermediary conversion.
+    that we're not making it worse via the intermediary conversion.
 
 For uploading to the world:
 
 ghb is a converter to more broadly compatible formats.
+
+
+If the video is flipped (180, such as from my phone), kdenlive has a
+transform for that.
+	  - Effects
+	  - Crop and transform
+	  - Rotate (keyframable)
+	  - Drag it over the clip
+	  - Click properties
+	  - Rotate x by desired amount x 10 (so, 1800 for 180 degrees)
+
+    
+     
+
