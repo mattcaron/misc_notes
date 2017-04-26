@@ -127,7 +127,7 @@ chgrp ssl-cert aggregate_crt
 - edit /etc/dovecot/conf.d/10-ssl.conf and change it to use the
   mattcaron.net cert:
 
-    ssl_cert = </etc/ssl/private/www.mattcaron.net/cert.pem
+    ssl_cert = </etc/ssl/private/www.mattcaron.net/fullchain.pem
     ssl_key = </etc/ssl/private/www.mattcaron.net/privkey.pem
 
   - and change ssl to "required"
@@ -177,7 +177,7 @@ domainlist local_domains = mattcaron.net : pfmbonsai.com
 domainlist relay_to_domains =
 hostlist   relay_from_hosts = localhost
 tls_advertise_hosts = *
-tls_certificate = /etc/ssl/private/mail.mattcaron.net/cert.pem
+tls_certificate = /etc/ssl/private/mail.mattcaron.net/fullchain.pem
 tls_privatekey = /etc/ssl/private/mail.mattcaron.net/privkey.pem
 daemon_smtp_ports = 25 : 465
 tls_on_connect_ports = 465
@@ -645,7 +645,7 @@ sympa_aliases:
     ServerAdmin matt@mattcaron.net
 
     SSLEngine on
-    SSLCertificateFile    /etc/ssl/private/sympa.mattcaron.net/cert.pem
+    SSLCertificateFile    /etc/ssl/private/sympa.mattcaron.net/fullchain.pem
     SSLCertificateKeyFile /etc/ssl/private/sympa.mattcaron.net/privkey.pem
 
     # Standard SSL protocol adustments for IE
@@ -920,7 +920,7 @@ GRANT ALL PRIVILEGES ON owncloud.* TO "owncloud"@"localhost" IDENTIFIED BY "pass
     ServerAdmin matt@mattcaron.net
 
     SSLEngine on
-    SSLCertificateFile    /etc/ssl/private/owncloud.mattcaron.net/cert.pem
+    SSLCertificateFile    /etc/ssl/private/owncloud.mattcaron.net/fullchain.pem
     SSLCertificateKeyFile /etc/ssl/private/owncloud.mattcaron.net/privkey.pem
 
     # Standard SSL protocol adustments for IE
@@ -1150,7 +1150,7 @@ b.) change the certs to point at the base domain name. In
 
 ssl = {
         key = "/etc/ssl/private/mattcaron.net/privkey.pem";
-        certificate = "/etc/ssl/private/mattcaron.net/cert.pem;
+        certificate = "/etc/ssl/private/mattcaron.net/fullchain.pem;
 }
 
 c.) Change c2s_require_encryption to true.
@@ -1178,7 +1178,7 @@ VirtualHost "mattcaron.net"
         enabled = true
         ssl = {
                 key = "/etc/ssl/private/mattcaron.net/privkey.pem";
-                certificate = "/etc/ssl/private/mattcaron.net/cert.pem";
+                certificate = "/etc/ssl/private/mattcaron.net/fullchain.pem";
         }
 
 j.) Enable multi user conference and file proxying:
@@ -1234,42 +1234,23 @@ a.) Install certbot:
 
 sudo apt-get install python-letsencrypt-apache
 
-b.) make a certbot user, and make it part of the ssl-cert group, but
-lock the account.
-
-sudo adduser certbot
-sudo usermod -L certbot
-sudo usermod -a -G certbot ssl-cert
-
-c.) make the directories in /etc and /var/log and fix the perms, and
-make the gid sticky
-
-sudo mkdir /etc/letsencrypt
-sudo chown certbot:ssl-cert /etc/letsencrypt
-sudo chmod g+s /etc/letsencrypt
-
-sudo mkdir /var/log/letsencrypt
-sudo chown certbot /var/log/letsencrypt
-
 b.) Set it up semi-manually:
 
-sudo -u certbot letsencrypt --apache certonly -d mattcaron.net
-sudo -u certbot letsencrypt --apache certonly -d www.mattcaron.net
-sudo -u certbot letsencrypt --apache certonly -d www.kimcaron.net
-sudo -u certbot letsencrypt --apache certonly -d owncloud.mattcaron.net
-sudo -u certbot letsencrypt --apache certonly -d sympa.mattcaron.net
-sudo -u certbot letsencrypt --apache certonly -d mail.mattcaron.net
-sudo -u certbot letsencrypt --apache certonly -d www.sarahdipitysweets.com
-sudo -u certbot letsencrypt --apache certonly -d lists.pfmbonsai.com
-sudo -u certbot letsencrypt --apache certonly -d pfmbonsai.com
+sudo letsencrypt --apache certonly -d mattcaron.net
+sudo letsencrypt --apache certonly -d www.mattcaron.net
+sudo letsencrypt --apache certonly -d www.kimcaron.net
+sudo letsencrypt --apache certonly -d owncloud.mattcaron.net
+sudo letsencrypt --apache certonly -d sympa.mattcaron.net
+sudo letsencrypt --apache certonly -d mail.mattcaron.net
+sudo letsencrypt --apache certonly -d www.sarahdipitysweets.com
+sudo letsencrypt --apache certonly -d lists.pfmbonsai.com
+sudo letsencrypt --apache certonly -d pfmbonsai.com
 
-c.) Double fix perms for the stuff which was just created, and make
-stuff readable by folks in the ssl-cert group (which is what the mail
-stuff runs as):
+c.) make the directories in /etc group accessible and, and make the
+gid sticky
 
-sudo chown -R certbot:ssl-cert /etc/letsencrypt
-sudo find /etc/letsencrypt -type d -execdir chmod g+s '{}' \;
-sudo chmod -R g+rX /etc/letsencrypt
+sudo chgrp -R ssl-cert /etc/letsencrypt
+sudo chmod -R g+s /etc/letsencrypt
 
 d.) Move everything in /etc/ssl/private to old, and then make new symlinks.
 
@@ -1280,9 +1261,9 @@ e.) Add create /etc/cron.d/letsencrypt thusly:
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 MAILTO=root
 
-37 06 * * *     root     sudo -u certbot letsencrypt renew && service dovecot reload && service\
+37 06 * * *     root     letsencrypt renew && service dovecot reload && service\
  exim4 reload && service prosody reload && service apache2 reload
-42 18 * * *     root     sudo -u certbot letsencrypt renew && service dovecot reload && service\
+42 18 * * *     root     letsencrypt renew && service dovecot reload && service\
  exim4 reload && service prosody reload && service apache2 reload
 
 # EOF
