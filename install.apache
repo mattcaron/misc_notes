@@ -36,8 +36,8 @@ sudo a2enmod php7.0
 sudo service apache2 restart
 
 - for dev machines, you may not want it to start at boot
-sudo update-rc.d -f apache2 remove
-echo manual | sudo tee /etc/init/mysql.override
+sudo systemctl disable apache2
+sudo systemctl disable mysql
 
 Go through this and apply all settings:
 
