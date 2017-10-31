@@ -534,11 +534,24 @@ wget -O - http://download.videolan.org/pub/debian/videolan-apt.asc|sudo apt-key 
 sudo apt-get update
 sudo apt-get install libdvdcss2
 
+46.) Add latest FreeCAD PPA.
 
-TODO:
+sudo add-apt-repository ppa:freecad-maintainers/freecad-stable
+sudo apt-get update
+sudo apt-get install freecad
 
-- Propagage keys to:
-  - router
-  - garage bridge
-  - office bridge
-  - bedroom bridge (is this still even there?)
+47.) Add the Chrome PPA
+
+From: https://www.ubuntuupdates.org/ppa/google_chrome
+
+Do:
+
+	wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+
+	sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+
+	sudo chmod a+r /etc/apt/sources.list.d/google.list
+
+	sudo apt-get update
+
+	sudo apt-get dist-upgrade
