@@ -1246,11 +1246,13 @@ sudo letsencrypt --apache certonly -d www.sarahdipitysweets.com
 sudo letsencrypt --apache certonly -d lists.pfmbonsai.com
 sudo letsencrypt --apache certonly -d pfmbonsai.com
 
-c.) make the directories in /etc group accessible and, and make the
-gid sticky
+c.) make the directories in /etc group accessible by ssl-cert and make
+the gid sticky
 
 sudo chgrp -R ssl-cert /etc/letsencrypt
-sudo chmod -R g+s /etc/letsencrypt
+sudo chmod -R g+rs /etc/letsencrypt
+
+
 
 d.) Move everything in /etc/ssl/private to old, and then make new symlinks.
 
@@ -1261,11 +1263,12 @@ e.) Add create /etc/cron.d/letsencrypt thusly:
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 MAILTO=root
 
-37 06 * * *     root     letsencrypt renew && service dovecot reload && service\
- exim4 reload && service prosody reload && service apache2 reload
-42 18 * * *     root     letsencrypt renew && service dovecot reload && service\
- exim4 reload && service prosody reload && service apache2 reload
+37 06 * * *     root     letsencrypt renew && chmod -R g+r /etc/letsencrypt && service dovecot reload && service exim4 reload && service prosody restart && service apache2 reload
+42 18 * * *     root     letsencrypt renew && chmod -R g+r /etc/letsencrypt && service dovecot reload && service exim4 reload && service prosody restart && service apache2 reload
 
 # EOF
 ===
+Note that:
+ - we restart services
+ - we fix up the permissions to be group readable, because new files will be created as 0600.
 
