@@ -1238,7 +1238,6 @@ b.) Set it up semi-manually:
 
 sudo letsencrypt --apache certonly -d mattcaron.net
 sudo letsencrypt --apache certonly -d www.mattcaron.net
-sudo letsencrypt --apache certonly -d www.kimcaron.net
 sudo letsencrypt --apache certonly -d owncloud.mattcaron.net
 sudo letsencrypt --apache certonly -d sympa.mattcaron.net
 sudo letsencrypt --apache certonly -d mail.mattcaron.net
