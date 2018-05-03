@@ -152,6 +152,17 @@ PPD from OpenPrinting, which I have stored in
 - make sure to enable it in the ufw
     sudo ufw allow from 192.168.9.0/24 to any port ipp
 
+- Fix up avahi's publishing of addresses:
+
+Some services suck at IPv6, and, for some reason, the IPv4 multicast
+propagation is very laggy. This leads to unreliable lookups of
+hostnames via mDNS (you can check with `avahi-resolve-host-name -4
+machine.local` and it will likely timeout). Anyway, this can just make
+for a bad user experience, so have the server publish its IPv4 info in
+the multicast packets.
+
+    edit /etc/avahi/avahi-daemon.conf and set "publish-a-on-ipv6=yes"
+
 13.) Add mashpodder to crontab
 
 crontab -e
