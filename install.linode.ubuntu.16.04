@@ -471,15 +471,15 @@ A.) Establish base checkout:
 cd ~/workspace/code
 git clone https://github.com/sympa-community/sympa.git
 cd sympa
-git checkout -b production 6.2.24
+git checkout -b production 6.2.32
 
 - upgrade later
 cd ~/workspace/code/sympa
 git fetch
 git checkout production
-git merge 6.2.24
+git merge 6.2.32
 
-(where 6.2.24 is the current version)
+(where 6.2.32 is the current version)
 
 B.) Copy this whole mess over to the linode server:
 push_sympa
@@ -502,55 +502,57 @@ sudo a2enmod cgi
 
 F.) Make the destination directory:
 
-sudo mkdir /opt/sympa-6.2.24
-sudo chown matt:matt /opt/sympa-6.2.24
+sudo mkdir /opt/sympa-6.2.32
+sudo chown matt:matt /opt/sympa-6.2.32
 
 G.) Build and install it:
 
 cd ~/workspace/code/sympa
 autoreconf -i
-./configure --prefix=/opt/sympa-6.2.24 --sysconfdir=/opt/sympa-6.2.24/etc/ --with-initdir=/opt/sympa-6.2.24/etc/init.d --with-cgidir=/opt/sympa-6.2.24/cgi-bin --without-smrshdir
+./configure --prefix=/opt/sympa-6.2.32 --sysconfdir=/opt/sympa-6.2.32/etc/ --with-initdir=/opt/sympa-6.2.32/etc/init.d --with-cgidir=/opt/sympa-6.2.32/cgi-bin --without-smrshdir
 make
 make install
 
 H.) Fix permissions
 
-sudo chown -R sympa:sympa /opt/sympa-6.2.24
-sudo chmod a+rX -R /opt/sympa-6.2.24
+sudo chown -R sympa:sympa /opt/sympa-6.2.32
+sudo chmod a+rX -R /opt/sympa-6.2.32
 
 sudo chown -R sympa:sympa /var/spool/sympa
 sudo chown -R sympa:sympa /var/lib/sympa
 
 I.) Make some compatibilty symlinks:
 
-cd /opt
 sudo -u sympa -s
-cd /opt/sympa-6.2.24
+cd /opt/sympa-6.2.32
 ln -s /var/lib/sympa/expl .
 ln -s /var/lib/sympa/wwsarchive .
 ln -s /var/lib/sympa/x509-user-certs .
-cd /opt/sympa-6.2.24/etc
+cd /opt/sympa-6.2.32/etc
 ln -s /etc/sympa .
-cd /opt/sympa-6.2.24/static_content
+cd /opt/sympa-6.2.32/static_content
+rmdir css
 ln -s /var/lib/sympa/static_content/css .
 ln -s /etc/mail/sympa/aliases /etc/mail/sympa_aliases
-cp -a /opt/sympa-6.2.16/spool /opt/sympa-6.2.24
+cp -a /opt/sympa-6.2.24/spool /opt/sympa-6.2.32
 exit
-sudo /etc/init.d/sympa stop
+sudo service sympa stop
 sudo rm sympa
-sudo ln -s sympa-6.2.24/ sympa
+sudo ln -s sympa-6.2.32/ sympa
 cd /etc/init.d
 sudo ln -s /opt/sympa/etc/init.d/sympa .
 cd /etc
 sudo ln -s /etc/sympa/sympa.conf .
+cd /var/lib/sympa/
+mkdir pictures
 
 J.) Run the upgrade script (on upgrade)
 
-sudo -u sympa /opt/sympa-6.2.24/bin/sympa.pl --upgrade
+sudo -u sympa /opt/sympa-6.2.32/bin/sympa.pl --upgrade
 
 K.) Auto-install a pile of perl modules:
 
-sudo /opt/sympa-6.2.24/bin/sympa_wizard.pl --check
+sudo /opt/sympa-6.2.32/bin/sympa_wizard.pl --check
 
 (hit enter a bunch of times)
 
@@ -690,7 +692,7 @@ sudo service sympa restart
 
 Q.) Start it:
 
-sudo /etc/init.d/sympa start
+sudo service sympa start
 
 - Don't forget to add sympa.mattcaron.net to DNS
 
