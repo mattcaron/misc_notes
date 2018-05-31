@@ -650,3 +650,13 @@ sudo grub-install /dev/sdX
 49.) ecryptfs tutorial
 
 https://www.howtoforge.com/tutorial/how-to-encrypt-directories-with-ecryptfs-on-ubuntu-16-04/
+
+- basically
+1.) Install it
+
+sudo apt-get install ecryptfs-utils
+
+sudo mount -t ecryptfs ~/secret ~/secret -o ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_passthrough=n,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig=XXXXXXXXXXXXX
+
+Where X is the key signature.
+
