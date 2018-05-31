@@ -1,0 +1,593 @@
+These are based on a 14.04 clean install, which I upgraded to 16.04
+and then to 18.04.
+
+IMPORTANT: Many of the PPA's didn't have bionic ports at time of
+writing. If you have issues, switch to the xenial version, as it will
+probably work.
+
+1.) Base install
+
+Boot the install cd and follow instructions to do the base
+install. Make sure to select "Download updates while installing" and
+"install third party software".
+
+Set up machine as desired. Fairly self-explanatory. Partitioning
+should be roughly as follows, adjusted for available disk size as
+appropriate (including for RAID). Disk labels should be representative
+of the mount point. Manual partitioning is likely required.
+
+Pysical Partitions (on both drives):
+1	1GB	Physical volume for RAID -> ext4 -> /boot
+
+2	Rest	physical volume for RAID -> physical volume for
+                encryption, containing a single LVM partition.
+
+For the RAID you want the above physical partition scheme across all
+drives, with each one set up for "Physical volume for RAID". Then you
+create MD devices for each pairing (same partition on each drive) and
+then define it to be whatever filesystem you want, and continue on as
+normal from there.
+
+IMPORTANT: If upgrading the installer NOW WILL ACTIVATE ENCRYPTED
+VOLUMES, which is nice, because before it would just delete them.
+
+- These should represent MINIMUM sizes, and is sized for 500GB
+  HDD's. More is often better.
+
+LVM Partitions
+swap		Amount of RAM + a bit[1]
+tmp		10GB	/tmp
+var		10GB	/var
+root		20GB	/
+home		Rest	/home
+
+[1] This is mainly important for machines where you want to
+hibernate. You need at least as much swap space as you have RAM, so do
+that plus a bit. Old standard is 2 * RAM, which is plenty, but is a
+bit overkill with modern machines. On the other hand, if you never do
+a full hibernate (because it just takes too long to read back 16GB of
+RAM from disk), set it to something reasonable. Swap kind of sucks
+anyway..
+
+(For some machines, a common area of /pub, or /shared, might be
+appropriate, and should be taken out of /home)
+
+Once all that is done, you'll get the "Choose software to install"
+screen, where you should choose "Xubuntu desktop" and let it install
+(we'll install everything else later)
+
+IMPORTANT: If your grub-install fails, chances are you came up with an
+invalid partitioning scheme. Go back to the partitioning menu and
+ensure that you set your /boot partition to a non-encrypted non-LVM
+parition which doesn't use a RAID greater than 1 (if any). That is
+likely the culprit (otherwise, you'll spend 3 hours trying to manually
+install grub only to realize that the partition which is supposed to
+contain boot info is empty).
+
+## NOTE: All this stuff assumes that you're root, such as with "sudo -s"
+
+2.) Install useful base things
+
+sudo apt-get install emacs synaptic
+
+3.) After machine is up, run synaptic, go to settings->repositories
+make sure the following are enabled:
+
+- main
+- universe
+- restricted
+- multiverse
+- source code
+
+Select other software tab and enable/add:
+- partner
+- partner (Source Code)
+
+Select updates tab and enable:
+- xenial-security
+- xenial-updates
+- xenial-backports
+
+(or just grab sources.list from some reasonable machine)
+
+4.) Do:
+apt-get update
+apt-get dist-upgrade
+
+5.) Install things:
+sudo apt-get install nmap traceroute emacs emacs-goodies-el css-mode openssh-server symlinks sysstat ifstat dstat ssmtp heirloom-mailx apg whois powertop gif2png printer-driver-cups-pdf units tofrodos gcc make g++ gdb autoconf libtool automake libc6-dev samba cifs-utils xsane scribus scribus-template gnuplot gnuplot-mode thunderbird enigmail firefox unison unison-gtk digikam kipi-plugins meld ntp unrar xmlstarlet mesa-utils okular okular-extra-backends k3b libk3b6-extracodecs libtk-gbarr-perl subversion mono-runtime monodevelop monodevelop-nunit monodevelop-versioncontrol monodoc-manual glade smartmontools gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly vnc4server xvnc4viewer aspell aspell-en pidgin-extprefs pidgin-plugin-pack geeqie kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox kcachegrind kcachegrind-converters graphviz hfsplus audacity libsox-fmt-all input-utils mysql-client nant sqlite3 p7zip dvdbackup dia gsfonts-x11 ubuntustudio-font-meta fontmatrix kate latencytop python-pycurl python-paramiko python-setuptools regexxer apt-show-versions git-core gitk git-svn speedcrunch mp3gain vorbisgain amarok kmail libmath-round-perl krita dosbox apt-file keepassx picocom qbrew manpages-posix manpages-posix-dev manpages-dev manpages c-cpp-reference ipcalc clusterssh logcheck preload mozplugger eclipse pssh dh-make devscripts ktorrent shutter gnome-web-photo sound-juicer djvulibre-bin djvulibre-plugin djvusmooth pdf2djvu iftop pidgin-skype wireshark atop gkrellm tomboy mail-notification ubuntu-restricted-extras libc6-i386 libc6-dev-i386 lib32z1 lib32ncurses5 lib32bz2-1.0 mercurial skype icedax pulseaudio-esound-compat cheese vpnc arandr blender quake rott tree mame mame-tools mame-extra libav-tools openvpn gdisk wakeonlan wine-stable kdenlive kino dvdstyler tesseract-ocr davfs2 sshfs ffmpeg2theora mp3info libreoffice xfce4-goodies xfce4-battery-plugin xfce4-battery-plugin xfce4-cellmodem-plugin xfce4-clipman-plugin xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-datetime-plugin xfce4-dict xfce4-diskperf-plugin xfce4-eyes-plugin xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-hdaps xfce4-indicator-plugin xfce4-linelight-plugin xfce4-mailwatch-plugin xfce4-messenger-plugin xfce4-mount-plugin xfce4-mpc-plugin xfce4-netload-plugin xfce4-notes-plugin xfce4-places-plugin xfce4-power-manager-plugins xfce4-quicklauncher-plugin xfce4-radio-plugin xfce4-screenshooter-plugin xfce4-sensors-plugin xfce4-smartbookmark-plugin xfce4-systemload-plugin xfce4-time-out-plugin xfce4-timer-plugin xfce4-verve-plugin xfce4-wavelan-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-wmdock-plugin xfce4-xkb-plugin xfswitch-plugin playonlinux jmtpfs gzdoom xubuntu-restricted-extras pepperflashplugin-nonfree wolf4sdl exfat-utils exfat-fuse meshlab chromium-browser chromium-codecs-ffmpeg-extra lm-sensors libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk2.8-dev libwxbase2.8-dev libhunspell-1.3-0 libwxbase2.8-0 libwxgtk2.8-0 libboost-system1.54.0 libboost-regex1.54.0 ccache photoprint ecryptfs-utils steam pithos lutris
+
+6.) Set up static IP's (for machines with them)
+- edit /etc/network/interfaces, and add lines like:
+auto iface eth0 inet static
+	address 192.168.9.1
+        netmask 255.255.255.0
+	gateway 192.168.9.254
+
+ifdown eth0
+ifup eth0
+
+- and set the DNS server in /etc/resolvconf/resolv.conf.d/base:
+
+nameserver 192.168.9.254
+search home
+
+- Then restart it:
+
+sudo service resolvconf restart
+
+7.) Make ssh work:
+## For an old machine, use the old keys - you did save /etc, didn't you?
+
+## For a new machine, use the new keys generated by the distro.
+
+- make sure to add to the firewall
+ufw allow ssh
+
+- In /etc/ssh/sshd_config, set:
+- PermitRootLogin no
+
+- once you've set up public key auth, turn off password access. edit
+    /etc/ssh/sshd_config
+and set
+    PasswordAuthentication no
+
+sudo service ssh restart
+
+8.) Turn on the firewall.
+
+sudo ufw enable
+
+9.) Fix cron - add the following to the top of personal crontab:
+
+MAILTO="matt@mattcaron.net"
+
+10.) latex
+- install the "full boat" options:
+
+sudo apt-get install --install-suggests texlive-full 
+
+- And set things up:
+    cd /usr/share/texmf/tex/latex
+    sudo cp -a ~/system_stuff/latex/local .
+    sudo chown -R root:root local
+    sudo cp -a ~/system_stuff/latex/fonts/cookingsymbols.tfm /usr/share/texmf/fonts/tfm/public/.
+    sudo mkdir -p /usr/share/texmf/fonts/source/public/
+    sudo chmod a+rx /usr/share/texmf/fonts/source/public/
+    sudo cp -a ~/system_stuff/latex/fonts/cookingsymbols.mf /usr/share/texmf/fonts/source/public/.
+    sudo texhash
+
+11.) ntpd (for fixed machines only, for mobile, the default is fine)
+
+## for server, make sure to add to ufw
+ufw allow ntp
+
+## for client
+- edit /etc/ntp.conf and comment out the line:
+server ntp.ubuntu.com
+- and add the line:
+server router
+
+12.) cups
+- sudo system-config-printer
+- add printers as appropriate
+- For servers, under Server->Settings, select:
+    Publish shared printers conected to this system
+- make sure to enable it in the ufw
+    sudo ufw allow cups
+    sudo ufw allow mdns
+
+13.) Set up samba:
+
+- All machines:
+    cd /etc/samba
+    sudo mv smb.conf smb.conf.old
+    sudo cp ~/system_stuff/samba/smb.conf.`hostname` ./smb.conf
+
+- Servers
+    sudo update-rc.d smbd defaults
+    sudo update-rc.d nmbd defaults
+    sudo service smbd start
+    sudo service nmbd start
+
+- Other machines (laptops, etc)
+  - Remember to turn it off on places you don't want it.
+    echo "manual" | sudo tee /etc/init/smbd.override
+    echo "manual" | sudo tee /etc/init/nmbd.override
+    sudo service smbd stop
+    sudo service nmbd stop
+
+- make sure to add ufw rules for it
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-ns
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-dgm
+    sudo ufw allow from 192.168.9.0/24 to any port netbios-ssn
+    sudo ufw allow from 192.168.9.0/24 to any port microsoft-ds
+
+14.) Set up ssmtp
+    cd /etc/ssmtp
+    mv ssmtp.conf ssmtp.conf.old
+    cp ~/system_stuff/ssmtp/ssmtp.conf .
+    chmod a+r ssmtp.conf
+
+15.) Set up apache (if applicable)
+
+- see install.apache
+
+16.) Set up video editing:
+
+- Add user to video group so I can capture video
+sudo usermod -a -G video matt
+
+17.) Set up sensors (if not set up automagically) for case
+
+- For case / Gigabyte X48-DQ6 board
+- add the following to /etc/modules:
+it87
+coretemp
+
+- For hiro / Thinkpad P51:
+- add the following to /etc/modules:
+coretemp
+
+(For new machines, this is accomplished by running sensors-detect and
+following prompts - the defaults are typically fine.)
+
+# FIXME - edit the conf file to fix scaling, etc.
+
+18.) Add temperature monitoring script to crontab (servers only):
+
+@hourly              /home/matt/bin/tempChecker
+
+19.) Set up logcheck
+- edit /etc/cron.d/logcheck and set it to @daily and not every 2 hours
+
+20.) Install d stuff:
+
+sudo apt-get install gdc-5 libphobos-5-dev libsqlite3-dev
+
+21.) Install qbrew build dependencies:
+
+sudo apt-get install qt4-qmake libqt4-dev qt4-designer
+
+22.) Add necessary users to the vboxusers group, ie:
+
+23.) In fixed systems, remove network-manager
+
+sudo apt-get remove network-manager
+
+24.) Add GetDeb games repo (PlayDeb) (http://www.playdeb.net/)
+
+sudo add-apt-repository "deb http://archive.getdeb.net/ubuntu xenial-getdeb games"
+wget -q -O- http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
+sudo apt-get update
+
+25.) Add gcdemu
+
+sudo apt-add-repository ppa:cdemu/ppa
+sudo apt-get install gcdemu
+
+26.) symlink quake data to where it expects it.
+cd /usr/share/games/quake/
+sudo ln -s ~/dosbox/games/quake/id1 .
+
+27.) symlink rott data where it expects it
+cd /usr/share/games/
+sudo ln -s ~/dosbox/games/rott .
+
+also, fix the default symlink:
+
+sudo update-alternatives --set rott /usr/games/rott-commercial
+
+28.) Add firewall exception for iperf
+
+sudo ufw allow 5001
+
+29.) Allow firewall exception for ktorrent:
+
+sudo ufw allow 6881
+sudo ufw allow 8881
+
+30.) Make java pretty
+
+-  Edit /etc/java-8-openjdk/swing.properties
+   and uncomment:
+
+swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
+
+31.) Install epson scanner and printer driver (Epson XP-610)
+
+http://support.epson.net/linux/en/iscan_c.html
+
+- Download it from Epson (above, not in repos), then install uncompress it
+  and cd into the dir, then install the packages:
+
+sudo dpkg -i core/iscan_2.30.2-2_amd64.deb data/iscan-data_1.37.0-3_all.deb plugins/iscan-network-nt_1.1.1-1_amd64.deb 
+
+- at the bottom
+
+- Edit the /etc/sane.d/epkowa.conf file and add:
+
+net EPSON632112
+
+- because that's the printer.
+
+- edit /etc/sane.d/dll.conf and comment out the 'epson2' driver to
+  prevent a false positive.
+
+- This adds an `iscan` app which will find the printer on the network
+  and try to use it, or you can just use xsane....
+
+- IMPORTANT - it takes close to 5 minutes to find everything and start
+  up, and it's not always reliable, but, once up, it does work. Not
+  sure how to make it faster. Tried commenting out extra dlls,
+  etc. Needs further investigation. I do see this log entry:
+  ==
+  Oct  6 22:48:00 hiro kernel: [48176.543355] TCP: request_sock_TCP: Possible SYN flooding on port 40796. Dropping request.  Check SNMP counters.
+  ==
+
+  This can be fixed, and speedy startup restored, by making sure syn
+  flood protection is enabled by setting:
+
+     net.ipv4.tcp_syncookies=1
+
+  in /etc/sysctl.conf and then doing `sysctl -p` to reread it.
+
+  Based on /etc/sysctl.d/10-network-security.conf, this SHOULD be set,
+  yet it isn't, because of the firewall. Edit /etc/ufw/sysctl.conf and
+  set:
+
+  net/ipv4/tcp_syncookies=1
+
+  Basically, by default, the system turns syn cookies on, but, if you
+  turn the firewall on, it turns them off. Not sure why. But, having
+  it on breaks my scanner because it drops packets, which is
+  annoying. There seems to be some serious discussion as to whether or
+  not it's better to have it on or off. See:
+
+  https://bugs.launchpad.net/ubuntu/+source/ufw/+bug/189565
+
+  and
+
+  https://bugs.launchpad.net/ubuntu/+source/procps/+bug/57091
+
+- Also, in /etc/default/ufw, add nf_conntrack_sane to the end of
+  the IPT_MODULES line, then do:
+  
+   sudo ufw reload
+
+32.) Put data where wolfenstein 3D 4 SDL (wolf4sdl) expects it to be:
+
+cd /usr/share/games
+sudo mkdir wolf3d
+sudo chmod a+rx wolf3d
+cd wolf3d
+sudo ln -s ~/dosbox/games/wolf3d/* .
+sudo ln -s ~/dosbox/games/spear_of_destiny/* .
+
+33.) Install openxcom
+
+sudo apt-add-repository ppa:knapsu/openxcom
+sudo apt-get install openxcom
+
+- Patch files (DO ONLY ONCE):
+ - grab the patch from: http://openxcom.org/downloads-extras/
+ - Make a copy of the vanilla data files, ie:
+
+   mkdir ~/games/games/openxcom_data
+   cp -a ~/dosbox/games/ufo/* ~/games/games/openxcom_data
+   cd ~/games/games/openxcom_data
+   unzip ~/dowload/universal-patch.zip
+
+ - When it asks to replace all files, do so.
+
+- Link files to where they're expected to be:
+
+cd /usr/share/openxcom/data
+sudo ln -s ~/games/games/openxcom_data/* .
+
+34.) Install updated handbrake frpm ppa
+
+The default one can't create M4V or MP4. See
+http://ubuntuforums.org/showthread.php?t=2221790 for discussion.
+
+sudo apt-add-repository ppa:stebbins/handbrake-releases
+sudo apt-get install handbrake-gtk
+
+Also, this guy has some handy info on how to encode for broad compatibility:
+
+http://www.rokoding.com/
+
+(look at the guides)
+
+35.) Install real chrome
+
+The ubuntu packaged chromium is broken in a couple of ways - NaCL
+support, etc. NaCL support is required for Hangouts to work. Solution:
+Install Chrome from a PPA.
+
+Instructions from:
+  https://www.ubuntuupdates.org/ppa/google_chrome
+
+Do:
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+sudo chmod a+r /etc/apt/sources.list.d/google-chrome.list
+sudo apt-get update
+sudo apt-get install google-chrome-stable
+
+See the following for more info on chromium fail
+https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/882942
+
+36.) Alias atril to evince:
+
+37.) Change wodim to be suid root to limit sudo.
+
+sudo chmod u+s `which wodim`
+
+38.) Removed
+
+39.) Install some other games (good for OSS LAN parties):
+
+sudo apt-get install warzone2100 assaultcube
+
+40.) Work around Wasteland 2 Director's cut hang because someone
+     forgot a close somewhere.
+
+From:
+https://forums.inxile-entertainment.com/viewtopic.php?f=34&t=14060#p159807
+
+- edit /etc/security/limits.conf
+
+add the following (limits fix to me):
+
+matt soft nofile 65536
+matt hard nofile 65536
+
+Reboot.
+
+41.) Newer virtualbox.
+
+From: https://www.virtualbox.org/wiki/Linux_Downloads
+
+Add the following to /etc/apt/sources.list
+
+deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian bionic contrib
+
+Then do:
+
+wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get install virtualbox-5.2
+
+- Give users permission to use it, eg.
+sudo usermod -a -G vboxusers matt
+
+42.) Allow steam in-home streaming ports.
+
+sudo ufw allow in 27031/udp
+sudo ufw allow in 27036/udp
+sudo ufw allow in 27036/tcp
+sudo ufw allow in 27037/tcp
+
+42.) DVDStyler
+
+sudo add-apt-repository ppa:ubuntuhandbook1/dvdstyler
+sudo apt-get install dvdstyler
+
+43.) Stop the stupid GNOME SSH agent thing from working.
+
+NOTE: This is a stupid hack to get around the fact that, apparently,
+the gnome keyring is started unconditionally with all components if
+any gnome services are run (and we would like to run them, just not
+this specific one).
+
+To fix, do:
+
+cd /usr/bin
+sudo mv gnome-keyring-daemon gnome-keyring-daemon-wrapped
+
+Then create a new gnome-keyring-daemon and set its contents to:
+
+#!/bin/sh
+exec /usr/bin/gnome-keyring-daemon-wrapped --components=pkcs11,secrets,gpg "$@"
+
+and make it executable:
+
+sudo chmod a+rx /usr/bin/gnome-keyring-daemon
+
+Also, you need to go into ~/.config/autostart/gnome-keyring-ssh.desktop and add:
+
+[Desktop Entry]
+X-GNOME-Autostart-enabled=false
+
+so that it doesn't get started by the ancillary (and likely redundant)
+separate invoker.
+
+44.) Add to wireshark group
+
+sudo usermod -a -G wireshark matt
+
+45.) Make DVDs work
+
+echo "deb http://download.videolan.org/pub/debian/stable/ /" | sudo tee /etc/apt/sources.list.d/libdvdcss.list
+echo "deb-src http://download.videolan.org/pub/debian/stable/ /" | sudo tee -a /etc/apt/sources.list.d/libdvdcss.list
+sudo chmod a+r /etc/apt/sources.list.d/libdvdcss.list
+wget -O - http://download.videolan.org/pub/debian/videolan-apt.asc|sudo apt-key add -
+sudo apt-get update
+sudo apt-get install libdvdcss2
+
+46.) Add latest FreeCAD PPA.
+
+sudo add-apt-repository ppa:freecad-maintainers/freecad-stable
+sudo apt-get install freecad freecad-doc
+
+49.) Install Webupd8 PPA and pulseaudio-equalizer
+
+sudo add-apt-repository ppa:nilarimogard/webupd8
+sudo apt-get dist-upgrade
+sudo apt-get install pulseaudio-equalizer
+
+Reboot. If pulseaudio gives you problems, do:
+
+sudo apt-get purge pulseaudio pulseaudio-equalizer
+sudo rm -r ~/.pulse ~/.config/pulse /etc/pulse /usr/share/pulseaudio usr/share/pulseaudio-equalizer
+sudo apt-get install pulseaudio pulseaudio-equalizer
+
+Reboot.
+
+If you don't get a volume icon, it's likely that the indicator plugin was uninstalled as a dependency; reinstall it:
+
+sudo apt-get install indicator-sound-gtk2
+
+XX.) Set up Optimus / Bumblebee (DEPRECATED, see below)
+
+Deprecated - MattCaron - 20180504
+1.) Doesn't really work
+2.) Breaks external monitor detection and use
+
+
+
+Refs:
+* https://www.bumblebee-project.org/
+* https://wiki.ubuntu.com/Bumblebee#Installation
+* https://github.com/Bumblebee-Project/Bumblebee/wiki/
+* https://github.com/Bumblebee-Project/Bumblebee/issues/951
+* https://github.com/Bumblebee-Project/Bumblebee/issues/526
+
+Note: At the time of writing, the nouveau driver does not work with
+this card. I get the dreaded:
+
+"NOUVEAU(0): [drm] failed to set drm interface version."
+
+So, we're using the nvidia official module.
+
+- Do
+
+  sudo apt-get install bumblebee bumblebee-nvidia primus linux-headers-generic nvidia-driver-390 nvidia-power-indicator
+
+- the nouveau driver can fight with stuff; blacklist it:
+
+sudo bash -c "echo blacklist nouveau > /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
+sudo bash -c "echo options nouveau modeset=0 >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
+sudo update-initramfs -u
+
+- reboot
+
+- Edit /etc/bumblebee/bumblebee.conf and:
+1.) Under [bumblebeed], set Driver=nvidia.
+2.) Under [driver-nvidia]:
+2.a) Set LibraryPath=/usr/lib/x86_64-linux-gnu/nvidia/xorg:/usr/lib/x86_64-linux-gnu/primus
+2.b) Set XorgModulePath=/usr/lib/x86_64-linux-gnu/nvidia/xorg,/usr/lib/xorg/modules
+
+- run stuff with primsrun
+
+- You can determine if the card is on or not by doing:
+
+cat /proc/acpi/bbswitch 
+0000:01:00.0 OFF
+
+- Fix nvidia-power-indicator icons:
+
+cd sudo /usr/lib/nvidia-power-indicator/icon
+for n in $(ls *svg | sed 's/.svg//'); do sudo inkscape -z -e $n.svg -w 24 -h 24 $n.svg; done
