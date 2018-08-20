@@ -255,11 +255,7 @@ sudo apt-get install qt4-qmake libqt4-dev qt4-designer
 
 sudo apt-get remove network-manager
 
-24.) Add GetDeb games repo (PlayDeb) (http://www.playdeb.net/)
-
-sudo add-apt-repository "deb http://archive.getdeb.net/ubuntu xenial-getdeb games"
-wget -q -O- http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
-sudo apt-get update
+24.) Removed (getdeb defunct)
 
 25.) Add gcdemu
 
@@ -539,6 +535,24 @@ Reboot.
 If you don't get a volume icon, it's likely that the indicator plugin was uninstalled as a dependency; reinstall it:
 
 sudo apt-get install indicator-sound-gtk2
+
+50.) Fix DNS
+
+Ref: https://github.com/systemd/systemd/issues/7009
+
+It was set to:
+
+    resolv.conf -> ../run/resolvconf/resolv.conf
+
+by default, but this uses a local proxy which isn't otherwise set up
+correctly (doesn't get local DNS server at home). Switching it to use
+the systemd provided nameserver works better:
+
+cd /etc &&  sudo rm resolv.conf && \
+   sudo ln -s ../run/systemd/resolve/resolv.conf .
+
+I really do wish Ubuntu would stop breaking things that have worked
+for over a decade.
 
 XX.) Set up Optimus / Bumblebee (DEPRECATED, see below)
 
