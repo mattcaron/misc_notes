@@ -1,4 +1,4 @@
-sudo apt-get install apache2 libapache2-mod-php7.0 php7.0 php7.0-cli php-pear php-db php7.0-mysql php7.0-mcrypt mysql-server php-apcu
+sudo apt-get install apache2 libapache2-mod-php php php-cli php-pear php-db php-mysql mysql-server php-apcu
 
 (on upgrade, don't forget to check for and remove the PHP5 stuff)
 
@@ -23,10 +23,10 @@ Listen 127.0.0.1:443
 sudo a2enmod userdir
 sudo a2enmod rewrite
 sudo a2enmod ssl
-sudo a2enmod php7.0
+sudo a2enmod php7.2
 
 - fix up the php configuration by editing
-  /etc/apache2/mods-available/php7.0.conf and commenting out this bit:
+  /etc/apache2/mods-available/php7.2.conf and commenting out this bit:
 #    <IfModule mod_userdir.c>
 #        <Directory /home/*/public_html>
 #            php_admin_value engine Off
