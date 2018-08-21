@@ -468,6 +468,13 @@ sudo ufw allow from 192.168.9.0/24 to any port 548
 
 sudo service netatalk restart
 
+28.) Fix things not starting
+
+After the 18.04 upgrade, ntp seems to like to die on startup. Add the
+following to /etc/rc.local to kick it in the head:
+
+sudo service ntp restart
+
 APPENDIX:
 
 1.) Backup scripts
