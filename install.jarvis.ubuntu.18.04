@@ -501,3 +501,21 @@ To run a backup, insert the external drive in to the cradle and run:
 
     sudo ~/bin/server_backup
 
+2.) To set up a new drive for the above:
+
+a.) Partition
+
+    sudo gdisk /dev/sde
+
+(gdisk because MBR tops out at 2TB)
+
+create one big partition for the whole drive. No need to split it.
+
+b.) make the filesystem
+
+    sudo mkfs.ext4 -m 0 -L external_backup /dev/sde1
+
+-m 0 => no reserved blocks; it's a backup drive.
+
+-L external_backup = volume label. This is to make it consistent with the
+   		     mount point, but the 
