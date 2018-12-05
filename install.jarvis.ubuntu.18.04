@@ -475,6 +475,24 @@ following to /etc/rc.local to kick it in the head:
 
 sudo service ntp restart
 
+29.) Fix DNS
+
+Ref: https://github.com/systemd/systemd/issues/7009
+
+It was set to:
+
+    resolv.conf -> ../run/resolvconf/resolv.conf
+
+by default, but this uses a local proxy which isn't otherwise set up
+correctly (doesn't get local DNS server at home). Switching it to use
+the systemd provided nameserver works better:
+
+cd /etc &&  sudo rm resolv.conf && \
+   sudo ln -s ../run/systemd/resolve/resolv.conf .
+
+I really do wish Ubuntu would stop breaking things that have worked
+for over a decade.
+
 APPENDIX:
 
 1.) Backup scripts
