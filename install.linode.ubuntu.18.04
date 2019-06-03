@@ -73,7 +73,7 @@ sudo ufw enable
 
 7. Install useful things
 
-sudo apt-get install tree emacs-nox git
+sudo apt-get install tree emacs-nox git software-properties-common
 
 8. Copy in certs into /etc/ssl/private
 
@@ -465,15 +465,15 @@ A.) Establish base checkout:
 cd ~/workspace/code
 git clone https://github.com/sympa-community/sympa.git
 cd sympa
-git checkout -b production 6.2.32
+git checkout -b production 6.2.42
 
 - upgrade later
 cd ~/workspace/code/sympa
 git fetch
 git checkout production
-git merge 6.2.32
+git merge 6.2.42
 
-(where 6.2.32 is the current version)
+(where 6.2.42 is the current version)
 
 B.) Copy this whole mess over to the linode server:
 push_sympa
@@ -482,7 +482,7 @@ push_sympa
 
 C.) Install prerequisites
 
-sudo apt-get install libapache2-mod-fcgid libdbd-mysql-perl apache2-suexec-pristine apache2-suexec-pristine intltool libclass-singleton-perl libdatetime-format-mail-perl libemail-simple-perl libnet-cidr-perl libproc-processtable-perl libcrypt-openssl-x509-perl libcrypt-smime-perl libdata-password-perl libauthcas-perl libdbd-odbc-perl 
+sudo apt-get install libapache2-mod-fcgid libdbd-mysql-perl apache2-suexec-pristine apache2-suexec-pristine intltool libclass-singleton-perl libdatetime-format-mail-perl libemail-simple-perl libnet-cidr-perl libproc-processtable-perl libcrypt-openssl-x509-perl libcrypt-smime-perl libdata-password-perl libauthcas-perl libdbd-odbc-perl libclone-perl libcrypt-eksblowfish-perl libdbd-csv-perl
 
 D.) Create a user w/ now shell (this was the last next available number)
 
@@ -496,21 +496,21 @@ sudo a2enmod cgi
 
 F.) Make the destination directory:
 
-sudo mkdir /opt/sympa-6.2.32
-sudo chown matt:matt /opt/sympa-6.2.32
+sudo mkdir /opt/sympa-6.2.42
+sudo chown matt:matt /opt/sympa-6.2.42
 
 G.) Build and install it:
 
 cd ~/workspace/code/sympa
 autoreconf -i
-./configure --prefix=/opt/sympa-6.2.32 --sysconfdir=/opt/sympa-6.2.32/etc/ --with-initdir=/opt/sympa-6.2.32/etc/init.d --with-cgidir=/opt/sympa-6.2.32/cgi-bin --without-smrshdir
+./configure --prefix=/opt/sympa-6.2.42 --sysconfdir=/opt/sympa-6.2.42/etc/ --with-initdir=/opt/sympa-6.2.42/etc/init.d --with-cgidir=/opt/sympa-6.2.42/cgi-bin --without-smrshdir
 make
 make install
 
 H.) Fix permissions
 
-sudo chown -R sympa:sympa /opt/sympa-6.2.32
-sudo chmod a+rX -R /opt/sympa-6.2.32
+sudo chown -R sympa:sympa /opt/sympa-6.2.42
+sudo chmod a+rX -R /opt/sympa-6.2.42
 
 sudo chown -R sympa:sympa /var/spool/sympa
 sudo chown -R sympa:sympa /var/lib/sympa
@@ -518,21 +518,22 @@ sudo chown -R sympa:sympa /var/lib/sympa
 I.) Make some compatibilty symlinks:
 
 sudo -u sympa -s
-cd /opt/sympa-6.2.32
+cd /opt/sympa-6.2.42
 ln -s /var/lib/sympa/expl .
 ln -s /var/lib/sympa/wwsarchive .
 ln -s /var/lib/sympa/x509-user-certs .
-cd /opt/sympa-6.2.32/etc
+cd /opt/sympa-6.2.42/etc
 ln -s /etc/sympa .
-cd /opt/sympa-6.2.32/static_content
+cd /opt/sympa-6.2.42/static_content
 rmdir css
 ln -s /var/lib/sympa/static_content/css .
 ln -s /etc/mail/sympa/aliases /etc/mail/sympa_aliases
-cp -a /opt/sympa-6.2.24/spool /opt/sympa-6.2.32
+cp -a /opt/sympa-6.2.40/spool /opt/sympa-6.2.42
 exit
 sudo service sympa stop
+cd /opt
 sudo rm sympa
-sudo ln -s sympa-6.2.32/ sympa
+sudo ln -s sympa-6.2.42/ sympa
 cd /etc/init.d
 sudo ln -s /opt/sympa/etc/init.d/sympa .
 cd /etc
@@ -542,11 +543,11 @@ mkdir pictures
 
 J.) Run the upgrade script (on upgrade)
 
-sudo -u sympa /opt/sympa-6.2.32/bin/sympa.pl --upgrade
+sudo -u sympa /opt/sympa-6.2.42/bin/sympa.pl --upgrade
 
 K.) Auto-install a pile of perl modules:
 
-sudo /opt/sympa-6.2.32/bin/sympa_wizard.pl --check
+sudo /opt/sympa-6.2.42/bin/sympa_wizard.pl --check
 
 (hit enter a bunch of times)
 
@@ -1189,8 +1190,10 @@ sudo service ntp restart
 
 29.) Set up letsencrypt certbot.
 
-a.) Install certbot:
+a.) Install certbot from PPA
 
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
 sudo apt-get install python3-certbot-apache
 
 b.) Set it up semi-manually:
