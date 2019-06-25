@@ -563,7 +563,7 @@ Set it to left windows.
 Close
 Apply System-Wide
 
-44.) Remove a drive from a RAID addray
+44.) Remove a drive from a RAID array
 
 We will assume the old drive is /dev/sdc
 
@@ -627,7 +627,7 @@ to
 	GtkScrollbar		::has-backward-stepper 			= 1
 	GtkScrollbar		::has-forward-stepper			= 1 
 
-48.) Replace a failed drive:
+48.) Replace a failed drive (or upgrade to a larger one):
 
 a.) Copy the partition from an existing drive
 
@@ -646,6 +646,39 @@ sudo mdadm --add /dev/mdX /dev/sdXn
 c.) If the drive is to be bootable, make sure to install grub on it
 
 sudo grub-install /dev/sdX
+
+d.) If expanding a drive.
+
+i.) Resize the partition
+
+On each drive, use:
+
+`parted resizepart #`
+
+where # is the partition number, to resize the underlying partition to
+the correct size.
+
+ii.) Expand the MD RAID size to fill the new partition.
+
+mdadm --grow /dev/mdX --size=max
+
+iii.) Resize the crypto device
+
+cryptsetup resize /dev/mapper/md1_crypt
+
+iv.) Resize the physical volume
+
+pvresize /dev/mapper/md1_crypt
+
+v.) Resize the logical volume(s), in this case to fill the whole PV.
+
+lvextend /dev/drives/home /dev/mapper/md1_crypt
+
+v.) Resize the underlying filesystem.
+
+resize2fs /dev/drives/home
+
+And all is well.
 
 49.) ecryptfs tutorial
 
