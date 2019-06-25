@@ -843,7 +843,7 @@ backwards by 6 seconds.
 which are an issue because it's a VM and time is a bit squidgy.
 )
 
-24. OwnCloud
+24. OwnCloud / NextCloud
 
 - Make sure to add owncloud.mattcaron.net to linode DNS
 
@@ -855,7 +855,7 @@ http://forum.owncloud.org/viewtopic.php?f=8&t=10692
 
 sudo apt-get install apache2 php php-mbstring php-gd php-xml php-intl \
 php-sqlite3 php-mysql curl libcurl4 php-curl \
-libapache2-mod-xsendfile php-apcu php-bz2 php-zip php-pclzip
+libapache2-mod-xsendfile php-apcu php-bz2 php-zip php-pclzip php-imagick
 
 - download tarball (add to source control, etc.)
   http://owncloud.org/install/
@@ -869,6 +869,7 @@ sudo chown www-data:www-data /tmp/oc-noclean
  - edit /etc/php5/apache2
  - uncomment:
    default_charset = "UTF-8"
+- Increase the memory limit to 512MB (recommended).
 
 - Log in to the DB server and create a user and password
 
@@ -946,14 +947,13 @@ Anyway, once that's all done it will let you in.
 
 Once logged in:
 
-- Under the "Admin" menu, tick:
- - Enforce HTTPS
-
-- Under the "Apps" menu, enable
- - Bookmarks
+- Under the "Apps" menu, office & text section, enable:
  - Calendar
  - Contacts
- - Documents
+ - Notes
+ - Collabora Online
+
+(these are all official apps)
 
 - Under the "Users" menu
  - Give appropriate people admin access
