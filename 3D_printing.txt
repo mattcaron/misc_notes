@@ -1,5 +1,9 @@
 This is a "bottom up" description.
 
+Refs:
+
+https://www.wargaming3d.com/2018/12/31/the-complete-and-utter-idiots-guide-to-3d-printing-in-resin-for-wargamers/
+
 1.) Printer
 
 mUVe3D 1.5 w/ Flex Vat and Uber-Z upgrade.
@@ -94,8 +98,8 @@ sudo -u pi -i
 
 (and then do the install process). The TL:DR and update is:
 
-(wget http://www.nanodlp.com/nanodlp.tar.gz -O - | \
-tar -C /home/pi -xz) && cd /home/pi/printer && sudo ./setup.sh muve3d
+(wget http://www.nanodlp.com/nanodlp.tar.gz --no-check-certificate -O - | \
+tar -C /home/pi -xz --warning=no-timestamp) && cd /home/pi/printer && sudo ./setup.sh muve3d
 
 (the answers are:
 Do you want to optimize Raspberry Pi settings for nanoDLP automatically? [Y/n] Y
@@ -116,6 +120,16 @@ http://muve3d
  3. Go into printer profiles and add as necessary.
  4. Go into the setup and make sure to delete the mask (current bulb
   is quite good)
+
+6.) Slicing software
+
+ChiTuBox:
+
+https://www.chitubox.com/
+
+
+
+Deprecated:
 
 6.) Slicing software:
 
@@ -195,7 +209,34 @@ Emacs Mode:
 
 https://github.com/openscad/openscad/blob/master/contrib/scad-mode.el
 
+GCODE stuff:
+
+Code before each layer (mUVe3D reference):
+
+M650 D{([[LargestArea]]>150)*2+([[LayerNumber]]<30)+2} S{(([[LayerNumber]]>30)*([[LargestArea]]<80))*3.5+0.5}
+M651
+G4 P1000
+G1 Z[[LayerPosition]]
+[[WaitForDoneMessage]]
+[[PositionSet [[LayerPosition]]]]
 
 
+Modified to:
 
+M650 D10 P5000 S{(([[LayerNumber]]>30)*([[LargestArea]]<80))*3.5+0.5}
+M651
+G1 Z[[LayerPosition]]
+[[WaitForDoneMessage]]
+[[PositionSet [[LayerPosition]]]]
 
+1. Sets 10mm lift on each layer to get out of the pool, and then
+waits 5 seconds for resin to drain. The only thing variable is peel
+speed, which will peel at 0.5mm/s for the first 30 layers if the
+largest area is greater than 80mm^2. Otherwise, it will peel at 4mm/s.)
+
+2. Does peel move (which returns back down)
+
+3. Goes to the desired layer position.
+
+In addition to this, there is a 1 second delay before showing the
+image to let resin flow out and things settle.
