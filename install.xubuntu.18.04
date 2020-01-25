@@ -170,12 +170,16 @@ server router
 
 12.) cups
 - sudo system-config-printer
-- add printers as appropriate
+- add printers as appropriate (most will be autodiscovered these days)
 - For servers, under Server->Settings, select:
     Publish shared printers conected to this system
 - make sure to enable it in the ufw
     sudo ufw allow cups
     sudo ufw allow mdns
+
+- All our printers are modern enouh that they just show up and do the
+  right thing. Make sure they're on, they should appear and just work
+  (though you may need to go in and fiddle with settings).
 
 13.) Set up samba:
 
@@ -466,10 +470,12 @@ sudo usermod -a -G vboxusers matt
 
 42.) Allow steam in-home streaming ports.
 
-sudo ufw allow in 27031/udp
-sudo ufw allow in 27036/udp
-sudo ufw allow in 27036/tcp
-sudo ufw allow in 27037/tcp
+Ref: https://support.steampowered.com/kb_article.php?ref=8571-GLVN-8711
+
+sudo ufw allow from 192.168.9.0/24 to any port 27031 proto udp comment 'steam'
+sudo ufw allow from 192.168.9.0/24 to any port 27036 proto udp comment 'steam'
+sudo ufw allow from 192.168.9.0/24 to any port 27036 proto tcp comment 'steam'
+sudo ufw allow from 192.168.9.0/24 to any port 27037 proto tcp comment 'steam'
 
 42.) DVDStyler
 

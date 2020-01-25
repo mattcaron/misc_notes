@@ -63,7 +63,7 @@ apt-get dist-upgrade
 
 6.) Install more useful things
 
-sudo apt-get install tree unison atop system-config-printer-gnome cups brother-cups-wrapper-laser nmap emacs lm-sensors ntp ssmtp logcheck gdisk git-core gitk iftop mailutils ppa-purge xsltproc
+sudo apt-get install tree unison atop nmap emacs lm-sensors ntp ssmtp logcheck gdisk git-core gitk iftop mailutils ppa-purge xsltproc
 
 7.) Add accounts
 
@@ -131,15 +131,6 @@ for each user
 
     sudo ufw enable
 
-12.) cups
-
-- Install stuff from repos:
-
-sudo apt-get install printer-driver-escpr
-
-- sudo system-config-printer
-- add printers as appropriate
-
 Note that we install the Xerox 8580 as the Phaser 8500DN, using the
 PPD from OpenPrinting, which I have stored in
 ~/system_stuff/printer_drivers/xerox.
@@ -161,6 +152,9 @@ for a bad user experience, so have the server publish its IPv4 info in
 the multicast packets.
 
     edit /etc/avahi/avahi-daemon.conf and set "publish-a-on-ipv6=yes"
+
+12.) Removed. Printers are smart enough these days that they just show
+     up and don't need CUPS anymore.
 
 13.) Add dashpodder to crontab
 
