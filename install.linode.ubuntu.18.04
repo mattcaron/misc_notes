@@ -1108,81 +1108,32 @@ query_cache_size        = 8M
 
 sudo service mysql restart
 
-27.) Prosody
+27.) Deprecated
 
-    sudo apt-get install prosody lua-dbi-mysql
+28.) MediaWiki (rpg.mattcaron.net)
 
-Note that prosody now supports a virtualhosts, etc., but we just use
-the one server, so we edit the old prosody.cfg.lua file. So, we need
-to add stuff back in that was removed.
+a.) Make the dir, index.html, etc. (this is all in git, so will just
+    get pushed).
 
-a.) Add the ssl certs to point at the base domain name. In
-/etc/prosody/prosody.conf.lua, set the ssl block to be:
+b.) Grab the mediawiki tarball and untar it in ac-2020 (the current
+    RPG game). We'll be using separate mediawiki per install, just
+    like wordpress. It does support multihost, but this is clean and
+    easy and there won't be many of these. Plus, it's *actually* clean
+    segregation, not virtual, so any bugs in that code won't bite us.
 
-ssl = {
-        key = "/etc/ssl/private/mattcaron.net/privkey.pem";
-        certificate = "/etc/ssl/private/mattcaron.net/fullchain.pem;
-}
+c.) Make /etc/apache2/sites-available and enable it:
 
-b.) Change c2s_require_encryption to true.
+sudo a2ensite rpg.mattcaron.net && sudo systemctl reload apache2
 
-c.) Below it add: s2s_require_encryption set to true
+d.) Create the database and user:
 
-d.) change s2s_secure_auth to true (we don't do any server federation,
-so this likely doesn't matter)
+CREATE DATABASE mw_ac_2020;
 
-e.) Set authentication to "internal_hashed"
+GRANT ALL PRIVILEGES ON mw_ac_2020.* TO "mw_ac_2020"@"localhost" IDENTIFIED BY "password";
 
-f.) Make a user and database in MySQL
-CREATE DATABASE prosody;
-CREATE USER prosody@localhost IDENTIFIED BY "password";
-GRANT ALL PRIVILEGES ON prosody.* to prosody;
-
-g.) And then set up the sql line based on the above:
-storage = "sql"
-sql = { driver = "MySQL", database = "prosody", username = "prosody", password = "password", host = "localhost" }
-
-h.) add a virtualhost section:
-
-VirtualHost "mattcaron.net"
-        enabled = true
-        ssl = {;
-                key = "/etc/ssl/private/mattcaron.net/privkey.pem";
-                certificate = "/etc/ssl/private/mattcaron.net/fullchain.pem";
-        }
-i.) Enable the proxy65 module as well (it's commented out by
-default).
-
-j.) Allow through the firewall
-
-XMPP client:
-    sudo ufw allow xmpp-client/tcp
-
-XMPP proxy:
-    sudo ufw allow 5000/tcp
-
-z.) add users with:
-
-    sudo prosodyctl adduser user@mattcaron.net
-
-28.) Fix things not starting
-
-After the 16.04 upgrade, SpamAssassin, Prosody and Sympa don't like to start
-correctly, I think because mysql isn't up yet. Rather than fight with
-the whole Ubuntu config infrastructure, just add something to bounce
-them at the end, so add the following to /etc/rc.local:
-
-sudo service spamassassin restart
-sudo service prosody restart
-sudo service sympa restart
-sudo service ntp restart
-
-EDIT: After the 18.04 upgrade, everything but ntp seems fixed, so now this is:
-
-# sudo service spamassassin restart
-# sudo service prosody restart
-# sudo service sympa restart
-sudo service ntp restart
+d.) Push everything up and then go to
+    https://rpg.mattcaron.net/ac-2020 to configure it, grab the
+    LocalSettings.php file and stuff it where it needs to be. Yay.
 
 29.) Set up letsencrypt certbot.
 
@@ -1195,9 +1146,6 @@ sudo apt-get install python3-certbot-apache
 b.) Set it up semi-manually:
 
 sudo certbot --standalone certonly -d mattcaron.net 
-
--d conference.mattcaron.net -d proxy.mattcaron.net
-
 sudo certbot --standalone certonly -d www.mattcaron.net
 sudo certbot --standalone certonly -d owncloud.mattcaron.net
 sudo certbot --standalone certonly -d sympa.mattcaron.net
@@ -1205,6 +1153,7 @@ sudo certbot --standalone certonly -d mail.mattcaron.net
 sudo certbot --standalone certonly -d www.sarahdipitysweets.com
 sudo certbot --standalone certonly -d lists.pfmbonsai.com
 sudo certbot --standalone certonly -d pfmbonsai.com
+sudo certbot --standalone certonly -d rpg.mattcaron.net
 
 c.) make the directories in /etc group accessible by ssl-cert and make
 the gid sticky
@@ -1221,8 +1170,10 @@ e.) Add create /etc/cron.d/letsencrypt thusly:
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 MAILTO=root
 
-37 06 * * *     root     certbot renew && chmod -R g+r /etc/letsencrypt && service dovecot reload && service exim4 reload && service prosody restart && service apache2 reload
-42 18 * * *     root     certbot renew && chmod -R g+r /etc/letsencrypt && service dovecot reload && service exim4 reload && service prosody restart && service apache2 reload
+37 01 * * *     root     service apache2 stop && certbot renew && chmod -R g+r /etc/letsencrypt && service apache2 star\
+t && service dovecot reload && service exim4 reload
+# 42 18 * * *     root     service apache2 stop && certbot renew && chmod -R g+r /etc/letsencrypt && service apache2 st\
+art && service dovecot reload && service exim4 reload
 
 # EOF
 ===
