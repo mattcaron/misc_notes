@@ -627,7 +627,7 @@ to
 	GtkScrollbar		::has-backward-stepper 			= 1
 	GtkScrollbar		::has-forward-stepper			= 1 
 
-48.) Replace a failed drive (or upgrade to a larger one):
+48.) Replace a failed RAID drive (or upgrade to a larger one):
 
 a.) Copy the partition from an existing drive
 
@@ -637,7 +637,9 @@ sfdisk -d /dev/sdX | sfdisk /dev/sdY
 
 - larger, GPT drives (>= 3TB)
 
-sgdisk -R /dev/sdY /dev/sdY && sgdisk -G /dev/sdY
+** X is old, Y is new **
+
+sgdisk -R /dev/sdY /dev/sdX && sgdisk -G /dev/sdY
 
 b.) add in the replacement drive
 
@@ -651,28 +653,42 @@ d.) If expanding a drive.
 
 i.) Resize the partition
 
-On each drive, use:
+On each drive, use parted:
 
-`parted resizepart #`
+`parted /dev/sdx resizepart #`
 
 where # is the partition number, to resize the underlying partition to
 the correct size.
+
+Note: You can find the end by doing:
+
+    parted /dev/sdx print free
 
 ii.) Expand the MD RAID size to fill the new partition.
 
 mdadm --grow /dev/mdX --size=max
 
-iii.) Resize the crypto device
+iii.) Resize the crypto device (if present)
 
 cryptsetup resize /dev/mapper/md1_crypt
 
 iv.) Resize the physical volume
 
-pvresize /dev/mapper/md1_crypt
+    pvresize /dev/mapper/md1_crypt
+
+or
+
+    pvresize /dev/mdX
+
+(you can check this with pvdisplay)
 
 v.) Resize the logical volume(s), in this case to fill the whole PV.
 
-lvextend /dev/drives/home /dev/mapper/md1_crypt
+    lvextend /dev/drives/home /dev/mapper/md1_crypt
+
+or
+
+    lvextend /dev/drives/home /dev/mdX
 
 v.) Resize the underlying filesystem.
 
