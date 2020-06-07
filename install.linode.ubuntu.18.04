@@ -461,15 +461,15 @@ A.) Establish base checkout:
 cd ~/workspace/code
 git clone https://github.com/sympa-community/sympa.git
 cd sympa
-git checkout -b production 6.2.52
+git checkout -b production 6.2.56
 
 - upgrade later
 cd ~/workspace/code/sympa
 git fetch
 git checkout production
-git merge 6.2.52
+git merge 6.2.56
 
-(where 6.2.52 is the current version)
+(where 6.2.56 is the current version)
 
 B.) Copy this whole mess over to the linode server:
 push_sympa
@@ -492,21 +492,21 @@ sudo a2enmod cgi
 
 F.) Make the destination directory:
 
-sudo mkdir /opt/sympa-6.2.52
-sudo chown matt:matt /opt/sympa-6.2.52
+sudo mkdir /opt/sympa-6.2.56
+sudo chown matt:matt /opt/sympa-6.2.56
 
 G.) Build and install it:
 
 cd ~/workspace/code/sympa
 autoreconf -i
-./configure --prefix=/opt/sympa-6.2.52 --sysconfdir=/opt/sympa-6.2.52/etc/ --with-initdir=/opt/sympa-6.2.52/etc/init.d --with-cgidir=/opt/sympa-6.2.52/cgi-bin --without-smrshdir
+./configure --prefix=/opt/sympa-6.2.56 --sysconfdir=/opt/sympa-6.2.56/etc/ --with-initdir=/opt/sympa-6.2.56/etc/init.d --with-cgidir=/opt/sympa-6.2.56/cgi-bin --without-smrshdir
 make
 make install
 
 H.) Fix permissions
 
-sudo chown -R sympa:sympa /opt/sympa-6.2.52
-sudo chmod a+rX -R /opt/sympa-6.2.52
+sudo chown -R sympa:sympa /opt/sympa-6.2.56
+sudo chmod a+rX -R /opt/sympa-6.2.56
 
 sudo chown -R sympa:sympa /var/spool/sympa
 sudo chown -R sympa:sympa /var/lib/sympa
@@ -514,22 +514,22 @@ sudo chown -R sympa:sympa /var/lib/sympa
 I.) Make some compatibilty symlinks:
 
 sudo -u sympa -s
-cd /opt/sympa-6.2.52
+cd /opt/sympa-6.2.56
 ln -s /var/lib/sympa/expl .
 ln -s /var/lib/sympa/wwsarchive .
 ln -s /var/lib/sympa/x509-user-certs .
-cd /opt/sympa-6.2.52/etc
+cd /opt/sympa-6.2.56/etc
 ln -s /etc/sympa .
-cd /opt/sympa-6.2.52/static_content
+cd /opt/sympa-6.2.56/static_content
 rmdir css
 ln -s /var/lib/sympa/static_content/css .
 ln -s /etc/mail/sympa/aliases /etc/mail/sympa_aliases
-cp -a /opt/sympa-6.2.42/spool /opt/sympa-6.2.52
+cp -a /opt/sympa-6.2.52/spool /opt/sympa-6.2.56
 exit
 sudo service sympa stop
 cd /opt
 sudo rm sympa
-sudo ln -s sympa-6.2.52/ sympa
+sudo ln -s sympa-6.2.56/ sympa
 cd /etc/init.d
 sudo ln -s /opt/sympa/etc/init.d/sympa .
 cd /etc
@@ -539,11 +539,11 @@ mkdir pictures
 
 J.) Run the upgrade script (on upgrade)
 
-sudo -u sympa /opt/sympa-6.2.52/bin/sympa.pl --upgrade
+sudo -u sympa /opt/sympa-6.2.56/bin/sympa.pl --upgrade
 
 K.) Auto-install a pile of perl modules:
 
-sudo /opt/sympa-6.2.52/bin/sympa_wizard.pl --check
+sudo /opt/sympa-6.2.56/bin/sympa_wizard.pl --check
 
 (hit enter a bunch of times)
 
@@ -1108,7 +1108,45 @@ query_cache_size        = 8M
 
 sudo service mysql restart
 
-27.) Deprecated
+27.) MegaMek
+
+a.) Install a JRE:
+
+sudo apt-get install default-jre
+
+b.) Open up a firewall port:
+
+sudo ufw allow from any to any port 2346 proto tcp comment 'megamek'
+
+c.) Create /etc/systemd/system/megamek.service with the following (and
+    the correct password):
+
+===
+(matt@linode) /etc/systemd/system$ cat megamek.service 
+[Unit]
+Description=MegaMek service
+After=network.target auditd.service
+
+[Service]
+ExecStart=/usr/bin/java -Xmx1024m -jar /home/matt/megamek/megamek/MegaMek.jar -dedicated -port 2346 -password XXX
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=always
+RestartPreventExitStatus=255
+Type=simple
+WorkingDirectory=/home/matt/megamek/megamek
+RuntimeDirectoryMode=0755
+User=matt
+
+[Install]
+Alias=megamek.service
+===
+
+Notes:
+
+a.) It lives in ~/megamek/
+b.) ~/megamek/megamek is a symlink to the current version.
+c.) Download from https://megamek.org/downloads.html (just MegaMek stable)
 
 28.) MediaWiki (rpg.mattcaron.net)
 
