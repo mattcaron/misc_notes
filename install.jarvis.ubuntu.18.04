@@ -63,7 +63,7 @@ apt-get dist-upgrade
 
 6.) Install more useful things
 
-sudo apt-get install tree unison atop nmap emacs lm-sensors ntp ssmtp logcheck gdisk git-core gitk iftop mailutils ppa-purge xsltproc
+sudo apt-get install tree unison atop nmap emacs lm-sensors ntp ssmtp logcheck gdisk git-core gitk iftop mailutils ppa-purge xsltproc smartmontools
 
 7.) Add accounts
 
