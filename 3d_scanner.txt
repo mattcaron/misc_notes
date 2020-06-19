@@ -1,0 +1,60 @@
+Note: This is half a document. I never did finish getting this set up
+and the world has moved on - I'm likely better using any of the many
+photogrammetery apps available these days and having the camera move
+around the platform (or just reuse it and have the platform move as
+this does, if it supports that - which would be easier). Still
+committed for posterity.
+
+From
+http://media.wix.com/ugd/ed8e91_d1173069b4cc4e569961f77c45803b0c.pdf,
+which I've also stashed in ~/workspace/3d_printing/ciclop_scanner
+
+1.) Install Horus:
+
+Docs here:
+http://horus.readthedocs.io/en/release-0.2/source/installation/ubuntu.html
+
+At the time of writing, this does not work, because of package
+conflicts. See:
+
+https://github.com/bqlabs/horus/issues/92
+
+* Docker and a helpful fellow to the rescue:
+
+sudo apt-get install docker.io
+sudo usermod -a -G docker $USER
+
+* log off and log back in
+
+docker pull fcrohas/horus
+
+* Make a simple wrapper script:
+
+====
+#!/bin/bash
+xhost +local:`docker inspect --format='{{ .Config.Hostname }}' $containerId`
+docker run -it --rm \
+    --name horus \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    --device=/dev/video1:/dev/video1:rwm \
+    --device=/dev/ttyUSB0:/dev/ttyUSB0:rwm \
+    -v ~/workspace/horus-docker/horus:/root/.horus \
+    fcrohas/horus:latest
+xhost -
+====
+
+* Make sure the user (me) is in the dialout group (I should already, but
+  make sure):
+
+sudo usermod -a -G dialout $USER
+
+* Log off and log back in
+
+
+2.) Calibrate
+
+* Start it the first time. It will pop up a wizard wondow. Tick the
+  box that says to not show it again, then close it.
+
+* Follow the instructions to upload firmware.
