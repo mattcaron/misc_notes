@@ -2,11 +2,11 @@ These are instructions for install Dosbian 1.5 on to a hard drive suitable for b
 
 1. Ensure your RPi is up to date with the beta firmware (modern RPis may not have this issue as they may come with the release firmware).
     1. You only need to do this once.
-    1. Boot any bootable RPi OS image (this can be Rasbian, Raspberry Pi OS, RetroPie, Dosbian, etc.) from SD card.
+    1. Boot Dosbian from SD card.
         1. Note: A bootable SD card can be made by following the instructions for the hard drive, below, and writing the SD card instead.
 
     1. Do any configuration required so networking anmd keyboard and all that works.
-    1. Do the update:
+    1. Drop to console and do the update:
 
             sudo apt update
             sudo apt dist-upgrade
