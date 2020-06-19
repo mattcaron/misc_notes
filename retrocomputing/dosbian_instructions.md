@@ -27,7 +27,7 @@ These are instructions for install Dosbian 1.5 on to a hard drive suitable for b
     1. Take the SD card you used to update the firmware, above, and copy the contents of the `/boot`/ partition over those on the hard drive - they've been updated and have the new binaries used by the bootloader to boot the USB device.
         1. **Note** This will likely be obsolete with the next build of Dosbian.
 
-1. Copy over the Argon1 case fan control script so we can run it later:
+1. **Note: This only applies if you have an Argon1 case like I do.** Copy over the Argon1 case fan control script so we can run it later:
 
         cp ~/workspace/retrocomputing/argon1.sh /media/matt/rootfs/home/pi/.
 
@@ -35,7 +35,9 @@ These are instructions for install Dosbian 1.5 on to a hard drive suitable for b
     1. **Make sure to change the pi user's password.**
     1. Probably want to expand the filesystem too.
 
-1. Exit to the prompt and run the `./argon1.sh` script to support the power and fan control.
+1. **Note: This only applies if you have an Argon1 case like I do.** Exit to the prompt and run the `./argon1.sh` script to support the power and fan control.
     1. Once installed, it can be configured with `argonone-control`.
 
 1. And once that's all done, pull the drive and load it full of stuff.
+
+     
