@@ -666,8 +666,14 @@ exec  /opt/sympa/cgi-bin/wwsympa.fcgi
 sudo chown sympa:sympa /var/www/sympa/wwsympa.cgi
 sudo chmod u+x /var/www/sympa/wwsympa.cgi
 
-N.) Make sure dmarc_protection_mode is set in the config - add this to
-the bottom of /etc/sympa/sympa.conf:
+N.) `/etc/sympa/sympa.conf` changes:
+
+a. Limit number of spawned bulk processes, set:
+
+bulk_max_count  1
+
+b. Make sure dmarc_protection_mode is set in the config - add this to
+the bottom:
 
 # Munge email which would otherwise be dropped.                                 
 dmarc_protection_mode dmarc_any
