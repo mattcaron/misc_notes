@@ -1,0 +1,168 @@
+This document is how I set up a basic disk set for a
+client. Basically, each new client gets 2 500GB SSDs as a RAID1 mirror
+for work drives and a 3TB HDD as the rsnapshot drive (mounted as
+/archive). This whole setup is around $250 for each client, as initial
+setup cost, and they can have the drives shipped to them when my
+contract ends if they want.
+
+Basic install is standard - Ubuntu Minimal, make all the volumes as
+you would expect, RAID them, then encrypt the metadisk, then make an
+LVM volume on that, then make all the drives there (including
+swap). Thus, the only unencrypted thing is /boot.
+
+Theoretically, then, the best attack vector is to break in, mount
+that, trojan the kernel and log the passphrase to unlock the LUKS
+encrypted volume. And, for that, I have no particularly good solution
+other than home security systems, guard dogs, and firearms.
+
+1.) Install basic things.
+
+sudo apt-get install gcc make perl git gitk python-pip tomboy evince xul-ext-lightning xfce4-goodies xfce4-battery-plugin xfce4-clipman-plugin xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-datetime-plugin xfce4-dict xfce4-diskperf-plugin xfce4-eyes-plugin xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-hdaps xfce4-indicator-plugin xfce4-linelight-plugin xfce4-mailwatch-plugin xfce4-messenger-plugin xfce4-mount-plugin xfce4-mpc-plugin xfce4-netload-plugin xfce4-notes-plugin xfce4-places-plugin xfce4-power-manager-plugins xfce4-quicklauncher-plugin xfce4-radio-plugin xfce4-screenshooter-plugin xfce4-sensors-plugin xfce4-smartbookmark-plugin xfce4-systemload-plugin xfce4-time-out-plugin xfce4-timer-plugin xfce4-verve-plugin xfce4-wavelan-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-wmdock-plugin xfce4-xkb-plugin xfswitch-plugin shutter yaml-mode yamllint elpa-flycheck elpa-markdown-mode retext rsnapshot gkrellm meld geeqie gimp jq sshfs xvnc4viewer emacs emacs-goodies-el synaptic elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist
+
+sudo ufw enable
+
+3.) After machine is up, run synaptic, go to settings->repositories
+make sure the following are enabled:
+
+- main
+- universe
+- restricted
+- multiverse
+- source code
+
+Select other software tab and enable/add:
+- partner
+- partner (Source Code)
+
+Select updates tab and enable:
+- bionic-security
+- bionic-updates
+- bionic-backports
+
+(or just grab sources.list from some reasonable machine)
+
+4.) Install real chrome
+
+The ubuntu packaged chromium is broken in a couple of ways - NaCL
+support, etc. NaCL support is required for Hangouts to work. Solution:
+Install Chrome from a PPA.
+
+Instructions from:
+  https://www.ubuntuupdates.org/ppa/google_chrome
+
+Do:
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+sudo chmod a+r /etc/apt/sources.list.d/google-chrome.list
+sudo apt-get update
+sudo apt-get install google-chrome-stable
+
+See the following for more info on chromium fail
+https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/882942
+
+4.) Restore old-style Linux grognard boot messages (which actually
+    lets you see suspend and restore progress).
+
+Edit /etc/default/grub
+
+Change:
+
+    GRUB_CMDLINE_LINUX_DEFAULT="splash quiet"
+
+to:
+
+    GRUB_CMDLINE_LINUX_DEFAULT=""
+
+Then do:
+
+sudo update-grub
+
+
+5.) Hibernation:
+
+sudo apt install hibernate
+
+sudo hibernate-disk
+
+works reasonably
+
+add a file, matt-hibernate-disk, to /etc/sudoers.d letting me (and
+only me) hibernate the machine without creds, so I can do it from a
+button. It should contain:
+
+matt ALL=(ALL) NOPASSWD: /usr/sbin/hibernate-disk
+
+and be mode 0440
+
+(this is just a wrapper for uswsusp. It uses s2disk as a backend and
+wraps it with a pile of scripts that do things like fix the video,
+etc. so it works nicely).
+
+6.) rsnapshot
+
+- edit /etc/rsnapshot.conf and
+
+a.) Set snapshot_root to /archive/rsnapshot
+
+b.) add this section to BACKUP LEVELS / INTERVALS (note tabs not spaces)
+
+retain	hourly	24
+retain	daily	7
+retain	weekly	4
+retain	monthly 6
+
+c.) Set the BACKUP POINTS / SCRIPTS to just back up /home
+
+(retain 24 hours, then 7 days, then 4 weeks, then 6 months)
+
+- edit /etc/cron.d/rsnapshot and set it up like this:
+
+@hourly     root        /usr/bin/rsnapshot hourly
+@daily      root        /usr/bin/rsnapshot daily
+@weekly     root        /usr/bin/rsnapshot weekly
+@monthly    root        /usr/bin/rsnapshot monthly
+
+7.) Install zoom
+
+Download it.
+
+    sudo dpkg -i zoom_amd64.deb
+
+this will fail, do:
+
+    sudo apt -f install
+
+then:
+
+    sudo dpkg -i zoom_amd64.deb
+
+and it will work the second time because it's got deps.
+
+8.) PPA for fully working shutter
+
+Source: https://www.linuxuprising.com/2018/10/shutter-removed-from-ubuntu-1810-and.html
+
+sudo add-apt-repository ppa:linuxuprising/shutter
+sudo apt update
+sudo apt install shutter gnome-web-photo
+
+9.) Docker
+
+https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+Follow the installation instructions.
+
+Make sure to add your user to the docker group.
+
+sudo usermod -aG docker matt
+
+10.) VirtualBox
+
+Follow: https://www.virtualbox.org/wiki/Linux_Downloads
+
+Add the repo by adding this line:
+
+deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian bionic contrib
+
+to /etc/apt/sources.list.d/
+
