@@ -1179,7 +1179,27 @@ d.) Push everything up and then go to
     https://rpg.mattcaron.net/ac-2020 to configure it, grab the
     LocalSettings.php file and stuff it where it needs to be. Yay.
 
-29.) Set up letsencrypt certbot.
+29.) MediaWiki (school.mattcaron.net)
+
+a.) Make the dir.
+
+b.) Grab the mediawiki tarball and untar it in the root.
+
+c.) Make /etc/apache2/sites-available and enable it:
+
+sudo a2ensite rpg.mattcaron.net && sudo systemctl reload apache2
+
+d.) Create the database and user:
+
+CREATE DATABASE mw_school;
+
+GRANT ALL PRIVILEGES ON mw_school.* TO "mw_school"@"localhost" IDENTIFIED BY "password";
+
+d.) Push everything up and then go to
+    https://school.mattcaron.net/ to configure it, grab the
+    LocalSettings.php file and stuff it where it needs to be. Yay.
+
+30.) Set up letsencrypt certbot.
 
 a.) Install certbot from PPA
 
@@ -1198,6 +1218,7 @@ sudo certbot --standalone certonly -d www.sarahdipitysweets.com
 sudo certbot --standalone certonly -d lists.pfmbonsai.com
 sudo certbot --standalone certonly -d pfmbonsai.com
 sudo certbot --standalone certonly -d rpg.mattcaron.net
+sudo certbot --standalone certonly -d school.mattcaron.net
 
 c.) make the directories in /etc group accessible by ssl-cert and make
 the gid sticky
