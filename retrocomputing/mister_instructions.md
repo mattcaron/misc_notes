@@ -86,7 +86,7 @@ This is a synthesis of the docs and the `MiSTer-sd-installer-linux.sh` script fr
 
     1. Press F1 to load a wallpaper.
 
-    1. Useful scripts to run (these are in `/media/fat/Scripts` after update);
+    1. Useful scripts to run (these are in `/media/fat/Scripts` after update). **Note: These must be run after every update. **
         1. `./fast_USB_polling_on.sh`
         1. `./firewall_on.sh`
         1. `./ftp_off.sh`
@@ -116,6 +116,8 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 
 **Make sure to save these when you change them.**
 
+**Also, these seem to reset every time you update.**
+
     1. Genesis:
         1. Genesis:
             1. Region: US
@@ -138,13 +140,14 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 1. Roms
     1. [Filesystem reference](https://github.com/MiSTer-devel/Main_MiSTer/wiki/Folders-and-File-naming)
     1. Software for most things goes in the `games` subdir. It's organized by platform. Put your roms in the right subdir for your platform.
-    1. Note that I only installed base packs. I figure, once I go through that, I can install the extras/specials/etc.
-
     1. Everdrive mappings (from 9-5-2018 EverDrive pack from SmokeMonster)
+        1. Note that I only installed base packs. I figure, once I go through that, I can install the extras/specials/etc.
         1. `Atari 2600` -> `ATARI2600`
         1. `Atari 5200` -> `ATARI5200`
         1. `ColecoVision Atarimax` -> `Coleco`
-        1. `Darksoft Neo Geo` -> `NeoGeo`
+        1. `Darksoft Neo Geo` -> `NEOGEO`
+            1. **This is case specific** and was created wrong, but it was FAT, so it worked. Moving to to ext4 broke it. I had to rename it. It's fine now.
+            1. This also needs a ROMset. I copied over everything in the `misc/NeoGeo` subdir to `NEOGEO`. There are extras, but who cares.
         1. `Everdrive N8` -> `NES`
         1. `EverDrive GB` -> `GAMEBOY`
             1. This includes Gameboy color.
@@ -157,7 +160,43 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
             1. This is Sega's 8 bit console which was repackaged as the Game Gear portable later.
             1. I put it in a subdir (see below)
         1. `Mega EverDrive` -> `Genesis`
-        1. `Super EverDrive & SD2SNES` -> `SNES`            
+        1. `Super EverDrive & SD2SNES` -> `SNES`
         1. `Turbo EverDrive` -> `TGFX16`
         1. `Vectrex` -> `VECTREX`
 
+    1. Mame Mappings
+        1. Put the MAME ROMS `games/mame`
+        1. Put the HBMAME ROMS in `games/hbmame`
+        1. **Don't unzip the ROM files**
+        1. The download I got requires some cleanup - there are a pile of multipart zip files which needed to be combined and uncompressed.
+            1. I didn't copy over any of the other directories (yet).
+
+    1. Mappings for stuff from Archive.org:
+        1. `SEGACD201809` -> `MegaCD`
+            1. This was a zip of 7z files and all of those needed to be uncompressed too. They are in bin/cue format so I made a directory for each and then unzipped them into that directory.
+            1. And this needs a ROM. SmokeMonster recommends `Sega CD 2 (USA) v2.00W` which I found and placed in the `MegaCD` root named `bios.rom`.
+        1. `playtime_atariST` -> `AtariST`
+            1. This was a pile of zip files of disk images. I copied them over and then unzipped them into their own separate directories.
+        1. `gaplus-for-nes` -> Put in `NES/1 US - G-Q/`
+        1. `pac-man-championship-edition-nes-demake` -> Put in `NES/1 US - G-Q/`
+        1. `TOSEC_V2017-04-23` (this has many things):
+            1. `Apple/1`-> `Apple-I`
+                1. And then I had to unzip everything in each directory. They're disk images, so I made directories for each.
+            1. `Apple/II` -> `Apple-II`
+                1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
+                1. The theory is that the core may not be able to read all disk formats, so I may delete the ones it doesn't read (or, at least, stay away from them). Or, if it reads all of them, I'll just combine them by main category.
+            1. `Amstrad/CPC` -> `Amstrad`
+                1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
+                1. Theory is the same as above.
+            1. `MITS/Altair 8800` -> `Altair8800`
+                1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
+                1. Theory is the same as above.
+            
+        1. `Never_Ending_Amiga_Collection_2019-11` -> `games/Amiga`
+            1. This is a single zip file containing many subdirs of what look to be disk dumps from 5 people, plus some random files. I left them alone because there may be dupes and it just needs to be gone through.
+        
+    1. Using a USB hard drive.
+        1. Do the above, but put it goes in the `games` subdir of the USB HDD.
+        1. The easiest way to do this is to let the update script set up the `games` folder on the SD card and then copy the hierarchy over.
+        1. ext4 works, BTW.
+            1. Make sure to `sudo chmod a+rwx` the whole directory structure - permissions are pretty loose on this setup.
