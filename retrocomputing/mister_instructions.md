@@ -1,3 +1,5 @@
+# Basic install
+
 This is a synthesis of the docs and the `MiSTer-sd-installer-linux.sh` script from `https://github.com/michaelshmitty/SD-Installer-macos_MiSTer`.
 
 1. Get the latest installer .rar file from https://github.com/MiSTer-devel/SD-Installer-Win64_MiSTer
@@ -6,9 +8,9 @@ This is a synthesis of the docs and the `MiSTer-sd-installer-linux.sh` script fr
 
 1. Get the latest menu file from https://github.com/MiSTer-devel/Menu_MiSTer/tree/master/releases
 
-1. Make an appropriately named director.
+1. Make an appropriately named directory.
 
-1.  `unrar x` the file into that directory.
+1. `unrar x` the file into that directory.
 
 1. Make sure the SD card is unmounted so you can do low level stuff with it.
 
@@ -97,18 +99,18 @@ This is a synthesis of the docs and the `MiSTer-sd-installer-linux.sh` script fr
 1. Other access:
     1. Default User: `root`, pass `1`
     1. Console ([ref](https://github.com/MiSTer-devel/Main_MiSTer/wiki/Console-connection)) is the port next to the ethernet jack. It's 115200 8N1.
-    1. Network: ([ref](https://github.com/MiSTer-devel/Main_MiSTer/wiki/Network-access)]
+    1. Network: ([ref](https://github.com/MiSTer-devel/Main_MiSTer/wiki/Network-access))
 
 1. Joysticks / gamepads /etc
 
 These need to be set up.
 
-    1. Plug one in.
-    1. Press F12 twice to get to the System Settings.
-    1. Choose "define joystick buttons"
-    1. Follow instructions.
+1. Plug one in.
+1. Press F12 twice to get to the System Settings.
+1. Choose "define joystick buttons"
+1. Follow instructions.
 
-1. Core config
+# Core config
 
 When a core is loaded, press F12. The core setup is there. Press left or right to flip between menus.
 
@@ -118,85 +120,131 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 
 **Also, these seem to reset every time you update.**
 
+1. Genesis:
     1. Genesis:
-        1. Genesis:
-            1. Region: US
-            1. 320x224 Aspect: Corrected
-            1. 
-        1. System:
-            1. Scale filter: Custom, then choose "Scanlines (Bright Sharp)"
+        1. Region: US
+        1. 320x224 Aspect: Corrected
+    1. System:
+        1. Scale filter: Custom, then choose "Scanlines (Bright Sharp)"
+1. NES:
     1. NES:
-        1. NES:
-            1. Palette: Composite
-        1. System:
-            1. Scale filter: Custom, then choose "Scanlines (Bright Sharp)"
-    1. SNES
-        1. SNES: No changes
-        1. System:
-            1. Scale filter: Custom, then choose "SNES Scanlines (Bright Sharp)" under the "SNES Specific" subdir.
-        
+        1. Palette: Composite
+    1. System:
+        1. Scale filter: Custom, then choose "Scanlines (Bright Sharp)"
+1. SNES
+    1. SNES: No changes
+    1. System:
+        1. Scale filter: Custom, then choose "SNES Scanlines (Bright Sharp)" under the "SNES Specific" subdir.
 
+# Roms
 
-1. Roms
-    1. [Filesystem reference](https://github.com/MiSTer-devel/Main_MiSTer/wiki/Folders-and-File-naming)
-    1. Software for most things goes in the `games` subdir. It's organized by platform. Put your roms in the right subdir for your platform.
-    1. Everdrive mappings (from 9-5-2018 EverDrive pack from SmokeMonster)
-        1. Note that I only installed base packs. I figure, once I go through that, I can install the extras/specials/etc.
-        1. `Atari 2600` -> `ATARI2600`
-        1. `Atari 5200` -> `ATARI5200`
-        1. `ColecoVision Atarimax` -> `Coleco`
-        1. `Darksoft Neo Geo` -> `NEOGEO`
-            1. **This is case specific** and was created wrong, but it was FAT, so it worked. Moving to to ext4 broke it. I had to rename it. It's fine now.
+1. [Filesystem reference](https://github.com/MiSTer-devel/Main_MiSTer/wiki/Folders-and-File-naming)
+1. Software for most things goes in the `games` subdir. It's organized by platform. Put your roms in the right subdir for your platform.
+1. Mappings for stuff from Archive.org:
+
+    1. `everdrivepack`
+        1. **Notes:**
+            1. Filenames prepended with @ are MiSTer ready - apparently, MiSTer can unzip zip files and just read them, which is good to know, and makes updates very convenient (just move the zip, don't move and rsync). In that case, rather than unzipping things, I've just copied the whole zip file. 7z files were unzipped.
+        1. `@Atari 2600 2020-04-30.zip` -> `ATARI2600`
+        1. `Atari 5200 - Atarimax v1.0.7z` -> `ATARI5200`
+        1. `Colecovision - Atarimax 2019-11-30.7z` -> `Coleco`
+        1. `Darksoft Neo Geo 2020-05-12.7z` -> `NEOGEO`
+        1. `@MiSTer Pack Add-on - NEOGEO 2020-05-12.zip` -> `NEOGEO`
+            1. **This is case specific** and was created wrong by the update script, but it was FAT, so it worked. Moving to to ext4 broke it. I had to rename it. It's fine now.
             1. This also needs a ROMset. I copied over everything in the `misc/NeoGeo` subdir to `NEOGEO`. There are extras, but who cares.
-        1. `Everdrive N8` -> `NES`
-        1. `EverDrive GB` -> `GAMEBOY`
+        1. `@NES - EverDrive N8 2020-06-03.zip` -> `NES`
+        1. `@NES - EverDrive N8 Game Series Collections Add-On 2020-04-21.zip` -> `NES`
+        1. `@MiSTer Pack Add-on - NES 2020-04-15.zip` -> `NES`
+        1. `@Game Boy - EverDrive GB 2020-06-21.zip` -> `GAMEBOY`
             1. This includes Gameboy color.
-        1. `EverDrive GBA` -> `GBA`
-        1. `EverDrive GG` -> `SMS/GG`
+        1. `@Game Boy - EverDrive GB Game Series Collections Add-On 2020-04-24.zip` -> `GAMEBOY`
+        1. `@GBA - EverDrive GBA 2020-04-22.zip` -> `GBA`
+        1. `@GBA - EverDrive GBA Game Series Collections Add-On 2020-04-22.zip` -> `GBA`
+        1. `@Game Gear - EverDrive GG 2020-01-12.zip` -> `SMS`
             1. This is not a mistake - the MiSTer SMS game gear core does both.
-            1. To differentiate, I put them in subdirs.
-            1. And then, [this list](https://www.smspower.org/Tags/SMS-GG) has things which need to be renamed to work (but I didn't rename any - I figure I'll just note it and see if it works anyway).
-        1. `Master Everdrive` -> `SMS/SMS`
+        1. `@Master System - Master EverDrive 2020-06-03.zip` -> `SMS`
             1. This is Sega's 8 bit console which was repackaged as the Game Gear portable later.
-            1. I put it in a subdir (see below)
-        1. `Mega EverDrive` -> `Genesis`
-        1. `Super EverDrive & SD2SNES` -> `SNES`
-        1. `Turbo EverDrive` -> `TGFX16`
-        1. `Vectrex` -> `VECTREX`
+        1. `MegaCD` -> `MegaCD`
+            1. Zip is supported but not recommended. So:
+                1. Copied over the whole directory.
+                1. Did `unzip_mkdir *.zip` to unzip each into its own directory (they are bin/cue files, so this makes sense).
+                1. Then removed all the zipfiles.
+                1. And then I did this for each subdir, except for `@Multi-Disc`, for which I used `unzip_mkdir` so all the disks are organized by folder.
+            1. And this needs a ROM. Fortunately, it includes one, you just need to pick it - so, I copied `Sega CD BIOS/US Sega CDX (Region Free) 930907 l_oliveira.bin` to the `MegaCD` root and named it `boot.rom`.
+        1. `@Genesis - MegaSD - Mega EverDrive 2020-06-04.zip` -> `Genesis`
+        1. `@Genesis - MegaSD - Mega EverDrive Game Series Collections 2020-05-03.zip` -> `Genesis`
+        1. `@SNES - SD2SNES - Super EverDrive 2020-06-22.zip` -> `SNES`
+        1. `@SNES - SD2SNES - Super EverDrive Game Series Collections 2020-04-30.zip` -> `SNES`
+        1. `@MiSTer Pack Add-on - SNES 2020-04-15.7z` -> `SNES`
+            1. I un7zipped this, then rezipped it as a .zip and copied that over.
+        1. `@TurboGrafx - PC Engine - Turbo EverDrive 2020-06-06.zip` -> `TGFX16`
+        1. `@Vectrex - Vextreme 2020-04-28.zip` -> `VECTREX`
+        1. `@MiSTer Pack Add-on - Amiga Minimig MegaAGS 2020-06-06.7z` -> `Amiga/EverDrivePack`
+            1. This was a .7z that I copied over, un7zipped, then deleted the non-7zip files.
+            1. Subdir is to differentiate it from the other Amiga collections.
+        1. `@MiSTer Pack Add-on - ao486 2020-06-27.7z` -> `AO486`
+            1. This was a .7z that I copied over, un7zipped, then deleted the non-7zip files.
+        1. `@MiSTer Pack Add-on - AtariST 2020-06-07.7z` -> `AtariST`
+            1. This was a .7z that I copied over, un7zipped, then deleted the non-7zip files.
+        1. `@MiSTer Pack Add-on - C64 2020-04-15.zip` -> `C64`
+        1. `@MiSTer Pack Add-on - C64 Demos 2020-04-15.zip` -> `C64`
+        1. `@MiSTer Pack Add-on - MSX 2020-05-17.7z` -> `MSX`
+            1. This was a .7z that I copied over, un7zipped, then deleted the non-7zip files.
+        1. `@MiSTer Pack Add-on - Spectrum 2020-04-15.zip` -> `Spectrum`
+        1. `@MiSTer Pack Add-on - TSConf 2020-04-15.7z` -> `Spectrum`
+    1. `gaplus-for-nes` -> Put in `NES`
+    1. `pac-man-championship-edition-nes-demake` -> `NES`
+    1. `TOSEC_V2017-04-23` (this has many things):
+        1. **Note**: I wrote this before I realized that I didn't need to unzip things. But, I haven't updated it with newer versions of anything, and I don't need the disk space, so I'm leaving it for now. Newer things added to this list will remain zipped, because I'm lazy and it works.
+        1. `Apple/1`-> `Apple-I`
+            1. And then I had to unzip everything in each directory. They're disk images, so I made directories for each.
+        1. `Apple/II` -> `Apple-II`
+            1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
+            1. The theory is that the core may not be able to read all disk formats, so I may delete the ones it doesn't read (or, at least, stay away from them). Or, if it reads all of them, I'll just combine them by main category.
+        1. `Amstrad/CPC` -> `Amstrad`
+            1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
+            1. Theory is the same as above.
+        1. `MITS/Altair 8800` -> `Altair8800`
+            1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
+            1. Theory is the same as above.
+    1. `Never_Ending_Amiga_Collection_2019-11` -> `games/Amiga/Never_Ending_Amiga_Collection_2019-11/.`
+        1. This is a single zip file containing many subdirs of what look to be disk dumps from 5 people, plus some random files. I left them alone because there may be dupes and it just needs to be gone through.
+        1. And then there's the add-ons from the MiSTer above, so this whole thing is a pile of discovery and spelunking, since I know nothing about the Amiga at all.
 
-    1. Mame Mappings
-        1. Put the MAME ROMS `games/mame`
-        1. Put the HBMAME ROMS in `games/hbmame`
-        1. **Don't unzip the ROM files**
-        1. The download I got requires some cleanup - there are a pile of multipart zip files which needed to be combined and uncompressed.
-            1. I didn't copy over any of the other directories (yet).
+1. Mame Mappings
+    1. Put the MAME ROMS `games/mame`
+    1. Put the HBMAME ROMS in `games/hbmame`
+    1. **Don't unzip the ROM files**
+    1. The download I got required some cleanup - there are a pile of multipart zip files which needed to be combined and uncompressed.
+        1. I didn't copy over any of the other directories (yet).
 
-    1. Mappings for stuff from Archive.org:
-        1. `SEGACD201809` -> `MegaCD`
-            1. This was a zip of 7z files and all of those needed to be uncompressed too. They are in bin/cue format so I made a directory for each and then unzipped them into that directory.
-            1. And this needs a ROM. SmokeMonster recommends `Sega CD 2 (USA) v2.00W` which I found and placed in the `MegaCD` root named `bios.rom`.
-        1. `playtime_atariST` -> `AtariST`
-            1. This was a pile of zip files of disk images. I copied them over and then unzipped them into their own separate directories.
-        1. `gaplus-for-nes` -> Put in `NES/1 US - G-Q/`
-        1. `pac-man-championship-edition-nes-demake` -> Put in `NES/1 US - G-Q/`
-        1. `TOSEC_V2017-04-23` (this has many things):
-            1. `Apple/1`-> `Apple-I`
-                1. And then I had to unzip everything in each directory. They're disk images, so I made directories for each.
-            1. `Apple/II` -> `Apple-II`
-                1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
-                1. The theory is that the core may not be able to read all disk formats, so I may delete the ones it doesn't read (or, at least, stay away from them). Or, if it reads all of them, I'll just combine them by main category.
-            1. `Amstrad/CPC` -> `Amstrad`
-                1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
-                1. Theory is the same as above.
-            1. `MITS/Altair 8800` -> `Altair8800`
-                1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
-                1. Theory is the same as above.
-            
-        1. `Never_Ending_Amiga_Collection_2019-11` -> `games/Amiga`
-            1. This is a single zip file containing many subdirs of what look to be disk dumps from 5 people, plus some random files. I left them alone because there may be dupes and it just needs to be gone through.
-        
-    1. Using a USB hard drive.
-        1. Do the above, but put it goes in the `games` subdir of the USB HDD.
-        1. The easiest way to do this is to let the update script set up the `games` folder on the SD card and then copy the hierarchy over.
-        1. ext4 works, BTW.
-            1. Make sure to `sudo chmod a+rwx` the whole directory structure - permissions are pretty loose on this setup.
+1. AO486 core notes
+    1. Copy `boot0.rom` and `boot1.rom` from [the readme](https://github.com/MiSTer-devel/ao486_MiSTer) and put them in `games/AO486`.
+    1. Remember, it's Win+F12 to get the menu to come up.
+    1. Create fixed sized .vhd files as normal with dd. Notes:
+        1. The BIOS only sees 8GB max, anything extra is wasted.
+        1. And DOS 6.22 can only use 2GB partitions.
+        1. Windows 95B(OSR2) can do 124.55GB with FAT32... but the only way to install that right now is a boot disk + vhd containing the files and partitioning and installing to another drive, since CDs aren't supported yet.
+        1. Which means a VHD full of CD images is likely going to be a thing, because we can use [fakecd](http://www.math.uni-rostock.de/~nfa506/fakecddr.html) to mount them - though I expect the redbook audio won't play yet. :-(
+    1. My plan right now is DOS 6.22 first, others later, so:
+        1. Create an empty image with `dd if=/dev/zero of=dos_base.vhd bs=1M count=8000`
+        1. Copy over the Dos 6.22 install disks downloaded from [winworldpc](https://winworldpc.com/product/ms-dos/622).
+        1. Mount the drive and the first disk and proceed through the install.
+            1. Partition it in to 4 partitions, roughly 2GB each.
+                1. This ends up being 1 primary and 3 logical.
+                1. The last partition ends up being short of maximum possible by about 100MB, but I'm too lazy to recreate it, to be honest.
+        1. Once the DOS install is done, run the Sound Blaster install (disk images from `Sound Blaster 2.0 Bundle (1994) (3.5-720k)`.
+        1. And make sure that `HIMEM.SYS` and `EMM386.EXE` are loaded in `CONFIG.SYS`.
+            1. Digitized sound on Wolf3D doesn't work without it.
+        1. Once that is all installed, save that one (so we don't need to reinstall it every time we run out of space), and have everything else be a copy of it. I lzipped it and put the archive copy in `~/workspace/retrocomputing/mister/dos_base.vhd.lzip`, 
+            1. You can mount the partitions using `guestmount`, e.g.:
+
+                    guestmount --add dos1.vhd --rw /mnt/vhd/ -m /dev/sda1
+
+                1. You likely will need to be root, and likely will need to be root to work with the drive as well.
+
+1. Using a USB hard drive.
+    1. Do the above, but put it goes in the `games` subdir of the USB HDD.
+    1. The easiest way to do this is to let the update script set up the `games` folder on the SD card and then copy the hierarchy over.
+    1. ext4 works, BTW.
+        1. Make sure to `sudo chmod -R a+rwx *` the whole directory structure - permissions are pretty loose on this setup.
