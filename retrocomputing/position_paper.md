@@ -15,15 +15,17 @@ Anything that is supported including, but not limited to:
 - SNES
 - Genesis
 - NeoGeo
+- ScummVM
 - Various Arcade cores
 
 ### Rationale
 
-1. For the arcade cores - faithful reproduction of the above on original
-
-### Notes
-
-I only copied over the ROMS for which cores exist (because directories exist for them). As more cores drop, I'll copy over more ROMs when the update script makes the directories.
+1. Faithful reproduction of the above on original.
+    1. This nominally applies to 486's as well, because the OS would (generally)
+       let the program basically completely take over, unless it had installed
+       itself to do stuff on an interrupt (like the mouse driver).
+1. ScummVM could do either on MiSTer or Dosbian, but the theory is that Dosbian
+   will eventually be rendered obsolete.
 
 ## RetroPi
 
@@ -45,15 +47,14 @@ I will put all the ROMs I have on this system, so we can do a Pepsi challenge wi
 
 ## Dosbian
 
-
-
 ### Contents
+
+Pretty much all the DOS stuff until MiSTer's AO486 core is good enough to run
+it all.
 
 ### Rationale
 
-## ScummVM
-
-I'm not sure where to put this yet - it likely mostly depends on just how much space the other builds have free once complete.
+Dedicated box emulation is better than not working at all...
 
 ## Laptop
 
@@ -63,4 +64,4 @@ Everything else.
 
 ### Rationale
 
-Anything not covered above is run on Linux under emulation, as they are designed to be run under a real OS and whatnot.
+Anything not covered above is run on Linux under emulation, as they are designed to be run under a real OS and whatnot, so the latency won't be a huge issue, as everything now is better than what they had back in the day..

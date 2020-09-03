@@ -243,6 +243,17 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 
                 1. You likely will need to be root, and likely will need to be root to work with the drive as well.
 
+         1. To make a 1.44MB floppy image, do:
+
+                    mkfs.msdos -C floppy.img 1440
+
+             1. And then mount it with:
+
+                        sudo mkdir /media/floppy1/
+                        sudo mount -o loop floppy.img /media/floppy1
+
+             1. Copy files as normal, then unmount it when done.
+
 1. Using a USB hard drive.
     1. Do the above, but put it goes in the `games` subdir of the USB HDD.
     1. The easiest way to do this is to let the update script set up the `games` folder on the SD card and then copy the hierarchy over.
