@@ -74,6 +74,11 @@ This is a synthesis of the docs and the `MiSTer-sd-installer-linux.sh` script fr
     1. By default, it will randomly display wallpapers. Edit `Update_MiSTerWallpapers.ini` and set `SELF_MANAGED=True` to select them manually (I did).
         1. To manage them manually, copy the wallpapers from `/wallpapers` subfolders to the main `/wallpapers` folder. Only the ones there will be displayed.
 
+1. Update all script ([GitHub](https://github.com/theypsilon/Update_All_MiSTer)):
+    1. Copy Stuff:
+
+            cp ~/workspace/retrocomputing/mister/Update_All_MiSTer/update_all.* /media/matt/MiSTer_Data/Scripts/.
+
 1. Unmount and eject it, put it in the MiSTer, hook it up, and boot it.
 
 1. Once booted:
@@ -170,7 +175,7 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
                 1. Did `unzip_mkdir *.zip` to unzip each into its own directory (they are bin/cue files, so this makes sense).
                 1. Then removed all the zipfiles.
                 1. And then I did this for each subdir, except for `@Multi-Disc`, for which I used `unzip_mkdir` so all the disks are organized by folder.
-            1. And this needs a ROM. Fortunately, it includes one, you just need to pick it - so, I copied `Sega CD BIOS/US Sega CDX (Region Free) 930907 l_oliveira.bin` to the `MegaCD` root and named it `boot.rom`.
+            1. And this needs a ROM. Fortunately, the update_all script will download it for you.
         1. `@Genesis - MegaSD - Mega EverDrive 2020-06-04.zip` -> `Genesis`
         1. `@Genesis - MegaSD - Mega EverDrive Game Series Collections 2020-05-03.zip` -> `Genesis`
         1. `@SNES - SD2SNES - Super EverDrive 2020-06-22.zip` -> `SNES`
@@ -219,6 +224,8 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
         1. I didn't copy over any of the other directories (yet).
 
 1. AO486 core notes
+    1. There are a compiled list of drivers [here](https://misterfpga.org/viewtopic.php?t=71)
+    1. And some Windows drivers [here](https://github.com/MiSTer-devel/ao486_MiSTer/tree/master/releases/drv)
     1. Copy `boot0.rom` and `boot1.rom` from [the readme](https://github.com/MiSTer-devel/ao486_MiSTer) and put them in `games/AO486`.
     1. Remember, it's Win+F12 to get the menu to come up.
     1. Create fixed sized .vhd files as normal with dd. Notes:
