@@ -241,12 +241,6 @@ buildup elsewhere in the system.
             sudo cp ~/workspace/code/scripts/logfile_monitoring/80-logmonitor.conf . && \
             sudo chmod a+r 80-logmonitor.conf
 
-  1. Add Tomboy-ng from PPA:
-
-        sudo add-apt-repository ppa:d-bannon/ppa-tomboy-ng
-        sudo apt update
-        sudo apt install tomboy-ng
-
   1. If pulseaudio gives you problems, do:
 
         sudo apt purge pulseaudio
@@ -258,6 +252,13 @@ buildup elsewhere in the system.
 
           sudo apt install xfce4-pulseaudio-plugin
 
+ 1. Install slack
+
+        sudo apt install slack-desktop
+
+ 1. Install discord
+
+        sudo snap install discord
 
 ## Things for some machines
 
@@ -386,14 +387,6 @@ buildup elsewhere in the system.
 
         sudo apt install libdvd-pkg
         sudo dpkg-reconfigure libdvd-pkg
-
- 1. Install slack
-
-        sudo apt install slack-desktop
-
- 1. Install discord
-
-        sudo snap install discord
 
 ### Video game machines
 
