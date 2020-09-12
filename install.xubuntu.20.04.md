@@ -144,8 +144,9 @@ buildup elsewhere in the system.
 
             sudo service ssh restart
 
-  1. Turn on the firewall.
+  1. Disable firewally logging (it can be quite verbose on a busy network), then turn on the firewall.
 
+            sudo ufw logging off
             sudo ufw enable
 
   1. Make sure to let printers through the firewall. All printers are modern enough that they'll just appear and we can print to them - no lengthy configuration required anymore.
@@ -385,6 +386,14 @@ buildup elsewhere in the system.
 
         sudo apt install libdvd-pkg
         sudo dpkg-reconfigure libdvd-pkg
+
+ 1. Install slack
+
+        sudo apt install slack-desktop
+
+ 1. Install discord
+
+        sudo snap install discord
 
 ### Video game machines
 
