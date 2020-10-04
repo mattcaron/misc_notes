@@ -243,7 +243,7 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
         1. Once the DOS install is done, run the Sound Blaster install (disk images from `Sound Blaster 2.0 Bundle (1994) (3.5-720k)`.
         1. And make sure that `HIMEM.SYS` and `EMM386.EXE` are loaded in `CONFIG.SYS`.
             1. Digitized sound on Wolf3D doesn't work without it.
-        1. Once that is all installed, save that one (so we don't need to reinstall it every time we run out of space), and have everything else be a copy of it. I lzipped it and put the archive copy in `~/workspace/retrocomputing/mister/dos_base.vhd.lzip`, 
+        1. Once that is all installed, save that one (so we don't need to reinstall it every time we run out of space), and have everything else be a copy of it. I lzipped it and put the archive copy in `~/workspace/retrocomputing/mister/dos_base.vhd.lzip`,
             1. You can mount the partitions using `guestmount`, e.g.:
 
                     guestmount --add dos1.vhd --rw /mnt/vhd/ -m /dev/sda1
