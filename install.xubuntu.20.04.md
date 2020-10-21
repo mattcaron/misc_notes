@@ -72,7 +72,7 @@ contain boot info is empty.. ask me how I know).
 
    1. Install generally useful things:
 
-        sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck retext cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos thunderbird enigmail xul-ext-lightning firefox ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassx ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge mlocate gddrescue lzip lziprecover net-tools clusterssh
+        sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos thunderbird enigmail xul-ext-lightning firefox ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassx ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge mlocate gddrescue lzip lziprecover net-tools clusterssh smartmontools fdupes
 
     1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
         1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot and let the thermal throttling stop it from actually melting". Are you really serious with this foolishness? This results in die temps upwards of 90C, a pile of thermal throttling messages in the logs, and heat
@@ -142,7 +142,7 @@ buildup elsewhere in the system.
 
   1. More applications
 
-        sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils
+        sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils gnome-calculator
 
   1. Install real chrome.
     * The ubuntu packaged chromium is broken in a couple of ways - NaCL support, etc. NaCL support is required for Hangouts to work. Solution: Install Chrome from a PPA.
@@ -229,7 +229,11 @@ buildup elsewhere in the system.
 
   1. Install VSCode and some plugins
 
-        sudo snap install code --classic
+         sudo snap install code --classic
+
+         code --install-extension DavidAnson.vscode-markdownlint
+         code --install-extension rust-lang.rust
+         code --install-extension tamasfe.even-better-toml
 
   1. (Maybe) install some extra filesystems (as needed)
 
