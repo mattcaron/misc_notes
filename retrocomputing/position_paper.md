@@ -15,7 +15,6 @@ Anything that is supported including, but not limited to:
 - SNES
 - Genesis
 - NeoGeo
-- ScummVM
 - Various Arcade cores
 
 ### Rationale
@@ -24,8 +23,6 @@ Anything that is supported including, but not limited to:
     1. This nominally applies to 486's as well, because the OS would (generally)
        let the program basically completely take over, unless it had installed
        itself to do stuff on an interrupt (like the mouse driver).
-1. ScummVM could do either on MiSTer or Dosbian, but the theory is that Dosbian
-   will eventually be rendered obsolete.
 
 ## RetroPi
 
@@ -60,8 +57,13 @@ Dedicated box emulation is better than not working at all...
 
 ### Contents
 
-Everything else.
+- ScummVM
+- Everything else.
 
 ### Rationale
 
-Anything not covered above is run on Linux under emulation, as they are designed to be run under a real OS and whatnot, so the latency won't be a huge issue, as everything now is better than what they had back in the day..
+Anything not covered above is run on Linux under emulation, as they are designed to be run under a real OS and whatnot, so the latency won't be a huge issue, as everything now is better than what they had back in the day.
+
+This includes remasters of old games - which require modern systems. Including stuff that's updated adventure games, like the Sierra games.
+
+And ScummVM just needs a keyboard and mouse and has no hard timing requirements, so I might as well use a "regular" computer, especially since my monitor is a big TV - and then all my adventure games are in the same place.
