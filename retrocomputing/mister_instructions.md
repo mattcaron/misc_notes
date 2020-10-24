@@ -77,7 +77,12 @@ This is a synthesis of the docs and the `MiSTer-sd-installer-linux.sh` script fr
 1. Update all script ([GitHub](https://github.com/theypsilon/Update_All_MiSTer)):
     1. Copy Stuff:
 
-            cp ~/workspace/retrocomputing/mister/Update_All_MiSTer/update_all.* /media/matt/MiSTer_Data/Scripts/.
+           cp ~/workspace/retrocomputing/mister/Update_All_MiSTer/update*.* /media/matt/MiSTer_Data/Scripts/.
+
+1. ScummVM installer script ([GitHub](https://github.com/bbond007/MiSTer_ScummVM)):
+    1. Copy stuff:
+
+           cp ~/workspace/retrocomputing/mister/MiSTer_ScummVM/Install_ScummVM.* /media/matt/MiSTer_Data/Scripts/.
 
 1. Unmount and eject it, put it in the MiSTer, hook it up, and boot it.
 
@@ -86,10 +91,18 @@ This is a synthesis of the docs and the `MiSTer-sd-installer-linux.sh` script fr
 
     1. Get the wallpapers:
 
-            cd /meda/fat/Scripts
-            ./Update_MiSTerWallpapers.sh
+           cd /meda/fat/Scripts
+           ./Update_MiSTerWallpapers.sh
 
-    1. Press F12 to get back to the main menu and then select update to run a full update.
+    1. Update everything:
+
+           cd /meda/fat/Scripts
+           ./update_all.sh
+
+    1. Install ScummVM:
+
+           cd /meda/fat/Scripts
+           ./Install_ScummVM.sh
 
     1. Press F1 to load a wallpaper.
 
