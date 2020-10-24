@@ -386,11 +386,6 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
           sudo apt install dosbox wine-stable playonlinux steam jstest-gtk
 
-  1. Install ScummVM things
-
-           sudo apt install scummvm beneath-a-steel-sky drascula flight-of-the-amazon-queen lure-of-the-temptress 
-
-
   1. Allow steam in-home streaming ports.
     1. Ref: https://support.steampowered.com/kb_article.php?ref=8571-GLVN-8711
 
