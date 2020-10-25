@@ -400,6 +400,14 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
           sudo apt-add-repository ppa:cdemu/ppa
           sudo apt install gcdemu
 
+  1. Install Lutris
+
+     Instructions: https://lutris.net/downloads/
+
+         sudo add-apt-repository ppa:lutris-team/lutris
+         sudo apt update
+         sudo apt install lutris
+
   1. Work around Wasteland 2 Director's cut hang because someone forgot a close somewhere.
 
 **TODO:** It has been years since this was released so this may not be an issue anymore. Move to a deprecated notes file or something.
