@@ -59,7 +59,7 @@ router. It is accessible as `jarvis`. No need for a static IP.
 
 1. Install more useful things
 
-        sudo apt install tree unison atop nmap emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck lm-sensors ntp ssmtp gdisk git gitk iftop mailutils ppa-purge xsltproc smartmontools
+        sudo apt install tree unison atop nmap emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck lm-sensors ntp ssmtp gdisk git gitk iftop mailutils ppa-purge xsltproc smartmontools wakeonlan
 
 1. Add any necessary accounts
 
