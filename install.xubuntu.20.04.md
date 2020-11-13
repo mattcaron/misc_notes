@@ -234,6 +234,7 @@ buildup elsewhere in the system.
          code --install-extension DavidAnson.vscode-markdownlint
          code --install-extension rust-lang.rust
          code --install-extension tamasfe.even-better-toml
+         code --install-extension James-Yu.latex-workshop
 
   1. (Maybe) install some extra filesystems (as needed)
 
