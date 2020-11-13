@@ -279,3 +279,7 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
     1. The easiest way to do this is to let the update script set up the `games` folder on the SD card and then copy the hierarchy over.
     1. ext4 works, BTW.
         1. Make sure to `sudo chmod -R a+rwx *` the whole directory structure - permissions are pretty loose on this setup.
+
+# ScummVM
+
+This setup is a little bit different, in that running it gives you a user interface and then you add games to that, pointing it at directories. As such, you can either put them on the SD card (curent setup creates a `/media/fat/ScummVM/GAMES`) directory or, if using an external drive, for example, put them wherever you like. To this end, I made `/media/usb0/scummvm` and put all my games there, then added them via the menu.
