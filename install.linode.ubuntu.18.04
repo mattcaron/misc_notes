@@ -91,7 +91,7 @@ sudo apt-get install tree emacs-nox git software-properties-common
     sudo ufw allow https
 
 10. Install wordpress bits
-    See wordpress (the top of it, the rest of it is just notes)
+    This is deprecated. All wordpress sites have been removed. But, the docs were in the wordpress file.
 
 11. Install dovecot (imap)
 
@@ -461,15 +461,15 @@ A.) Establish base checkout:
 cd ~/workspace/code
 git clone https://github.com/sympa-community/sympa.git
 cd sympa
-git checkout -b production 6.2.56
+git checkout -b production 6.2.58
 
 - upgrade later
 cd ~/workspace/code/sympa
 git fetch
 git checkout production
-git merge 6.2.56
+git merge 6.2.58
 
-(where 6.2.56 is the current version)
+(where 6.2.58 is the current version)
 
 B.) Copy this whole mess over to the linode server:
 push_sympa
@@ -492,21 +492,21 @@ sudo a2enmod cgi
 
 F.) Make the destination directory:
 
-sudo mkdir /opt/sympa-6.2.56
-sudo chown matt:matt /opt/sympa-6.2.56
+sudo mkdir /opt/sympa-6.2.58
+sudo chown matt:matt /opt/sympa-6.2.58
 
 G.) Build and install it:
 
 cd ~/workspace/code/sympa
 autoreconf -i
-./configure --prefix=/opt/sympa-6.2.56 --sysconfdir=/opt/sympa-6.2.56/etc/ --with-initdir=/opt/sympa-6.2.56/etc/init.d --with-cgidir=/opt/sympa-6.2.56/cgi-bin --without-smrshdir
+./configure --prefix=/opt/sympa-6.2.58 --sysconfdir=/opt/sympa-6.2.58/etc/ --with-initdir=/opt/sympa-6.2.58/etc/init.d --with-cgidir=/opt/sympa-6.2.58/cgi-bin --without-smrshdir
 make
 make install
 
 H.) Fix permissions
 
-sudo chown -R sympa:sympa /opt/sympa-6.2.56
-sudo chmod a+rX -R /opt/sympa-6.2.56
+sudo chown -R sympa:sympa /opt/sympa-6.2.58
+sudo chmod a+rX -R /opt/sympa-6.2.58
 
 sudo chown -R sympa:sympa /var/spool/sympa
 sudo chown -R sympa:sympa /var/lib/sympa
@@ -514,22 +514,22 @@ sudo chown -R sympa:sympa /var/lib/sympa
 I.) Make some compatibilty symlinks:
 
 sudo -u sympa -s
-cd /opt/sympa-6.2.56
+cd /opt/sympa-6.2.58
 ln -s /var/lib/sympa/expl .
 ln -s /var/lib/sympa/wwsarchive .
 ln -s /var/lib/sympa/x509-user-certs .
-cd /opt/sympa-6.2.56/etc
+cd /opt/sympa-6.2.58/etc
 ln -s /etc/sympa .
-cd /opt/sympa-6.2.56/static_content
+cd /opt/sympa-6.2.58/static_content
 rmdir css
 ln -s /var/lib/sympa/static_content/css .
 ln -s /etc/mail/sympa/aliases /etc/mail/sympa_aliases
-cp -a /opt/sympa-6.2.52/spool /opt/sympa-6.2.56
+cp -a /opt/sympa-6.2.56/spool /opt/sympa-6.2.58
 exit
 sudo service sympa stop
 cd /opt
 sudo rm sympa
-sudo ln -s sympa-6.2.56/ sympa
+sudo ln -s sympa-6.2.58/ sympa
 cd /etc/init.d
 sudo ln -s /opt/sympa/etc/init.d/sympa .
 cd /etc
@@ -539,11 +539,11 @@ mkdir pictures
 
 J.) Run the upgrade script (on upgrade)
 
-sudo -u sympa /opt/sympa-6.2.56/bin/sympa.pl --upgrade
+sudo -u sympa /opt/sympa-6.2.58/bin/sympa.pl --upgrade
 
 K.) Auto-install a pile of perl modules:
 
-sudo /opt/sympa-6.2.56/bin/sympa_wizard.pl --check
+sudo /opt/sympa-6.2.58/bin/sympa_wizard.pl --check
 
 (hit enter a bunch of times)
 
@@ -857,7 +857,8 @@ http://forum.owncloud.org/viewtopic.php?f=8&t=10692
 
 sudo apt-get install apache2 php php-mbstring php-gd php-xml php-intl \
 php-sqlite3 php-mysql curl libcurl4 php-curl \
-libapache2-mod-xsendfile php-apcu php-bz2 php-zip php-pclzip php-imagick
+libapache2-mod-xsendfile php-apcu php-bz2 php-zip php-pclzip php-imagick \
+php-bcmath php-gmp
 
 - download tarball (add to source control, etc.)
   http://owncloud.org/install/
@@ -1156,28 +1157,7 @@ c.) Download from https://megamek.org/downloads.html (just MegaMek stable)
 
 28.) MediaWiki (rpg.mattcaron.net)
 
-a.) Make the dir, index.html, etc. (this is all in git, so will just
-    get pushed).
-
-b.) Grab the mediawiki tarball and untar it in ac-2020 (the current
-    RPG game). We'll be using separate mediawiki per install, just
-    like wordpress. It does support multihost, but this is clean and
-    easy and there won't be many of these. Plus, it's *actually* clean
-    segregation, not virtual, so any bugs in that code won't bite us.
-
-c.) Make /etc/apache2/sites-available and enable it:
-
-sudo a2ensite rpg.mattcaron.net && sudo systemctl reload apache2
-
-d.) Create the database and user:
-
-CREATE DATABASE mw_ac_2020;
-
-GRANT ALL PRIVILEGES ON mw_ac_2020.* TO "mw_ac_2020"@"localhost" IDENTIFIED BY "password";
-
-d.) Push everything up and then go to
-    https://rpg.mattcaron.net/ac-2020 to configure it, grab the
-    LocalSettings.php file and stuff it where it needs to be. Yay.
+This is deprecated - 20201129.
 
 29.) MediaWiki (school.mattcaron.net)
 
@@ -1214,10 +1194,8 @@ sudo certbot --standalone certonly -d www.mattcaron.net
 sudo certbot --standalone certonly -d owncloud.mattcaron.net
 sudo certbot --standalone certonly -d sympa.mattcaron.net
 sudo certbot --standalone certonly -d mail.mattcaron.net
-sudo certbot --standalone certonly -d www.sarahdipitysweets.com
 sudo certbot --standalone certonly -d lists.pfmbonsai.com
 sudo certbot --standalone certonly -d pfmbonsai.com
-sudo certbot --standalone certonly -d rpg.mattcaron.net
 sudo certbot --standalone certonly -d school.mattcaron.net
 
 c.) make the directories in /etc group accessible by ssl-cert and make
