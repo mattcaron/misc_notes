@@ -281,7 +281,7 @@ buildup elsewhere in the system.
   1. LaTeX
     1. install the "full boat" options:
 
-            sudo apt install --install-suggests texlive-full
+            sudo apt install --install-suggests texlive-full latex2html
 
     1. And set things up:
 
