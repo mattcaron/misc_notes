@@ -22,11 +22,11 @@ You want the above physical partition scheme across alldrives, with each one set
 These should represent MINIMUM sizes, and is sized for 500GB HDD's. More is often better.
 
     LVM Partition Size  Mountpoint
-    swap		  [1]
-    tmp		      10GB	/tmp
-    var		      40GB	/var
-    root		  40GB	/
-    home		  Rest	/home
+    swap          [1]
+    tmp           10GB  /tmp
+    var           40GB  /var
+    root          40GB  /
+    home          Rest  /home
 
 [1] This is mainly important for machines where you want to
 hibernate. You need at least as much swap space as you have RAM, so do
@@ -40,13 +40,7 @@ appropriate, and should be taken out of `/home`.
 Once all that is done, you'll get the "Choose software to install"
 screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let it install (we'll install everything else later)
 
-** IMPORTANT:** If your grub-install fails, chances are you came up with an
-invalid partitioning scheme. Go back to the partitioning menu and
-ensure that you set your /boot partition to a non-encrypted non-LVM
-parition which doesn't use a RAID greater than 1 (if any). That is
-likely the culprit (otherwise, you'll spend 3 hours trying to manually
-install grub only to realize that the partition which is supposed to
-contain boot info is empty.. ask me how I know).
+**IMPORTANT:** If your grub-install fails, chances are you came up with an invalid partitioning scheme. Go back to the partitioning menu and ensure that you set your /boot partition to a non-encrypted non-LVM partition which doesn't use a RAID greater than 1 (if any). That is likely the culprit (otherwise, you'll spend 3 hours trying to manually install grub only to realize that the partition which is supposed to contain boot info is empty.. ask me how I know).
 
 ## Things common to most machines
 
@@ -65,24 +59,23 @@ contain boot info is empty.. ask me how I know).
           * partner
       1. (or just grab sources.list from some reasonable machine)
 
+  1. Do:
 
-   1. Do:
+         sudo apt update && sudo apt dist-upgrade
 
-        sudo apt update && sudo apt dist-upgrade
+  1. Install generally useful things:
 
-   1. Install generally useful things:
+       sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos thunderbird enigmail xul-ext-lightning firefox ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassx ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge mlocate gddrescue lzip lziprecover net-tools clusterssh smartmontools fdupes
 
-        sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos thunderbird enigmail xul-ext-lightning firefox ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassx ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge mlocate gddrescue lzip lziprecover net-tools clusterssh smartmontools fdupes
+  1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
+  
+     1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot and let the thermal throttling stop it from actually melting". Are you really serious with this foolishness? This results in die temps upwards of 90C, a pile of thermal throttling messages in the logs, and heat buildup elsewhere in the system.
 
-    1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
-        1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot and let the thermal throttling stop it from actually melting". Are you really serious with this foolishness? This results in die temps upwards of 90C, a pile of thermal throttling messages in the logs, and heat
-buildup elsewhere in the system.
+     1. Methodology for arriving at the numbers:
 
-        1. Methodology for arriving at the numbers:
+        a. Rough: Set it to the value that the CPU is rated for with no turbo boosting.
 
-            a. Rough: Set it to the value that the CPU is rated for with no turbo boosting.
-
-            b. Optimal: Run something computationally intensive for a long period of time (lzip a big file). The goal here is for it to be stable and ideally stay below 80C. What you really want is for it to never thermally throttle (which will show in the syslog). If it ever does, back the speed down.
+        b. Optimal: Run something computationally intensive for a long period of time (lzip a big file). The goal here is for it to be stable and ideally stay below 80C. What you really want is for it to never thermally throttle (which will show in the syslog). If it ever does, back the speed down.
 
         1. Create `/etc/default/cpufrequtils` and set the content as follows, with MAX_SPEED set as determined above. The following values are for my current Lenovo P51.
 
@@ -91,28 +84,29 @@ buildup elsewhere in the system.
                 MAX_SPEED="3200000"
                 MIN_SPEED="0"
 
-  1.  Make ssh (server) work:
-    1. Install it, if not already installed:
+  1. Make ssh (server) work:
 
-            sudo apt install openssh-server
+      1. Install it, if not already installed:
 
-    1. For an old machine, use the old keys - you did save /etc, didn't you?
-    1. For a new machine, use the new keys generated by the distro.
-    1. make sure to add to the firewall:
+             sudo apt install openssh-server
 
-            sudo ufw allow ssh
+      1. For an old machine, use the old keys - you did save /etc, didn't you?
+      1. For a new machine, use the new keys generated by the distro.
+      1. make sure to add to the firewall:
 
-    1. In `/etc/ssh/sshd_config`, set:
+             sudo ufw allow ssh
 
-            PermitRootLogin no
+      1. In `/etc/ssh/sshd_config`, set:
 
-    1. once you've set up public key auth, turn off password access. Edit `/etc/ssh/sshd_config` and set
+             PermitRootLogin no
 
-            PasswordAuthentication no
+      1. once you've set up public key auth, turn off password access. Edit `/etc/ssh/sshd_config` and set
 
-    1. Then kick it:
+             PasswordAuthentication no
 
-            sudo service ssh restart
+      1. Then kick it:
+
+              sudo service ssh restart
 
   1. Disable firewally logging (it can be quite verbose on a busy network), then turn on the firewall.
 
@@ -145,10 +139,10 @@ buildup elsewhere in the system.
         sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils gnome-calculator
 
   1. Install real chrome.
-    * The ubuntu packaged chromium is broken in a couple of ways - NaCL support, etc. NaCL support is required for Hangouts to work. Solution: Install Chrome from a PPA.
-    * Instructions from: [https://www.ubuntuupdates.org/ppa/google_chrome](https://www.ubuntuupdates.org/ppa/google_chrome)
-    * See the following for more info on chromium fail: [https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/882942](https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/882942)
-    * Do:
+    - The ubuntu packaged chromium is broken in a couple of ways - NaCL support, etc. NaCL support is required for Hangouts to work. Solution: Install Chrome from a PPA.
+    - Instructions from: [https://www.ubuntuupdates.org/ppa/google_chrome](https://www.ubuntuupdates.org/ppa/google_chrome)
+    - See the following for more info on chromium fail: [https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/882942](https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/882942)
+    - Do:
 
             wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
             sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
@@ -157,50 +151,51 @@ buildup elsewhere in the system.
             sudo apt install google-chrome-stable
 
   1. Stop the stupid GNOME SSH agent thing from working.
-    1. **NOTE:** This is a stupid hack to get around the fact that, apparently, the gnome keyring is started unconditionally with all components if any gnome services are run (and we would like to run them, just not this specific one).
-    1. To fix, do:
+      - **NOTE:** This is a stupid hack to get around the fact that, apparently, the gnome keyring is started unconditionally with all components if any gnome services are run (and we would like to run them, just not this specific one).
 
-            cd /usr/bin
-            sudo mv gnome-keyring-daemon gnome-keyring-daemon-wrapped
+      1. To fix, do:
 
-    1. Then create a new `gnome-keyring-daemon` and set its contents to:
+             cd /usr/bin
+             sudo mv gnome-keyring-daemon gnome-keyring-daemon-wrapped
 
-            #!/bin/sh
-            exec /usr/bin/gnome-keyring-daemon-wrapped --components=pkcs11,secrets,gpg "$@"
+      1. Then create a new `gnome-keyring-daemon` and set its contents to:
 
-    1. and make it executable:
+             #!/bin/sh
+             exec /usr/bin/gnome-keyring-daemon-wrapped --components=pkcs11,secrets,gpg "$@"
 
-            sudo chmod a+rx /usr/bin/gnome-keyring-daemon
+      1. and make it executable:
 
- 1. Install slack
+             sudo chmod a+rx /usr/bin/gnome-keyring-daemon
 
-        sudo snap install slack --classic
+  1. Install slack
 
- 1. Install discord
+         sudo snap install slack --classic
 
-        sudo snap install discord
+  1. Install discord
 
- 1. Install shutter
+         sudo snap install discord
 
-        sudo snap install shutter
+  1. Install shutter
 
- 1. Install Joplin
+         sudo snap install shutter
 
-        sudo snap install joplin-james-carroll
+  1. Install Joplin
 
-    1. Make sure to set it up for NextCloud sync. The sync URL is https://owncloud.mattcaron.net/remote.php/webdav/Joplin-sync
+         sudo snap install joplin-james-carroll
+
+      1. Make sure to set it up for NextCloud sync. The sync URL is https://owncloud.mattcaron.net/remote.php/webdav/Joplin-sync
 
   1. Install and set  up ktorrent:
 
-        sudo apt install ktorrent
-        sudo ufw allow 6881
-        sudo ufw allow 8881
+         sudo apt install ktorrent
+         sudo ufw allow 6881
+         sudo ufw allow 8881
 
   1. Make java pretty
 
-    1. Edit `/etc/java-11-openjdk/swing.properties` and uncomment:
+      1. Edit `/etc/java-11-openjdk/swing.properties` and uncomment:
 
-            swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
+             swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
 
 ## Things for monitored machines (servers, etc.), not standalone "islands"
 
@@ -264,87 +259,86 @@ buildup elsewhere in the system.
         sudo usermod -a -G wireshark matt
 
   1. Set up logic analyzer stuff (sigrok/pulseview)
-    1. Install:
+      1. Install:
 
-        sudo apt install pulseview
+             sudo apt install pulseview
 
-    1. But, it needs udev rules installed. Get the two rules files from here:
-        1. [https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/60-libsigrok.rules;hb=HEAD](https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/60-libsigrok.rules;hb=HEAD
+      1. But, it needs udev rules installed. Get the two rules files from here:
+          1. [https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/60-libsigrok.rules;hb=HEAD](https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/60-libsigrok.rules;hb=HEAD
 )
-        1. [https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/61-libsigrok-plugdev.rules;hb=HEAD](https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/61-libsigrok-plugdev.rules;hb=HEAD)
-    1. And install them in to `/etc/udev/rules.d`. Note that this allows all plugdev users to use the logic analyzer (which is fine, because I am in that group).
+          1. [https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/61-libsigrok-plugdev.rules;hb=HEAD](https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/61-libsigrok-plugdev.rules;hb=HEAD)
+      1. And install them in to `/etc/udev/rules.d`. Note that this allows all plugdev users to use the logic analyzer (which is fine, because I am in that group).
 
 ### Publishing/media/etc. machines
 
 (This includes all kinds of desktop publishing, media manipluation and transcoding, video editing, etc.)
 
   1. LaTeX
-    1. install the "full boat" options:
+      1. install the "full boat" options:
 
-            sudo apt install --install-suggests texlive-full latex2html
+             sudo apt install --install-suggests texlive-full latex2html
 
-    1. And set things up:
+      1. And set things up:
 
-            cd /usr/share/texmf/tex/latex
-            sudo cp -a ~/system_stuff/latex/local .
-            sudo chown -R root:root local
-            sudo cp -a ~/system_stuff/latex/fonts/cookingsymbols.tfm /usr/share/texmf/fonts/tfm/public/.
-            sudo mkdir -p /usr/share/texmf/fonts/source/public/
-            sudo chmod a+rx /usr/share/texmf/fonts/source/public/
-            sudo cp -a ~/system_stuff/latex/fonts/cookingsymbols.mf /usr/share/texmf/fonts/source/public/.
-            sudo texhash
+             cd /usr/share/texmf/tex/latex
+             sudo cp -a ~/system_stuff/latex/local .
+             sudo chown -R root:root local
+             sudo cp -a ~/system_stuff/latex/fonts/cookingsymbols.tfm /usr/share/texmf/fonts/tfm/public/.
+             sudo mkdir -p /usr/share/texmf/fonts/source/public/
+             sudo chmod a+rx /usr/share/texmf/fonts/source/public/
+             sudo cp -a ~/system_stuff/latex/fonts/cookingsymbols.mf /usr/share/texmf/fonts/source/public/.
+             sudo texhash
 
   1. Install publishing tools from apt:
 
-          sudo apt install xsane scribus scribus-template gnuplot gnuplot-mode digikam kipi-plugins okular okular-extra-backends k3b libk3b7-extracodecs gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox graphviz audacity libsox-fmt-all dvdbackup dia gsfonts-x11 ubuntustudio-fonts vorbisgain clementine krita sound-juicer djvulibre-bin djvulibre-plugin pdf2djvu ubuntu-restricted-extras cheese arandr blender kdenlive kino tesseract-ocr ffmpeg2theora mp3info libreoffice meshlab pithos handbrake
+         sudo apt install xsane scribus scribus-template gnuplot gnuplot-mode digikam kipi-plugins okular okular-extra-backends k3b libk3b7-extracodecs gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox graphviz audacity libsox-fmt-all dvdbackup dia gsfonts-x11 ubuntustudio-fonts vorbisgain clementine krita sound-juicer djvulibre-bin djvulibre-plugin pdf2djvu ubuntu-restricted-extras cheese arandr blender kdenlive kino tesseract-ocr ffmpeg2theora mp3info libreoffice meshlab pithos handbrake
 
   1. And some of them are snaps now
 
-          sudo snap install mp3gain
+         sudo snap install mp3gain
 
   1. Install dvdstyler:
-    1. Refs: http://ubuntuhandbook.org/index.php/2019/05/dvdstyler-3-1-released-with-hd-videos-support-how-to-install/
+      1. Refs: http://ubuntuhandbook.org/index.php/2019/05/dvdstyler-3-1-released-with-hd-videos-support-how-to-install/
 
-            sudo add-apt-repository ppa:ubuntuhandbook1/dvdstyler
-            sudo apt update
-            sudo apt install dvdstyler
+             sudo add-apt-repository ppa:ubuntuhandbook1/dvdstyler
+             sudo apt update
+             sudo apt install dvdstyler
 
   1. Set up video editing:
-    1. Add user to video group so I can capture video
+      1. Add user to video group so I can capture video
 
-            sudo usermod -a -G video matt
+             sudo usermod -a -G video matt
 
   1. Install epson scanner and printer driver (Epson XP-610):
-    1. Download it from [Epson](http://support.epson.net/linux/en/iscan_c.html), then uncompress it, cd into the dir, then install the packages with:
+      1. Download it from [Epson](http://support.epson.net/linux/en/iscan_c.html), then uncompress it, cd into the dir, then install the packages with:
 
-            sudo dpkg -i core/iscan_2.30.2-2_amd64.deb data/iscan-data_1.37.0-3_all.deb plugins/iscan-network-nt_1.1.1-1_amd64.deb
+             sudo dpkg -i core/iscan_2.30.2-2_amd64.deb data/iscan-data_1.37.0-3_all.deb plugins/iscan-network-nt_1.1.1-1_amd64.deb
 
-    1. Edit the `/etc/sane.d/epkowa.conf` file and add:
+      1. Edit the `/etc/sane.d/epkowa.conf` file and add:
 
-            net EPSON632112
+             net EPSON632112
 
-    1. because that's the printer.
-    1. Make compatibility symlinks:
+         because that's the printer.
+      1. Make compatibility symlinks:
 
-            cd /usr/lib/x86_64-linux-gnu/sane
-            sudo ln -s /usr/lib/sane/* .
+             cd /usr/lib/x86_64-linux-gnu/sane
+             sudo ln -s /usr/lib/sane/* .
 
-    1. Edit `/etc/sane.d/dll.conf` and comment out the 'epson2' driver to prevent a false positive.
-    1. This adds an `iscan` app which will find the printer on the network and try to use it, or you can just use xsane....
-    1. In `/etc/default/ufw`, add `nf_conntrack_sane` to the end of the IPT_MODULES line, then do:
+      1. Edit `/etc/sane.d/dll.conf` and comment out the `epson2` driver to prevent a false positive.
+      1. This adds an `iscan` app which will find the printer on the network and try to use it, or you can just use xsane....
+      1. In `/etc/default/ufw`, add `nf_conntrack_sane` to the end of the IPT_MODULES line, then do:
 
-            sudo ufw reload
+             sudo ufw reload
 
- 1. Change wodim to be suid root to limit having to sudo.
+  1. Change wodim to be suid root to limit having to sudo.
 
-        sudo chmod u+s `which wodim`
+         sudo chmod u+s `which wodim`
 
- 1. Make DVDs work
+  1. Make DVDs work
+      - From: http://www.videolan.org/developers/libdvdcss.html
 
-    From: http://www.videolan.org/developers/libdvdcss.html
-
-        sudo apt install libdvd-pkg
-        sudo dpkg-reconfigure libdvd-pkg
+            sudo apt install libdvd-pkg
+            sudo dpkg-reconfigure libdvd-pkg
 
 ### Crazy desktop machine with too many drives.
 
@@ -392,16 +386,16 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
   1. Allow steam in-home streaming ports.
     1. Ref: https://support.steampowered.com/kb_article.php?ref=8571-GLVN-8711
 
-            sudo ufw allow from 192.168.9.0/24 to any port 27031 proto udp comment 'steam'
-            sudo ufw allow from 192.168.9.0/24 to any port 27036 proto udp comment 'steam'
-            sudo ufw allow from 192.168.9.0/24 to any port 27036 proto tcp comment 'steam'
-            sudo ufw allow from 192.168.9.0/24 to any port 27037 proto tcp comment 'steam'
+         sudo ufw allow from 192.168.9.0/24 to any port 27031 proto udp comment 'steam'
+         sudo ufw allow from 192.168.9.0/24 to any port 27036 proto udp comment 'steam'
+         sudo ufw allow from 192.168.9.0/24 to any port 27036 proto tcp comment 'steam'
+         sudo ufw allow from 192.168.9.0/24 to any port 27037 proto tcp comment 'steam'
 
 
   1. Add gcdemu
 
-          sudo apt-add-repository ppa:cdemu/ppa
-          sudo apt install gcdemu
+         sudo apt-add-repository ppa:cdemu/ppa
+         sudo apt install gcdemu
 
   1. Install Lutris
 
@@ -413,39 +407,37 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
   1. Work around Wasteland 2 Director's cut hang because someone forgot a close somewhere.
 
-**TODO:** It has been years since this was released so this may not be an issue anymore. Move to a deprecated notes file or something.
+     - **TODO:** It has been years since this was released so this may not be an issue anymore. Move to a deprecated notes file or something.
 
-    1. From: [https://forums.inxile-entertainment.com/viewtopic.php?f=34&t=14060#p159807](https://forums.inxile-entertainment.com/viewtopic.php?f=34&t=14060#p159807)
-    1. edit `/etc/security/limits.conf`
-    1. add the following (limits fix to me):
+     - From: [https://forums.inxile-entertainment.com/viewtopic.php?f=34&t=14060#p159807](https://forums.inxile-entertainment.com/viewtopic.php?f=34&t=14060#p159807)
+     1. edit `/etc/security/limits.conf`
+         1. add the following (limits fix to me):
 
-            matt soft nofile 65536
-            matt hard nofile 65536
+                matt soft nofile 65536
+                matt hard nofile 65536
 
-    1. Reboot.
+         1. Reboot.
 
   1. **RADEON ONLY** Fix the video card on machines with modern radeon cards and install Vulkan.
-    1. This is for a Radeon R9 390.
-    1. These should use the AMDGPU driver, not RADEON.
-    1. Refs:
-        1. [https://wiki.archlinux.org/index.php/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support](https://wiki.archlinux.org/index.php/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support)
-        1. [https://forum.level1techs.com/t/r9-390x-has-garbage-performance-on-linux-please-help/140577](https://forum.level1techs.com/t/r9-390x-has-garbage-performance-on-linux-please-help/140577)
-     1. Basically:
-         1. Create `/etc/modprobe.d/blacklist-radeon.conf` as follows:
+      1. This is for a Radeon R9 390.
+      1. These should use the AMDGPU driver, not RADEON.
+      1. Refs:
+          * [https://wiki.archlinux.org/index.php/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support](https://wiki.archlinux.org/index.php/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support)
+          * [https://forum.level1techs.com/t/r9-390x-has-garbage-performance-on-linux-please-help/140577](https://forum.level1techs.com/t/r9-390x-has-garbage-performance-on-linux-please-help/140577)
+      1. Basically:
+          1. Create `/etc/modprobe.d/blacklist-radeon.conf` as follows:
 
-                sudo bash -c "echo blacklist radeon > /etc/modprobe.d/blacklist-radeon.conf"
-                sudo bash -c "echo options amdgpu si_support=0 > /etc/modprobe.d/amdgpu.conf"
-                sudo bash -c "echo options amdgpu cik_support=1 >> /etc/modprobe.d/amdgpu.conf"
-                sudo chmod a+r /etc/modprobe.d/blacklist-radeon.conf /etc/modprobe.d/amdgpu.conf
-                sudo update-initramfs -u
+                 sudo bash -c "echo blacklist radeon > /etc/modprobe.d/blacklist-radeon.conf"
+                 sudo bash -c "echo options amdgpu si_support=0 > /etc/modprobe.d/amdgpu.conf"
+                 sudo bash -c "echo options amdgpu cik_support=1 >> /etc/modprobe.d/amdgpu.conf"
+                 sudo chmod a+r /etc/modprobe.d/blacklist-radeon.conf /etc/modprobe.d/amdgpu.conf
+                 sudo update-initramfs -u
 
-         1. Reboot. Just rebooting with radeon blacklisted ensures it isn't loaded and everything uses `amdgpu`.
+          1. Reboot. Just rebooting with radeon blacklisted ensures it isn't loaded and everything uses `amdgpu`.
 
   1. **NVIDIA Optimus ONLY**
-
-    1. **Note** This works, kind of. It seems to completely break external monitor hookups, so I removed it. I tried to leave the module blacklist, however, to try and ensure that the card wouldn't be powered on accidentally, and therefore preserve battery life, but doing so *also* breaks external monitor hookups. So, basically, primus doesn't work with the card I have (because I get the DKMS error), but without it powered on, I don't get external monitors. Yay.
-
-    1. Refs:
+      * **Note** This works, kind of. It seems to completely break external monitor hookups, so I removed it. I tried to leave the module blacklist, however, to try and ensure that the card wouldn't be powered on accidentally, and therefore preserve battery life, but doing so *also* breaks external monitor hookups. So, basically, primus doesn't work with the card I have (because I get the DKMS error), but without it powered on, I don't get external monitors. Yay.
+      * Refs:
         * https://www.bumblebee-project.org/
         * https://wiki.ubuntu.com/Bumblebee#Installation
         * https://github.com/Bumblebee-Project/Bumblebee/wiki/
@@ -458,141 +450,133 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
         So, we're using the official nvidia driver.
 
-    1. Install it:
+      1. Install it:
 
-            sudo apt install primus-nvidia bumblebee-nvidia xserver-xorg-input-mouse nvidia-driver-440
+             sudo apt install primus-nvidia bumblebee-nvidia xserver-xorg-input-mouse nvidia-driver-440
 
-    1. This involves a group permission add (bumblebee group), so you may need to log out and log back in. If that does not alone does not do it, add yourself to the group with the following, then log back out nad back in.
+      1. This involves a group permission add (bumblebee group), so you may need to log out and log back in. If that does not alone does not do it, add yourself to the group with the following, then log back out nad back in.
 
-            sudo usermod -a -G bumblebee matt
+             sudo usermod -a -G bumblebee matt
 
-    1. The nouveau driver can fight with stuff; blacklist it:
+      1. The nouveau driver can fight with stuff; blacklist it:
 
-            sudo bash -c "echo blacklist nouveau > /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
-            sudo bash -c "echo options nouveau modeset=0 >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
-            sudo update-initramfs -u
+             sudo bash -c "echo blacklist nouveau > /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
+             sudo bash -c "echo options nouveau modeset=0 >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
+             sudo update-initramfs -u
 
-    1. Edit /etc/bumblebee/bumblebee.conf and:
-        1. Under [bumblebeed], set Driver=nvidia.
-        1. Under [driver-nvidia]:
-            1. Set `LibraryPath=/usr/lib/x86_64-linux-gnu/nvidia/xorg:/usr/lib/x86_64-linux-gnu/primus`
-            2. Set `XorgModulePath=/usr/lib/x86_64-linux-gnu/nvidia/xorg,/usr/lib/xorg/modules`
+      1. Edit `/etc/bumblebee/bumblebee.conf` and:
+          1. Under `[bumblebeed]`, set `Driver=nvidia`.
+          1. Under `[driver-nvidia]`:
+              1. Set `LibraryPath=/usr/lib/x86_64-linux-gnu/nvidia/xorg:/usr/lib/x86_64-linux-gnu/primus`
+              2. Set `XorgModulePath=/usr/lib/x86_64-linux-gnu/nvidia/xorg,/usr/lib/xorg/modules`
+      1. Reboot and then:
+          1. Run stuff with `primusrun`
+          2. You can determine if the card is on or off by doing:
 
-    1. Reboot and then:
-        1. Run stuff with `primusrun`
-        2. You can determine if the card is on or off by doing:
+                 cat /proc/acpi/bbswitch
+                 0000:01:00.0 OFF
+      1. Set up additional video card libraries and tools:
+          - Refs:
+          - [https://github.com/ValveSoftware/Proton/wiki/Requirements](https://github.com/ValveSoftware/Proton/wiki/Requirements)
+          1. Install the Vulkan tools, libraries, and so forth:
 
-                cat /proc/acpi/bbswitch
-                0000:01:00.0 OFF
-
-
-   1. Set up additional video card libraries and tools:
-      1. Refs:
-          1. [https://github.com/ValveSoftware/Proton/wiki/Requirements](https://github.com/ValveSoftware/Proton/wiki/Requirements)
-
-      1. Install the Vulkan tools, libraries, and so forth:
-
-              sudo apt install vulkan-tools mesa-vulkan-drivers mesa-vulkan-drivers:i386
-
-     1. One can then check things with `vulkaninfo`.
+                 sudo apt install vulkan-tools mesa-vulkan-drivers mesa-vulkan-drivers:i386
+          1. One can then check things with `vulkaninfo`.
 
   1. Install the Steam controller
-    1. Refs:
-        1. https://steamcommunity.com/app/353370/discussions/2/1735465524711324558/
+      - Refs: https://steamcommunity.com/app/353370/discussions/2/1735465524711324558/
+      1. Create `/etc/udev/rules.d/60-steam-controller-perms.rules` with the following contents:
 
-    1. Create `/etc/udev/rules.d/60-steam-controller-perms.rules` with the following contents:
+             # This rule is needed for basic functionality of the controller in Steam and keyboard/mouse emulation
+             SUBSYSTEM=="usb", ATTRS{idVendor}=="28de", MODE="0666"
 
-          # This rule is needed for basic functionality of the controller in Steam and keyboard/mouse emulation
-          SUBSYSTEM=="usb", ATTRS{idVendor}=="28de", MODE="0666"
+             # This rule is necessary for gamepad emulation; make sure you replace 'matt' with a group that the user that runs Steam belongs to
+             KERNEL=="uinput", MODE="0660", GROUP="matt", OPTIONS+="static_node=uinput"
 
-          # This rule is necessary for gamepad emulation; make sure you replace 'matt' with a group that the user that runs Steam belongs to
-          KERNEL=="uinput", MODE="0660", GROUP="matt", OPTIONS+="static_node=uinput"
+             # Valve HID devices over USB hidraw
+             KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
 
-          # Valve HID devices over USB hidraw
-          KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
+             # Valve HID devices over bluetooth hidraw
+             KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
 
-          # Valve HID devices over bluetooth hidraw
-          KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
+             # DualShock 4 over USB hidraw
+             KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="05c4", MODE="0666"
 
-          # DualShock 4 over USB hidraw
-          KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="05c4", MODE="0666"
+             # DualShock 4 wireless adapter over USB hidraw
+             KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ba0", MODE="0666"
 
-          # DualShock 4 wireless adapter over USB hidraw
-          KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ba0", MODE="0666"
+             # DualShock 4 Slim over USB hidraw
+             KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="09cc", MODE="0666"
 
-          # DualShock 4 Slim over USB hidraw
-          KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="09cc", MODE="0666"
+             # DualShock 4 over bluetooth hidraw
+             KERNEL=="hidraw*", KERNELS=="*054C:05C4*", MODE="0666"
 
-          # DualShock 4 over bluetooth hidraw
-          KERNEL=="hidraw*", KERNELS=="*054C:05C4*", MODE="0666"
+             # DualShock 4 Slim over bluetooth hidraw
+             KERNEL=="hidraw*", KERNELS=="*054C:09CC*", MODE="0666"
 
-          # DualShock 4 Slim over bluetooth hidraw
-          KERNEL=="hidraw*", KERNELS=="*054C:09CC*", MODE="0666"
+             # Nintendo Switch Pro Controller over USB hidraw
+             KERNEL=="hidraw*", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="2009", MODE="0666"
 
-          # Nintendo Switch Pro Controller over USB hidraw
-          KERNEL=="hidraw*", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="2009", MODE="0666"
-
-          # Nintendo Switch Pro Controller over bluetooth hidraw
-          KERNEL=="hidraw*", KERNELS=="*057E:2009*", MODE="0666"
+             # Nintendo Switch Pro Controller over bluetooth hidraw
+             KERNEL=="hidraw*", KERNELS=="*057E:2009*", MODE="0666"
 
 ### Random other things that may be needed on a case by case basis
 
   1. Set up samba:
-    1. All machines:
+      1. All machines:
 
-            sudo apt install samba cifs-utils
-            cd /etc/samba
-            sudo mv smb.conf smb.conf.old
-            sudo cp ~/system_stuff/samba/smb.conf.`hostname` ./smb.conf
+             sudo apt install samba cifs-utils
+             cd /etc/samba
+             sudo mv smb.conf smb.conf.old
+             sudo cp ~/system_stuff/samba/smb.conf.`hostname` ./smb.conf
 
-    1. Servers
+      1. Servers
 
-            sudo update-rc.d smbd defaults
-            sudo update-rc.d nmbd defaults
-            sudo service smbd start
-            sudo service nmbd start
+             sudo update-rc.d smbd defaults
+             sudo update-rc.d nmbd defaults
+             sudo service smbd start
+             sudo service nmbd start
 
-    1. Other machines (laptops, etc)
-      1. Remember to turn it off on places you don't want the server, just the client.
+      1. Other machines (laptops, etc)
+          1. Remember to turn it off on places you don't want the server, just the client.
 
-            echo "manual" | sudo tee /etc/init/smbd.override
-            echo "manual" | sudo tee /etc/init/nmbd.override
-            sudo service smbd stop
-            sudo service nmbd stop
+                 echo "manual" | sudo tee /etc/init/smbd.override
+                 echo "manual" | sudo tee /etc/init/nmbd.override
+                 sudo service smbd stop
+                 sudo service nmbd stop
 
-      1. make sure to add ufw rules for them
+          1. Make sure to add ufw rules for them
 
-            sudo ufw allow from 192.168.9.0/24 to any port netbios-ns
-            sudo ufw allow from 192.168.9.0/24 to any port netbios-dgm
-            sudo ufw allow from 192.168.9.0/24 to any port netbios-ssn
-            sudo ufw allow from 192.168.9.0/24 to any port microsoft-ds
+                 sudo ufw allow from 192.168.9.0/24 to any port netbios-ns
+                 sudo ufw allow from 192.168.9.0/24 to any port netbios-dgm
+                 sudo ufw allow from 192.168.9.0/24 to any port netbios-ssn
+                 sudo ufw allow from 192.168.9.0/24 to any port microsoft-ds
 
-  1. Set up apache (if necessary)
-    1. see [Apache Installation Instructions](./install.apache)
+      1. Set up apache (if necessary)
+         1. see [Apache Installation Instructions](./install.apache)
 
+      1. Set up sensors (if not set up automagically):
+          1. For hiro / Thinkpad P51:
+          1. add the following to `/etc/modules`:
 
-  1. Set up sensors (if not set up automagically):
-    1. For hiro / Thinkpad P51:
-      1. add the following to `/etc/modules`:
+                 coretemp
 
-            coretemp
+          1. For new machines, you figure out what you need by running `sensors-detect` and following the prompts - the defaults are typically fine.
 
-    1. For new machines, you figure out what you need by running `sensors-detect` and following the prompts - the defaults are typically fine.
+          1. **FIXME - edit the conf file to fix scaling, etc.**
 
-    1. ** FIXME - edit the conf file to fix scaling, etc. **
+      1. Add temperature monitoring script to crontab (servers only):
 
-  1. Add temperature monitoring script to crontab (servers only):
-
-            @hourly              /home/matt/bin/tempChecker
+             @hourly              /home/matt/bin/tempChecker
 
   1. If pulseaudio gives you problems, do:
 
-        sudo apt purge pulseaudio
-        sudo rm -r ~/.pulse ~/.config/pulse /etc/pulse /usr/share/pulseaudio
-        sudo apt install pulseaudio
+         sudo apt purge pulseaudio
+         sudo rm -r ~/.pulse ~/.config/pulse /etc/pulse /usr/share/pulseaudio
+         sudo apt install pulseaudio
 
-   1. Reboot.
-   1. If you don't get a volume icon, it's likely that the indicator plugin was uninstalled as a dependency; reinstall it:
+     1. Reboot.
+     1. If you don't get a volume icon, it's likely that the indicator plugin was uninstalled as a dependency; reinstall it:
 
-          sudo apt install xfce4-pulseaudio-plugin
+            sudo apt install xfce4-pulseaudio-plugin
 
