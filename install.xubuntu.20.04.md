@@ -171,10 +171,6 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
          sudo snap install slack --classic
 
-  1. Install discord
-
-         sudo snap install discord
-
   1. Install shutter
 
          sudo snap install shutter
