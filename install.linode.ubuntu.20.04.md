@@ -1106,6 +1106,11 @@ I picked Newark for the location.
 
 1. MegaMek
 
+    1. Create a user, then disable it.
+
+            sudo adduser megamek
+            sudo usermod -s /usr/sbin/nologin -L megamek
+
     1. Install a JRE:
 
             sudo apt install default-jre
@@ -1114,29 +1119,34 @@ I picked Newark for the location.
 
             sudo ufw allow from any to any port 2346 proto tcp comment 'megamek'
 
-    1. Create `/etc/systemd/system/megamek.service` with the following (and the correct password):
+    1. Create `/lib/systemd/system/megamek.service` with the following (and the correct password):
 
             [Unit]
             Description=MegaMek service
             After=network.target auditd.service
 
             [Service]
-            ExecStart=/usr/bin/java -Xmx1024m -jar /home/matt/megamek/megamek/MegaMek.jar -dedicated -port 2346 -password XXX
+            ExecStart=/usr/bin/java -Xmx1024m -jar /home/megamek/megamek/MegaMek.jar -dedicated -port 2346 -password XXX
             ExecReload=/bin/kill -HUP $MAINPID
             KillMode=process
             Restart=always
             RestartPreventExitStatus=255
             Type=simple
-            WorkingDirectory=/home/matt/megamek/megamek
+            WorkingDirectory=/home/megamek/megamek
             RuntimeDirectoryMode=0755
-            User=matt
+            User=megamek
 
             [Install]
             Alias=megamek.service
 
+    1. Enable and start the service:
+
+            sudo systemctl enable megamek
+            sudo systemctl start megamek
+
     1. Notes:
-        1. It lives in `~/megamek/`
-        1. `~/megamek/megamek` is a symlink to the current version.
+        1. It lives in `/home/megamek/`
+        1. `/home/megamek/megamek` is a symlink to the current version.
         1. Download from https://megamek.org/downloads.html (just MegaMek stable)
 
 1. MediaWiki (school.mattcaron.net)
