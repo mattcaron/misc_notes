@@ -107,11 +107,10 @@ I picked Newark for the location.
 
           # /etc/cron.d/letsencrypt: crontab entries to check for new certs
 
-          PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+          PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
           MAILTO=root
 
-          37 01 * * *     root     service apache2 stop && certbot renew && chmod -R g+r /etc/letsencrypt && service apache2 start && service dovecot reload && service exim4 reload
-          # 42 18 * * *     root     service apache2 stop && certbot renew && chmod -R g+r /etc/letsencrypt && service apache2 start && service dovecot reload && service exim4 reload
+          37 01 * * *     root     service apache2 stop; certbot renew; chmod -R g+r /etc/letsencrypt; service apache2 start; service dovecot reload; service exim4 reload
 
       Note that:
         - we restart services
