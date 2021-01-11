@@ -571,8 +571,21 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
          sudo rm -r ~/.pulse ~/.config/pulse /etc/pulse /usr/share/pulseaudio
          sudo apt install pulseaudio
 
-     1. Reboot.
-     1. If you don't get a volume icon, it's likely that the indicator plugin was uninstalled as a dependency; reinstall it:
+      1. Reboot.
+      1. If you don't get a volume icon, it's likely that the indicator plugin was uninstalled as a dependency; reinstall it:
 
-            sudo apt install xfce4-pulseaudio-plugin
+             sudo apt install xfce4-pulseaudio-plugin
 
+  1. Fix Wake On Lan
+      1. Install ethtool
+
+             sudo apt install ethtool
+
+      1. Create `/etc/network/if-up.d/wol_fix` with the following content, replacing `[card]` with the card:
+
+             #!/bin/sh
+             /sbin/ethtool -s [card] wol g
+
+      1. And set the perms on it:
+
+             sudo chmod +x /etc/network/if-up.d/wol_fix
