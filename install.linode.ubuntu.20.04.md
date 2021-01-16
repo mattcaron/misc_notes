@@ -1235,30 +1235,3 @@ I picked Newark for the location.
                register_new_matrix_user -c /etc/matrix-synapse/homeserver.yaml http://localhost:8008
 
               and then follow the prompts.
-
-1. Murmur (Mumble server)
-
-    1. Install it
-
-           sudo apt-get install mumble-server
-
-    1. Make the server user a member of the `ssl-cert` group so it can read the certs.
-
-           sudo usermod -a -G ssl-cert mumble-server
-
-    1. Reconfigure it:
-
-           sudo dpkg-reconfigure mumble-server
-
-        1. Start on boot.
-        1. Use high priority.
-        1. Set the password.
-
-    1. Configure it by editing `/etc/mumble-server.ini`:
-        1. Set the certs for both ssl and grpc.
-        1. Uncomment the grpc line.
-        1. Set bonjour to False.
-
-    1. Allow it through the firewall
-
-           sudo ufw allow 64738 comment 'mumble-server'

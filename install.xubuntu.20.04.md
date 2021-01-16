@@ -171,10 +171,6 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
          sudo snap install slack --classic
 
-  1. Install mumble
-
-         sudo apt install mumble
-
   1. Install element (matrix client)
 
          sudo apt install -y wget apt-transport-https
