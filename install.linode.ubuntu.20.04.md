@@ -1167,21 +1167,34 @@ I picked Newark for the location.
 
 1. Synapse (matix server)
 
-    1. Install it:
+    1. Install it from the latest stable repo:
 
-           sudo apt-get install matrix-synapse
+           sudo wget -qO /usr/share/keyrings/matrix-org-archive-keyring.gpg https://packages.matrix.org/debian/matrix-org-archive-keyring.gpg
+
+           echo "deb [signed-by=/usr/share/keyrings/matrix-org-archive-keyring.gpg] https://packages.matrix.org/debian/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/matrix-org.list
+
+           sudo apt update
+           sudo apt install matrix-synapse-py3
 
        follow the instruction prompts, setting the domain and sumbitting anonymous usage statistics.
 
     1. Configure it by editing `/etc/matrix-synapse/homeserver.yml`
 
-        1. Set the certs to the correct things.
-           - Generally speaking, most traffic is going to be via the HTTPS proxy so we can use SNI for a VHost. But, I'm leaving this on in case I ever want to hit it directly for some reason.
-        1. Generate the DH parameters in a convenient place thusly:
-
-               openssl dhparam -out dhparam.pem 1024
-
+        1. Set the `admin_contact`.
         1. Disable federation by setting `federation_domain_whitelist` to this server and only this server (so it federates with itself).
+        1. Enable URL previews and uncomment the blacklist, as recommended.
+            1. We do not explicitly blacklist the external IP because we want previews for those to work, and it's all externally accessible already anyway.
+        1. Set `enable_registration` to false.
+            1. I don't want people to register themselves; only me.
+        1. Set the registration shared secret.
+        1. Set `allow_guest_access` to false.
+        1. Set it to auto-join admin-help, as a minimal room set.
+        1. Comment out the trusted keyservers - we don't trust anyone.
+        1. Note that we don't:
+            1. Set the certs because we run this unencrypted on localhost and then proxy it through apache, which does our TLS termination.
+            1. Set it up to send emails - the app notifies one of new messages, so I'm not enabling this unless people ask for it.
+                1. Of course, not setting email (and not setting a 3PID server) means we can't set email and phone numbers.
+            1. Push notifications - again, the app notifies one of new messages, so why annoy people more?
 
     1. Make the server user a member of the `ssl-cert` group so it can read the certs.
 
@@ -1224,14 +1237,20 @@ I picked Newark for the location.
                #    ProxyPass /_matrix http://127.0.0.1:8008/_matrix nocanon
                #    ProxyPassReverse /_matrix http://127.0.0.1:8008/_matrix
                #</VirtualHost>
+
         1. Enable it:
 
                sudo a2enmod proxy
                sudo a2enmod proxy_http
                sudo a2ensite chat.mattcaron.net
                sudo service apache2 reload
+
         1. Create users:
 
                register_new_matrix_user -c /etc/matrix-synapse/homeserver.yaml http://localhost:8008
 
               and then follow the prompts.
+
+        1. Set up DB snapshot - add to crontab:
+
+               @daily               /home/matt/bin/matrix-synapse_sqlite_backup > /dev/null
