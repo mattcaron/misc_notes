@@ -95,6 +95,7 @@ I picked Newark for the location.
           sudo certbot --standalone certonly -d lists.pfmbonsai.com
           sudo certbot --standalone certonly -d pfmbonsai.com
           sudo certbot --standalone certonly -d school.mattcaron.net
+          sudo certbot --standalone certonly -d chat.mattcaron.net
 
    1. Make the directories in /etc group accessible by ssl-cert and make the gid sticky
 
@@ -266,6 +267,7 @@ I picked Newark for the location.
     1. Make the `Debian-exim` user a member of the shadow group so it can read `/etc/shadow` and therefore do authentication. Also, the `ssl-cert` group, so it can read certs.
 
            sudo usermod -a -G ssl-cert Debian-exim
+           sudo usermod -a -G shadow Debian-exim
 
     1. Make a pam config for it - we'll just piggyback on the dovecot one, as it's reasonable and similar
 
@@ -1162,3 +1164,101 @@ I picked Newark for the location.
            GRANT ALL PRIVILEGES ON mw_school.* TO "mw_school"@"localhost" IDENTIFIED BY "password";
 
     1. Push everything up and then go to https://school.mattcaron.net/ to configure it, grab the `LocalSettings.php` file and stuff it where it needs to be. Yay.
+
+1. Synapse (matix server)
+
+    1. Install it:
+
+           sudo apt-get install matrix-synapse
+
+       follow the instruction prompts, setting the domain and sumbitting anonymous usage statistics.
+
+    1. Configure it by editing `/etc/matrix-synapse/homeserver.yml`
+
+        1. Set the certs to the correct things.
+           - Generally speaking, most traffic is going to be via the HTTPS proxy so we can use SNI for a VHost. But, I'm leaving this on in case I ever want to hit it directly for some reason.
+        1. Generate the DH parameters in a convenient place thusly:
+
+               openssl dhparam -out dhparam.pem 1024
+
+        1. Disable federation by setting `federation_domain_whitelist` to this server and only this server (so it federates with itself).
+
+    1. Make the server user a member of the `ssl-cert` group so it can read the certs.
+
+           sudo usermod -a -G ssl-cert matrix-synapse
+
+    1. Set up the VHost proxy.
+        1. Create `/etc/apache2/sites-available/chat.mattcaron.net` thusly:
+
+               <VirtualHost *:80>
+                   ServerName chat.mattcaron.net
+                   ServerAdmin matt@mattcaron.net
+
+                   RewriteEngine on    
+                   RewriteRule ^/(.*)$  https://chat.mattcaron.net/$1  [R,L]
+               </VirtualHost>
+
+               <VirtualHost *:443>
+                   ServerName chat.mattcaron.net
+                   ServerAdmin matt@mattcaron.net
+
+                   SSLEngine on
+                   SSLCertificateFile    /etc/ssl/private/chat.mattcaron.net/fullchain.pem
+                   SSLCertificateKeyFile /etc/ssl/private/chat.mattcaron.net/privkey.pem
+
+                   Include ssl_common.fragment
+
+                   AllowEncodedSlashes NoDecode
+                   ProxyPass /_matrix http://127.0.0.1:8008/_matrix nocanon
+                   ProxyPassReverse /_matrix http://127.0.0.1:8008/_matrix
+                   ProxyPass /_synapse/client http://127.0.0.1:8008/_synapse/client nocanon
+                   ProxyPassReverse /_synapse/client http://127.0.0.1:8008/_synapse/client
+               </VirtualHost>
+
+               # Server to server comms (disabled for now as we do not want federation)
+               #<VirtualHost *:8448>
+               #    SSLEngine on
+               #    ServerName example.com;
+               #
+               #    AllowEncodedSlashes NoDecode
+               #    ProxyPass /_matrix http://127.0.0.1:8008/_matrix nocanon
+               #    ProxyPassReverse /_matrix http://127.0.0.1:8008/_matrix
+               #</VirtualHost>
+        1. Enable it:
+
+               sudo a2enmod proxy
+               sudo a2enmod proxy_http
+               sudo a2ensite chat.mattcaron.net
+               sudo service apache2 reload
+        1. Create users:
+
+               register_new_matrix_user -c /etc/matrix-synapse/homeserver.yaml http://localhost:8008
+
+              and then follow the prompts.
+
+1. Murmur (Mumble server)
+
+    1. Install it
+
+           sudo apt-get install mumble-server
+
+    1. Make the server user a member of the `ssl-cert` group so it can read the certs.
+
+           sudo usermod -a -G ssl-cert mumble-server
+
+    1. Reconfigure it:
+
+           sudo dpkg-reconfigure mumble-server
+
+        1. Start on boot.
+        1. Use high priority.
+        1. Set the password.
+
+    1. Configure it by editing `/etc/mumble-server.ini`:
+        1. Set the certs for both ssl and grpc.
+        1. Uncomment the grpc line.
+        1. Set bonjour to False.
+
+    1. Allow it through the firewall
+
+           sudo ufw allow 64738 comment 'mumble-server'
