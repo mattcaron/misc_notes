@@ -1165,6 +1165,35 @@ I picked Newark for the location.
 
     1. Push everything up and then go to https://school.mattcaron.net/ to configure it, grab the `LocalSettings.php` file and stuff it where it needs to be. Yay.
 
+1. Coturn (STUN/TURN server, used by Synapse for VoIP stuff)
+
+    1. Install it from the repos:
+
+           sudo apt install coturn
+
+    1. Make the server user a member of the `ssl-cert` group so it can read the certs, and a member of the `syslog` file so it can write `/var/log`
+
+           sudo usermod -a -G ssl-cert turnserver
+           sudo usermod -a -G syslog turnserver
+
+    1. Configure it by editing `/etc/turnserver.conf`:
+        1. Uncomment the following options to enable them:
+            1. `tls-listening-port`
+            1. `fingerprint`
+            1. `use-auth-secret`
+            1. `secure-stun`
+            1. `no-cli`
+        1. Set the `log-file` to `/var/log/turn.log`.
+        1. Set `static-auth-secret` to something strongish.
+        1. Set the cert and key files to appropriate values for `chat.mattcaron.net`.
+        1. Set the `proc-user` and `proc-group` to `turnserver`.
+
+    1. Set it to start by editing `/etc/default/coturn` and uncommenting `TUNSERVER_ENABLED=1`.
+
+    1. Allow through firewall:
+
+       sudo ufw allow 5349 comment "turn tls"
+
 1. Synapse (matix server)
 
     1. Install it from the latest stable repo:
@@ -1190,15 +1219,15 @@ I picked Newark for the location.
         1. Set `allow_guest_access` to false.
         1. Set it to auto-join admin-help, as a minimal room set.
         1. Comment out the trusted keyservers - we don't trust anyone.
+        1. Set the TURN server config
+            1. Set the `turn_uris` to have `chat.mattcaron.net` as the list.
+            1. Set the `turn_shared_secret` to be the same as the one in `/etc/turnserver.conf`.
+            1. Set `turn_allowed_guests` to `false`.
         1. Note that we don't:
             1. Set the certs because we run this unencrypted on localhost and then proxy it through apache, which does our TLS termination.
             1. Set it up to send emails - the app notifies one of new messages, so I'm not enabling this unless people ask for it.
                 1. Of course, not setting email (and not setting a 3PID server) means we can't set email and phone numbers.
             1. Push notifications - again, the app notifies one of new messages, so why annoy people more?
-
-    1. Make the server user a member of the `ssl-cert` group so it can read the certs.
-
-           sudo usermod -a -G ssl-cert matrix-synapse
 
     1. Set up the VHost proxy.
         1. Create `/etc/apache2/sites-available/chat.mattcaron.net` thusly:
@@ -1254,3 +1283,7 @@ I picked Newark for the location.
         1. Set up DB snapshot - add to crontab:
 
                @daily               /home/matt/bin/matrix-synapse_sqlite_backup > /dev/null
+
+1. Element Web (frontend for Matrix server)
+    1. Copy over `~/public_html/chat.mattcaron.net`.
+    1. In `/etc/apache2/sites-available/chat.mattcaron.net`, set the `DocumentRoot` to `/home/matt/public_html/chat.mattcaron.net`.
