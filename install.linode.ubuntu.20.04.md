@@ -1166,6 +1166,7 @@ I picked Newark for the location.
     1. Push everything up and then go to https://school.mattcaron.net/ to configure it, grab the `LocalSettings.php` file and stuff it where it needs to be. Yay.
 
 1. Coturn (STUN/TURN server, used by Synapse for VoIP stuff)
+    - Ref: https://github.com/matrix-org/synapse/blob/master/docs/turn-howto.md
 
     1. Install it from the repos:
 
@@ -1183,9 +1184,12 @@ I picked Newark for the location.
             1. `use-auth-secret`
             1. `secure-stun`
             1. `no-cli`
+            1. `no-tcp-relay`
         1. Set the `log-file` to `/var/log/turn.log`.
         1. Set `static-auth-secret` to something strongish.
+        1. Set the `realm` to `chat.mattcaron.net`.
         1. Set the cert and key files to appropriate values for `chat.mattcaron.net`.
+        1. Set the `user-quota` and `total-quota`.
         1. Set the `proc-user` and `proc-group` to `turnserver`.
 
     1. Set it to start by editing `/etc/default/coturn` and uncommenting `TUNSERVER_ENABLED=1`.
