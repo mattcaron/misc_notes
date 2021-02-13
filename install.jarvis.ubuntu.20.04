@@ -59,7 +59,7 @@ router. It is accessible as `jarvis`. No need for a static IP.
 
 1. Install more useful things
 
-        sudo apt install tree unison atop nmap emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck lm-sensors ntp ssmtp gdisk git gitk iftop mailutils ppa-purge xsltproc smartmontools wakeonlan
+        sudo apt install tree unison atop nmap iotop emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck lm-sensors ntp ssmtp gdisk git gitk iftop mailutils ppa-purge xsltproc smartmontools wakeonlan
 
 1. Add any necessary accounts
 
@@ -307,14 +307,41 @@ really do an archive. For that, we do an rsnapshot
 
         sudo chmod g+s /mnt/shared
 
-1. Fix things not starting
+1. Set up time machine (again)
+    - Ref: https://www.grizzly-hills.com/2019/11/02/ubuntu-19-10-setting-up-time-machine/
+    
+    1. Install things:
+        sudo apt install netatalk avahi-daemon
+    
+    1. Edit the config file:
 
-**TODO:** This may no longer be true. Check it.
+        sudo -e /etc/netatalk/afp.conf
 
-    After the 18.04 upgrade, ntp seems to like to die on startup. Add the
-following to /etc/rc.local to kick it in the head:
+    1. Add a section for time machine:
+        [Liz's Time Machine]
+            path = /home/liz/time-machine
+            time machine = yes
 
-        sudo service ntp restart
+    1. Make the directory
+
+        sudo mkdir -p /home/liz/time-machine
+        sudo chown -R liz:liz /home/liz/time-machine
+
+    1. Restart it
+
+        sudo service netatalk restart
+
+    1. Make sure all the ports are OpenSSH
+
+    sudo ufw allow afpovertcp
+    sudo ufw allow mdns
+    sudo ufw allow svrloc
+    sudo ufw allow from any to any port 201 comment at-rtmp
+    sudo ufw allow from any to any port 202 comment at-nbp
+    sudo ufw allow from any to any port 204 comment at-echo
+    sudo ufw allow from any to any port 206 comment at-zis
+    sudo ufw allow from any to any port 1900 comment ssdp
+
 
 ## APPENDIX:
 
