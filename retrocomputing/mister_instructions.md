@@ -241,13 +241,13 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
     1. And some Windows drivers [here](https://github.com/MiSTer-devel/ao486_MiSTer/tree/master/releases/drv)
     1. Copy `boot0.rom` and `boot1.rom` from [the readme](https://github.com/MiSTer-devel/ao486_MiSTer) and put them in `games/AO486`.
     1. Remember, it's Win+F12 to get the menu to come up.
-    1. Create fixed sized .vhd files as normal with dd. Notes:
-        1. The BIOS only sees 8GB max, anything extra is wasted.
-        1. And DOS 6.22 can only use 2GB partitions.
-        1. Windows 95B(OSR2) can do 124.55GB with FAT32... but the only way to install that right now is a boot disk + vhd containing the files and partitioning and installing to another drive, since CDs aren't supported yet.
-        1. Which means a VHD full of CD images is likely going to be a thing, because we can use [fakecd](http://www.math.uni-rostock.de/~nfa506/fakecddr.html) to mount them - though I expect the redbook audio won't play yet. :-(
-    1. My plan right now is DOS 6.22 first, others later, so:
+    1. The BIOS sees disk images up to 137GB.
+        1. And DOS 6.22 can only use 2GB Partitions.
+        1. FreeDOS can handle one, large partition just fine.
+    1. It can mount ISO, BIN and CUE format images as CDs.
+    1. For DOS 6.22:
         1. Create an empty image with `dd if=/dev/zero of=dos_base.vhd bs=1M count=8000`
+            1. Or larger, but 4 partitions is a lot.
         1. Copy over the Dos 6.22 install disks downloaded from [winworldpc](https://winworldpc.com/product/ms-dos/622).
         1. Mount the drive and the first disk and proceed through the install.
             1. Partition it in to 4 partitions, roughly 2GB each.
@@ -256,7 +256,7 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
         1. Once the DOS install is done, run the Sound Blaster install (disk images from `Sound Blaster 2.0 Bundle (1994) (3.5-720k)`.
         1. And make sure that `HIMEM.SYS` and `EMM386.EXE` are loaded in `CONFIG.SYS`.
             1. Digitized sound on Wolf3D doesn't work without it.
-        1. Once that is all installed, save that one (so we don't need to reinstall it every time we run out of space), and have everything else be a copy of it. I lzipped it and put the archive copy in `~/workspace/retrocomputing/mister/dos_base.vhd.lzip`,
+        1. Once that is all installed, save that one (so we don't need to reinstall it every time we run out of space), and have everything else be a copy of it. I lzipped it and put the archive copy in `~/workspace/retrocomputing/mister/dos_base.vhd.zip`,
             1. You can mount the partitions using `guestmount`, e.g.:
 
                     guestmount --add dos1.vhd --rw /mnt/vhd/ -m /dev/sda1
@@ -273,6 +273,25 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
                         sudo mount -o loop floppy.img /media/floppy1
 
              1. Copy files as normal, then unmount it when done.
+    1. For FreeDOS
+        1. Create an empty image with `dd if=/dev/zero of=freedos.vhd bs=1M count=140288`
+        1. Boot the `FD12CD.iso`.
+        1. Exit to DOS and partition it as one huge drive.
+            1. It complains that Windows will get pissy, but we don't care for this purpose.
+        1. Do a full install.
+        1. Mount `ao486_driver_floppy.img` and copy over everything from that (DOS32A and all the AO486 driver stuff)
+    1. General tweaks:
+        1. **Memory**:
+            1. To make the `misterfs` shared folder work, the memory region CE00-CFFF needs to be reserved. To do this on EMM386 / JEMMEX / JEMM386, specify:
+
+                    X=CE00-CFFF
+        
+                On their command line.
+            1. Suggested EMM386 command line (for DOS) (derived through experimentation):
+            1. Suggested JEMMEMM386 command line (for FreeDOS) (derived through experimentation):
+            1. Ref: https://misterfpga.org/viewtopic.php?t=1247
+
+    
 
 1. Using a USB hard drive.
     1. Do the above, but put it goes in the `games` subdir of the USB HDD.
