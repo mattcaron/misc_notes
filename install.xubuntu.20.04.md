@@ -108,7 +108,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
               sudo service ssh restart
 
-  1. Disable firewally logging (it can be quite verbose on a busy network), then turn on the firewall.
+  1. Disable firewall logging (it can be quite verbose on a busy network), then turn on the firewall.
 
             sudo ufw logging off
             sudo ufw enable
