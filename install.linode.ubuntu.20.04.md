@@ -1375,4 +1375,4 @@ I picked Newark for the location.
               sudo prosodyctl register user your_domain password
     1. Allow media port through the firewall:
 
-           sudo ufw allow 10000 comment "turn tls"
+           sudo ufw allow 10000 comment "jitsi media"
