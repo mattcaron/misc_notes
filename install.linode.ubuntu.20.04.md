@@ -579,6 +579,20 @@ I picked Newark for the location.
            sudo ln -s sympa-${VER}/ sympa
            cd /etc/init.d
            sudo ln -s /opt/sympa/etc/init.d/sympa .
+           cd /etc/rc6.d
+           ln -s ../init.d/sympa K99sympa
+           cd /etc/rc5.d
+           ln -s ../init.d/sympa S99sympa
+           cd /etc/rc4.d
+           ln -s ../init.d/sympa S99sympa           
+           cd /etc/rc3.d
+           ln -s ../init.d/sympa S99sympa
+           cd /etc/rc2.d
+           ln -s ../init.d/sympa S99sympa
+           cd /etc/rc1.d
+           ln -s ../init.d/sympa K99sympa
+           cd /etc/rc0.d
+           ln -s ../init.d/sympa K99sympa
            cd /etc
            sudo ln -s /etc/sympa/sympa.conf .
            cd /var/lib/sympa/
