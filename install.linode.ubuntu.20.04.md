@@ -95,6 +95,7 @@ I picked Newark for the location.
           sudo certbot --standalone certonly -d pfmbonsai.com
           sudo certbot --standalone certonly -d school.mattcaron.net
           sudo certbot --standalone certonly -d chat.mattcaron.net
+          sudo certbot --standalone certonly -d video.mattcaron.net
 
    1. Make the directories in /etc group accessible by ssl-cert and make the gid sticky
 
@@ -1290,3 +1291,71 @@ I picked Newark for the location.
 1. Element Web (frontend for Matrix server)
     1. Copy over `~/public_html/chat.mattcaron.net`.
     1. In `/etc/apache2/sites-available/chat.mattcaron.net`, set the `DocumentRoot` to `/home/matt/public_html/chat.mattcaron.net`.
+
+1. Jitsi
+    1. Add video.mattcaron.net to DNS and get a cert.
+    1. Add the repo and key.
+        - From: https://www.digitalocean.com/community/tutorials/how-to-install-jitsi-meet-on-ubuntu-20-04
+        
+              wget https://download.jitsi.org/jitsi-key.gpg.key
+              sudo apt-key add jitsi-key.gpg.key
+              rm jitsi-key.gpg.key
+              echo "deb https://download.jitsi.org stable/" | sudo tee /etc/apt/sources.list.d/jitsi-stable.list
+    1. Install from repo:
+
+           sudo apt update
+           sudo apt install jitsi-meet
+
+    1. When prompted:
+        1. Set the hostname to `video.mattcaron.net`
+        1. Tell it to use my own certificate
+        1. Key is at `/etc/ssl/private/video.mattcaron.net/privkey.pem`
+        1. Certificated is at `/etc/ssl/private/video.mattcaron.net/fullchain.pem`
+
+    1. It automatically detects apache being there, installs a config file for it, and enables it.
+
+    1. Configure the Element clients to use the correct Jisti domain. Create `/.well-known/matrix/client` and add the following to it:
+    
+           {
+             "im.vector.riot.jitsi": {
+               "preferredDomain": "video.mattcaron.net"
+             }
+           }
+
+    1. It uses prosody for authentication, and need to be set up to lock it down:
+       1. Edit `/etc/prosody/conf.avail/video.mattcaron.net.cfg.lua`
+       1. Change:
+
+              authentication = "anonymous"
+
+           to
+           
+              authentication = "internal_plain"
+    1. But we want invited guests to be able to create temporary accounts:
+       1. Add the following VirtualHost entry in the file:
+
+              VirtualHost "guest.video.mattcaron.net"
+                  authentication = "anonymous"
+                  c2s_require_encryption = false
+
+       1. Edit `/etc/jitsi/meet/video.mattcaron.net-config.js` and change:
+
+              // anonymousdomain: 'guest.example.com',
+
+            to
+
+              anonymousdomain: 'guest.video.mattcaron.net',
+
+       1. Edit `/etc/jitsi/jicofo/sip-communicator.properties` and add the following line to the end:
+
+              org.jitsi.jicofo.auth.URL=XMPP:video.mattcaron.net
+
+       1. Restart everything:
+
+              sudo service prosody restart
+              sudo service jicofo restart
+              sudo service jitsi-videobridge2 restart
+    
+       1. Once configured, add users as follows:
+
+              sudo prosodyctl register user your_domain password
