@@ -87,8 +87,7 @@ I picked Newark for the location.
 
    1. Set it up semi-manually:
 
-          sudo certbot --standalone certonly -d mattcaron.net 
-          sudo certbot --standalone certonly -d www.mattcaron.net
+          sudo certbot --standalone certonly -d mattcaron.net,www.mattcaron.net
           sudo certbot --standalone certonly -d owncloud.mattcaron.net
           sudo certbot --standalone certonly -d sympa.mattcaron.net
           sudo certbot --standalone certonly -d mail.mattcaron.net
