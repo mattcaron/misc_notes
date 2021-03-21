@@ -1310,7 +1310,7 @@ I picked Newark for the location.
     1. Add video.mattcaron.net to DNS and get a cert.
     1. Add the repo and key.
         - From: https://www.digitalocean.com/community/tutorials/how-to-install-jitsi-meet-on-ubuntu-20-04
-        
+
               wget https://download.jitsi.org/jitsi-key.gpg.key
               sudo apt-key add jitsi-key.gpg.key
               rm jitsi-key.gpg.key
@@ -1329,7 +1329,7 @@ I picked Newark for the location.
     1. It automatically detects apache being there, installs a config file for it, and enables it.
 
     1. Configure the Element clients to use the correct Jisti domain. Create `/.well-known/matrix/client` and add the following to it:
-    
+
            {
              "im.vector.riot.jitsi": {
                "preferredDomain": "video.mattcaron.net"
@@ -1343,7 +1343,7 @@ I picked Newark for the location.
               authentication = "anonymous"
 
            to
-           
+
               authentication = "internal_plain"
     1. But we want invited guests to be able to create temporary accounts:
        1. Add the following VirtualHost entry in the file:
@@ -1356,9 +1356,23 @@ I picked Newark for the location.
 
               // anonymousdomain: 'guest.example.com',
 
-            to
+           to
 
               anonymousdomain: 'guest.video.mattcaron.net',
+
+           and find and set the following as follows (often just uncommenting them):
+
+              maxFullResolutionParticipants: 5,
+
+              requireDisplayName: true,
+
+              prejoinPageEnabled: true,
+
+              disableThirdPartyRequests: true,
+
+              doNotStoreRoom: true,
+
+              disableTileView: true,
 
        1. Edit `/etc/jitsi/jicofo/sip-communicator.properties` and add the following line to the end:
 
@@ -1369,7 +1383,7 @@ I picked Newark for the location.
               sudo service prosody restart
               sudo service jicofo restart
               sudo service jitsi-videobridge2 restart
-    
+
        1. Once configured, add users as follows:
 
               sudo prosodyctl register user your_domain password
