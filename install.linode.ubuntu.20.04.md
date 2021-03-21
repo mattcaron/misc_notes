@@ -77,7 +77,7 @@ I picked Newark for the location.
 
 1. Install useful things
 
-       sudo apt install tree emacs-nox git software-properties-common snapd
+       sudo apt install tree emacs-nox git software-properties-common snapd iftop htop
 
 1. Set up letsencrypt certbot
 
