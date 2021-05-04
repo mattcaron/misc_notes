@@ -245,6 +245,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
          code --install-extension James-Yu.latex-workshop
          code --install-extension streetsidesoftware.code-spell-checker
          code --install-extension ms-azuretools.vscode-docker
+         code --install-extension ms-vscode.cpptools
 
   1. (Maybe) install some extra filesystems (as needed)
 
@@ -252,9 +253,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install qbrew build dependencies:
 
-          sudo apt install qt4-qmake libqt4-dev qt4-designer
-
-        1. **IMPORTANT - this no longer works. Might be time for a snap or docker container for it.. or a port to qt5 or something.**
+          sudo apt install qt5-qmake qtbase5-dev qttools5-dev-tools
 
   1. Install Virtualbox and give users permission to use it:
 
