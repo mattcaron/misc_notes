@@ -244,6 +244,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
          code --install-extension tamasfe.even-better-toml
          code --install-extension James-Yu.latex-workshop
          code --install-extension streetsidesoftware.code-spell-checker
+         code --install-extension ms-azuretools.vscode-docker
 
   1. (Maybe) install some extra filesystems (as needed)
 
@@ -259,6 +260,11 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
           sudo apt install virtualbox
           sudo usermod -a -G vboxusers matt
+
+  1. Install docker and give users permission to use it:
+
+          sudo apt install docker
+          sudo usermod -a -G docker matt
 
   1. Install iperf and add firewall exception
 
