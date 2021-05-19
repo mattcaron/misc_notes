@@ -286,6 +286,14 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
           1. [https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/61-libsigrok-plugdev.rules;hb=HEAD](https://sigrok.org/gitweb/?p=libsigrok.git;a=blob_plain;f=contrib/61-libsigrok-plugdev.rules;hb=HEAD)
       1. And install them in to `/etc/udev/rules.d`. Note that this allows all plugdev users to use the logic analyzer (which is fine, because I am in that group).
 
+1. Arduino hackery
+
+   I find myself using various old versions of Arduino, so some hackery is required because they link against old versions of things....
+
+       cd /usr/lib/x86_64-linux-gnu/
+       sudo ln -s libreadline.so.8 libreadline.so.6
+       sudo apt install libncurses5 libtinfo5
+
 ### Publishing/media/etc. machines
 
 (This includes all kinds of desktop publishing, media manipluation and transcoding, video editing, etc.)
