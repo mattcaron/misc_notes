@@ -245,6 +245,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
          code --install-extension streetsidesoftware.code-spell-checker
          code --install-extension ms-azuretools.vscode-docker
          code --install-extension ms-vscode.cpptools
+         code --install-extension ms-vscode.cmake-tools
 
   1. (Maybe) install some extra filesystems (as needed)
 
