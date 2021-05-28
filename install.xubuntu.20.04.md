@@ -228,7 +228,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install development tools.
 
-          sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client nant sqlite3 dia gsfonts-x11 python-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.0-gtk3-dev libwxbase3.0-dev ccache npm gdc libgphobos-dev libsqlite3-dev freecad openscad slic3r arduino adb cmake libncurses-dev flex bison gperf
+          sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client nant sqlite3 dia gsfonts-x11 python-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.0-gtk3-dev libwxbase3.0-dev ccache npm gdc libgphobos-dev libsqlite3-dev freecad openscad slic3r arduino adb cmake libncurses-dev flex bison gperf astyle
   
   1. Install snapcraft
 
@@ -246,6 +246,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
          code --install-extension ms-azuretools.vscode-docker
          code --install-extension ms-vscode.cpptools
          code --install-extension ms-vscode.cmake-tools
+         code --install-extension chiehyu.vscode-astyle
 
   1. (Maybe) install some extra filesystems (as needed)
 
