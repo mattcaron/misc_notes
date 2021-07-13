@@ -501,16 +501,16 @@ I picked Newark for the location.
            cd ~/workspace/code
            git clone https://github.com/sympa-community/sympa.git
            cd sympa
-           git checkout -b production 6.2.60
+           git checkout -b production 6.2.64
 
        to upgrade later:
 
            cd ~/workspace/code/sympa
            git fetch
            git checkout production
-           git merge 6.2.60
+           git merge 6.2.64
 
-       (where 6.2.60 is the current version)
+       (where 6.2.64 is the current version)
 
     1. Copy this whole mess over to the linode server:
 
@@ -534,8 +534,8 @@ I picked Newark for the location.
 
     1. Set the versions in the environment (subsequent shells use this to save typing):
 
-           export VER=6.2.60
-           export OLDVER=6.2.58
+           export VER=6.2.64
+           export OLDVER=6.2.60
 
     1. Make the destination directory:
 
