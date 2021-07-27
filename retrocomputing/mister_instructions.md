@@ -158,83 +158,171 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 
 1. [Filesystem reference](https://github.com/MiSTer-devel/Main_MiSTer/wiki/Folders-and-File-naming)
 1. Software for most things goes in the `games` subdir. It's organized by platform. Put your roms in the right subdir for your platform.
+1. The directory names (filesystem case) are not always correct if using an ext4 formatted drive, as I am. Correct case is listed below:
+    * AcornAtom
+    * Altair8800
+    * Amiga
+    * Amstrad
+    * Amstrad PCW
+    * AO486
+    * APOGEE
+    * APPLE-I
+    * Apple-II
+    * AQUARIUS
+    * Archie
+    * Arduboy
+    * Astrocade
+    * ATARI2600
+    * ATARI5200
+    * ATARI7800
+    * ATARI800
+    * AtariLynx
+    * AtariST
+    * AY-3-8500
+    * BBCMicro
+    * BK0011M
+    * C16
+    * C64
+    * Chip8
+    * CO2650
+    * CoCo2
+    * COCO3
+    * Coleco
+    * EDSAC
+    * Electron
+    * EpochGalaxyII
+    * Galaksija
+    * GAMEBOY
+    * GBA
+    * Genesis
+    * hbmame
+    * Intellivision
+    * Jupiter
+    * Laser
+    * MACPLUS
+    * mame
+    * MegaCD
+    * MSX
+    * MultiComp
+    * NEOGEO
+    * NES
+    * ODYSSEY2
+    * ORAO
+    * Oric
+    * PC88
+    * PDP1
+    * PET2001
+    * QL
+    * RX78
+    * SAMCOUPE
+    * SharpMZ
+    * SMS
+    * SNES
+    * Spectrum
+    * SPMX
+    * SuperJacob
+    * SVI328
+    * TGFX16
+    * TGFX16-CD
+    * TomyScramble
+    * TI-99_4A
+    * TRS-80
+    * TSConf
+    * VECTOR06
+    * VECTREX
+    * VIC20
+    * WonderSwan
+    * X68000
+    * zx48
+    * ZX81
+    * ZXNext
+
 1. Mappings for stuff from Archive.org:
 
-    1. `everdrivepack`
+    1. `htgdb-gamepacks`
         1. **Notes:**
             1. Filenames prepended with @ are MiSTer ready - apparently, MiSTer can unzip zip files and just read them, which is good to know, and makes updates very convenient (just move the zip, don't move and rsync). In that case, rather than unzipping things, I've just copied the whole zip file. 7z files were unzipped.
-        1. `@Atari 2600 2020-04-30.zip` -> `ATARI2600`
+        1. `@MiSTer Pack 2021-03-22.7z`
+            1. This has a pile of stuff in it. It is basically a skeleton that one can use to set up a drive for MiSTer (see README Pack-List.TXT). Since I already have one, I didn't copy over everything. I unzipped it to a directory and picked through it.
+            1. `_Computer` has some additional files. Copied those over.
+            1. `_Console` has some additional files. Copied those over.
+            1. `Doom` needs to go into `/media/fat/Doom`, because that's where the script puts prboom. Of course, we could move it, and maybe I will at some point, but for now, that's good enough.
+            1. All the items in `Games` are generally just copied over, except where they are redundant with what I had. Notes follow:
+                1. `ao486` was uninteresting - I made my own FreeDOS vhd, so their default DOS 6.22 is not useful to me.
+                1. `Apple-II` had a lot of stuff, but I have stuff from TOSEC too, so I made `TOSEC` and `htgdb` directories. There is likely redundancy.
+                1. `ATARI2600` - There's a `MiSTer Fixed` subdir that I copied over, but I'm not sure what was broken in the first place.
+                1. `ATARI5200` had a pile of .car files (disk images?) and I also have a pile of stuff from (I think) TOSEC, so I put these in an `htgdb` subdirectory. There is likely duplication there.
+                1. `Coloeco` had interesting stuff and I also had a pile of stuff from (I think) TOSEC, so I put these in an `htgdb` subdirectory. There is likely duplication there.
+            1. `Scripts/Download*` goes into `/media/fat/Scripts/`. I don't need all of them (I have ScummVM and Jotego cores documented elsewhere), but the Intellivision and PrBoom scripts are of interest.
+        1. `@Atari 2600 2021-04-06.zip` -> `ATARI2600`
         1. `Atari 5200 - Atarimax v1.0.7z` -> `ATARI5200`
-        1. `Colecovision - Atarimax 2019-11-30.7z` -> `Coleco`
-        1. `Darksoft Neo Geo 2020-05-12.7z` -> `NEOGEO`
-        1. `@MiSTer Pack Add-on - NEOGEO 2020-05-12.zip` -> `NEOGEO`
-            1. **This is case specific** and was created wrong by the update script, but it was FAT, so it worked. Moving to to ext4 broke it. I had to rename it. It's fine now.
-            1. This also needs a ROMset. I copied over everything in the `misc/NeoGeo` subdir to `NEOGEO`. There are extras, but who cares.
-        1. `@NES - EverDrive N8 2020-06-03.zip` -> `NES`
-        1. `@NES - EverDrive N8 Game Series Collections Add-On 2020-04-21.zip` -> `NES`
-        1. `@MiSTer Pack Add-on - NES 2020-04-15.zip` -> `NES`
-        1. `@Game Boy - EverDrive GB 2020-06-21.zip` -> `GAMEBOY`
-            1. This includes Gameboy color.
-        1. `@Game Boy - EverDrive GB Game Series Collections Add-On 2020-04-24.zip` -> `GAMEBOY`
-        1. `@GBA - EverDrive GBA 2020-04-22.zip` -> `GBA`
-        1. `@GBA - EverDrive GBA Game Series Collections Add-On 2020-04-22.zip` -> `GBA`
+        1. `@Atari 7800 2021-04-26.zip` -> `ATARI7800`
+        1. `Atari Jaguar 2020-10-28.7z` -> `Jaguar`
+        1. `@Atari Lynx 2021-03-17.7z` -> `Lynx`
+        1. `@Colecovision 2020-12-17.zip` -> `Coleco`
+        1. `@Game Boy Color SMDB 2021-04-06.zip` -> `GAMEBOY`
+        1. `@Game Boy - EverDrive GB 2020-12-22.zip` -> `GAMEBOY`
+        1. `@Game Boy SMDB 2021-01-06.zip` -> `GAMEBOY`
         1. `@Game Gear - EverDrive GG 2020-01-12.zip` -> `SMS`
             1. This is not a mistake - the MiSTer SMS game gear core does both.
+        1. `@GBA - EverDrive GBA 2020-04-22.zip` -> `GBA`
+        1. `@GBA - EverDrive GBA Game Series Collections Add-On 2020-04-22.zip` -> `GBA`
+        1. `@Genesis - MegaSD - Mega EverDrive 2020-06-04.zip` -> `Genesis`
+        1. `@Genesis - MegaSD - Mega EverDrive Game Series Collections 2020-05-03.zip` -> `Genesis`
         1. `@Master System - Master EverDrive 2020-06-03.zip` -> `SMS`
             1. This is Sega's 8 bit console which was repackaged as the Game Gear portable later.
         1. `MegaCD` -> `MegaCD`
-            1. Zip is supported but not recommended. So:
-                1. Copied over the whole directory.
-                1. Did `unzip_mkdir *.zip` to unzip each into its own directory (they are bin/cue files, so this makes sense).
-                1. Then removed all the zipfiles.
-                1. And then I did this for each subdir, except for `@Multi-Disc`, for which I used `unzip_mkdir` so all the disks are organized by folder.
-            1. And this needs a ROM. Fortunately, the update_all script will download it for you.
-        1. `@Genesis - MegaSD - Mega EverDrive 2020-06-04.zip` -> `Genesis`
-        1. `@Genesis - MegaSD - Mega EverDrive Game Series Collections 2020-05-03.zip` -> `Genesis`
-        1. `@SNES - SD2SNES - Super EverDrive 2020-06-22.zip` -> `SNES`
-        1. `@SNES - SD2SNES - Super EverDrive Game Series Collections 2020-04-30.zip` -> `SNES`
-        1. `@MiSTer Pack Add-on - SNES 2020-04-15.7z` -> `SNES`
-            1. I un7zipped this, then rezipped it as a .zip and copied that over.
-        1. `@TurboGrafx - PC Engine - Turbo EverDrive 2020-06-06.zip` -> `TGFX16`
-        1. `@Vectrex - Vextreme 2020-04-28.zip` -> `VECTREX`
-        1. `@MiSTer Pack Add-on - Amiga Minimig MegaAGS 2020-06-06.7z` -> `Amiga/EverDrivePack`
-            1. This was a .7z that I copied over, un7zipped, then deleted the non-7zip files.
-            1. Subdir is to differentiate it from the other Amiga collections.
-        1. `@MiSTer Pack Add-on - ao486 2020-06-27.7z` -> `AO486`
-            1. This was a .7z that I copied over, un7zipped, then deleted the non-7zip files.
+            1. This is several directories full of .7z files, and MiSTer doesn't grok those, so I ran `un7z_mkdir` on all of them, then removed all the .7z files.
+        1. `@MiSTer Pack Add-on - Acorn Archimedes 2020-09-30.7z` -> `ARCHIE`
+        1. `@MiSTer Pack Add-on - Amiga Minimig MegaAGS 2021-03-13.7z` -> `Amiga/htgdb`
+            1. The various kickstart ROMs need to be moved out of there into the `games` root because the core can't go into subdirs for kickstart ROMs.
+        1. `@MiSTer Pack Add-on - ao486 2020-06-27.7z` -> `AO486/htgdb`
         1. `@MiSTer Pack Add-on - AtariST 2020-06-07.7z` -> `AtariST`
-            1. This was a .7z that I copied over, un7zipped, then deleted the non-7zip files.
         1. `@MiSTer Pack Add-on - C64 2020-04-15.zip` -> `C64`
         1. `@MiSTer Pack Add-on - C64 Demos 2020-04-15.zip` -> `C64`
-        1. `@MiSTer Pack Add-on - MSX 2020-05-17.7z` -> `MSX`
-            1. This was a .7z that I copied over, un7zipped, then deleted the non-7zip files.
+        1. `@MiSTer Pack Add-on - MSX 2020-11-19.7z` -> `MSX`
+            1. There was a hard disk image in the `MSX` subdir so I just moved it to the root `MSX` dir so I didn't end up with `MSX/MSX`, because that would be dumb.
+        1. `@MiSTer Pack Add-on - NEOGEO 2020-05-12.zip` -> `NEOGEO`
+        1. `@MiSTer Pack Add-on - SNES 2020-04-15.zip` -> `SNES`
         1. `@MiSTer Pack Add-on - Spectrum 2020-04-15.zip` -> `Spectrum`
-        1. `@MiSTer Pack Add-on - TSConf 2020-04-15.7z` -> `Spectrum`
+        1. `@MiSTer Pack Add-on - TSConf 2020-04-15.7z` -> `TSConf`
+        1. `@NES - EverDrive N8 2021-03-23.zip` -> `NES`
+        1. `@NES - EverDrive N8 Game Series Collections Add-On 2020-09-17.zip` -> `NES`
+        1. `PC Engine CD Redump Supplement` -> `TGFX16-CD/PC Engine CD Redump Supplement`
+            1. This is several directories full of .7z files, and MiSTer doesn't grok those, so I ran `un7z_mkdir` on all of them, then removed all the .7z files.
+        1. `Project Peacock` -> `TGFX16-CD/Project Peacock`
+            1. This is "Every Shoot ’em Up for the PC Engine Platform (CD, PCE/TG16, SGX)"
+            1. See https://www.retrorgb.com/project-peacock-2-0-every-shoot-em-up-for-the-pc-engine-platform-cd-pce-tg16-sgx.html
+            1. I put it in TGFX16-CD because I had a shot that it should be able to run all of them (even the non-CD titles). We'll see.
+            1. This is several directories full of .7z files, and MiSTer doesn't grok those, so I ran `un7z_mkdir` on all of them, then removed all the .7z files.
+        1. `@SNES - SD2SNES - Super EverDrive 2021-05-07.zip` -> `SNES`
+        1. `@SNES - SD2SNES - Super EverDrive Game Series Collections 2021-05-07.zip` -> `SNES`
+        1. `@TurboGrafx - PC Engine - Turbo EverDrive 2020-06-06.zip` -> `TGFX16`
+        1. `@Vectrex - Vextreme 2020-12-28.zip` -> `VECTREX`
+        1. `@WonderSwan 2021-05-05.zip` -> `WonderSwan`
     1. `gaplus-for-nes` -> Put in `NES`
     1. `pac-man-championship-edition-nes-demake` -> `NES`
     1. `TOSEC_V2017-04-23` (this has many things):
-        1. **Note**: I wrote this before I realized that I didn't need to unzip things. But, I haven't updated it with newer versions of anything, and I don't need the disk space, so I'm leaving it for now. Newer things added to this list will remain zipped, because I'm lazy and it works.
+        1. **Note**: MiSTer can't handle zips within zips. So, check that anything you copy over is a zip of something like disk images, and doesn't contain any zips.
         1. `Apple/1`-> `Apple-I`
-            1. And then I had to unzip everything in each directory. They're disk images, so I made directories for each.
         1. `Apple/II` -> `Apple-II`
-            1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
-            1. The theory is that the core may not be able to read all disk formats, so I may delete the ones it doesn't read (or, at least, stay away from them). Or, if it reads all of them, I'll just combine them by main category.
         1. `Amstrad/CPC` -> `Amstrad`
-            1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
-            1. Theory is the same as above.
         1. `MITS/Altair 8800` -> `Altair8800`
-            1. And then I had to unzip everything in each directory. They're disk images, organized by format, with one image per zip file, so I unzipped them all in to the given format directory.
-            1. Theory is the same as above.
     1. `Never_Ending_Amiga_Collection_2019-11` -> `games/Amiga/Never_Ending_Amiga_Collection_2019-11/.`
         1. This is a single zip file containing many subdirs of what look to be disk dumps from 5 people, plus some random files. I left them alone because there may be dupes and it just needs to be gone through.
-        1. And then there's the add-ons from the MiSTer above, so this whole thing is a pile of discovery and spelunking, since I know nothing about the Amiga at all.
 
 1. Mame Mappings
     1. Put the MAME ROMS `games/mame`
     1. Put the HBMAME ROMS in `games/hbmame`
     1. **Don't unzip the ROM files**
-    1. The download I got required some cleanup - there are a pile of multipart zip files which needed to be combined and uncompressed.
-        1. I didn't copy over any of the other directories (yet).
+
+1. The following cores have issues when outputting to a US (NTSC) TV. Fix them by hooking them to a real monitor and setting the video output correctly. Note that this is not exhaustive, because I know I fixed some already:
+    * Archie
+    * BK001M
+    * Galaksija
+    * MC10
+    * TSConf
+    * Game of Life
 
 1. AO486 core notes
     1. There are a compiled list of drivers [here](https://misterfpga.org/viewtopic.php?t=71)
@@ -263,7 +351,7 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 
                 1. You likely will need to be root, and likely will need to be root to work with the drive as well.
 
-         1. To make a 1.44MB floppy image, do:
+        1. To make a 1.44MB floppy image, do:
 
                     mkfs.msdos -C floppy.img 1440
 
@@ -285,13 +373,11 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
             1. To make the `misterfs` shared folder work, the memory region CE00-CFFF needs to be reserved. To do this on EMM386 / JEMMEX / JEMM386, specify:
 
                     X=CE00-CFFF
-        
+
                 On their command line.
             1. Suggested EMM386 command line (for DOS) (derived through experimentation):
             1. Suggested JEMMEMM386 command line (for FreeDOS) (derived through experimentation):
             1. Ref: https://misterfpga.org/viewtopic.php?t=1247
-
-    
 
 1. Using a USB hard drive.
     1. Do the above, but put it goes in the `games` subdir of the USB HDD.
@@ -302,3 +388,38 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 # ScummVM
 
 This setup is a little bit different, in that running it gives you a user interface and then you add games to that, pointing it at directories. As such, you can either put them on the SD card (curent setup creates a `/media/fat/ScummVM/GAMES`) directory or, if using an external drive, for example, put them wherever you like. To this end, I made `/media/usb0/scummvm` and put all my games there, then added them via the menu.
+
+# TODO - 20210726
+
+## General
+
+1. Copy over the 2020 TOSEC archive and update the TOSEC section accordingly.
+    1. Make sure to unzip the files on move this time, so I don't need to drop to a prompt and do it later.
+1. Fix the resolution issues on systems listed above.
+
+## Controllers
+
+Figure out controller mappings for the following:
+
+1. Atari 2600
+1. Atari 5200
+1. Atari 7800
+1. GBA
+1. Intellivision
+
+In most of the case, there are a pile of buttons - more than many modern controllers (by my recollection, Intellivision had a D pad, 4 side buttons, and a 12 character keypad.. so 16 buttons and a pad?), though some of these look to be related to the core (open save states, turbo, etc.) and should probably be mapped to keyboard buttons.
+
+## MacPlus
+
+1. Install OS 7.5.3 on to a bare drive.
+1. Upgrade to 7.5.5
+1. Copy over games, etc. on to this image.
+1. Note that this core supports multiple configs, so I can have this setup and still easily run others from HTGDB and so forth.
+
+## Amiga
+
+1. Figure out how to work this better. I got the HTGDB image set up and working, but there's so much more here that I don't understand because I don't know the Amiga at all.
+
+## Commodore, Spectrum and other similar machines
+
+1. Back in the day, when computers came with a basic interpreter in ROM, this was your basic (see what I did there?) shell. But, it's been 32+ years since I used one, and I never owned one - I would use them over friends' houses.
