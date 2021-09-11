@@ -205,6 +205,11 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
              swing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel
 
+  1. Install an equalizer (among other effects)
+
+       sudo apt install pulseffects
+
+
 ## Things for monitored machines (servers, etc.), not standalone "islands"
 
   1. Fix cron - add the following to the top of personal crontab:
@@ -298,7 +303,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install RPi SD card imager
 
-          sudo snap install rpi-imager
+         sudo snap install rpi-imager
 
 ### Publishing/media/etc. machines
 
@@ -590,8 +595,13 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
          1. see [Apache Installation Instructions](./install.apache)
 
       1. Set up sensors (if not set up automagically):
+          1. For bluebox / Ryzen 3700 w/ B550 board:
+            1. add the following to `/etc/modules`:
+
+                 nct6775
+
           1. For hiro / Thinkpad P51:
-          1. add the following to `/etc/modules`:
+            1. add the following to `/etc/modules`:
 
                  coretemp
 
@@ -627,3 +637,17 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
       1. And set the perms on it:
 
              sudo chmod +x /etc/network/if-up.d/wol_fix
+
+# Compatibility stuff for the new B550 / RX 6600 rig that I want to keep on 20.04 for now.
+
+  1. Install Realtek 8125 driver
+
+    1. Download / untar / etc it from Realtek
+
+    1. cd to the dir and run `sudo ./autorun.sh`
+
+  1. Install AMD proprietary driver (better support on 20.04)
+
+    1. Download / untar / etc it from AMD
+
+    1. cd to the dir and run `sudo ./amdgpu-install
