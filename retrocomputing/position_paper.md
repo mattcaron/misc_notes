@@ -45,7 +45,7 @@ I want a faithful reproduction, but MiSTer doesn't (can't?) do those things yet.
 
 I will put all the ROMs I have on this system, so we can do a Pepsi challenge with the emulators, or to test functionality in case someone else needs help building such box.
 
-## Dosbian
+## DOSBox
 
 ### Contents
 
@@ -54,7 +54,7 @@ it all.
 
 ### Rationale
 
-Dedicated box emulation is better than not working at all...
+Software emulation of an old PC on a new PC is better than not working at all...
 
 ## Laptop
 
