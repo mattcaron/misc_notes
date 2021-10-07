@@ -310,6 +310,9 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
         1. `MITS/Altair 8800` -> `Altair8800`
     1. `Never_Ending_Amiga_Collection_2019-11` -> `games/Amiga/Never_Ending_Amiga_Collection_2019-11/.`
         1. This is a single zip file containing many subdirs of what look to be disk dumps from 5 people, plus some random files. I left them alone because there may be dupes and it just needs to be gone through.
+    1. `macpack-20210626` -> `games/MACPLUS/macpack-20210626`
+        1. Unzipped `MacPack-20210626.7z` and put the contents above.
+        1. This is a great multi-OS setup (HD20SC.vhd) with a disk image (DSK.zip) full of games and such.
 
 1. Mame Mappings
     1. Put the MAME ROMS `games/mame`
