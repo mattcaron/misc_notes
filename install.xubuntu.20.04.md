@@ -119,18 +119,28 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
             sudo ufw allow mdns
 
   1. ntpd (for fixed machines only, for mobile, the default is fine)
-    1. for server, make sure to add to ufw:
+
+     1. for server, make sure to add to ufw:
 
             sudo ufw allow ntp
 
-    1. for client
-       1. edit `/etc/ntp.conf` and comment out the line:
+     1. for client
+        1. edit `/etc/ntp.conf` and comment out the line:
 
-            server ntp.ubuntu.com
+               server ntp.ubuntu.com
 
-       1. and add the line:
+        1. and add the line:
 
-            server router
+               server router
+
+  1. Add the fstab line for ramfs so I can easily mount a ramdisk whenever I have need of one:
+
+         none    /mnt/ramfs    ramfs  noauto,user,mode=0770    0    0
+
+     make sure to make the mountpoint too:
+
+         sudo mkdir /mnt/ramfs
+
 
 ## Things common to most desktop machines
 
@@ -189,7 +199,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install Joplin
 
-         sudo snap install joplin-james-carroll
+         sudo snap install joplin-desktop
 
       1. Make sure to set it up for NextCloud sync. The sync URL is https://owncloud.mattcaron.net/remote.php/webdav/Joplin-sync
 
@@ -233,7 +243,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install development tools.
 
-          sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client nant sqlite3 dia gsfonts-x11 python-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.0-gtk3-dev libwxbase3.0-dev ccache npm gdc libgphobos-dev libsqlite3-dev freecad openscad slic3r arduino adb cmake libncurses-dev flex bison gperf astyle python3-pyserial
+          sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client nant sqlite3 dia gsfonts-x11 python-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.0-gtk3-dev libwxbase3.0-dev ccache npm gdc libgphobos-dev libsqlite3-dev freecad openscad slic3r arduino adb cmake libncurses-dev flex bison gperf astyle
   
   1. Install snapcraft
 
@@ -305,6 +315,16 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
          sudo snap install rpi-imager
 
+  1. Headtracking build stuff
+
+     1. Opentrack dependencies
+
+            sudo apt install cmake git qttools5-dev qtbase5-private-dev libprocps-dev libopencv-dev
+
+     1. AITrack dependencies
+
+            sudo apt install qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev libopencv-dev libspdlog-dev libfmt-dev libomp-12-dev qt5-default libqt5x11extras5 libspdlog1 libomp5-12 libxsettings-dev libxsettings-client-dev
+       
 ### Publishing/media/etc. machines
 
 (This includes all kinds of desktop publishing, media manipluation and transcoding, video editing, etc.)
@@ -416,11 +436,11 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
 ### Video game machines
 
-**Note:** Most of my video game stuff has moved to MiSTer or a Dosbian install, off of the laptop / desktop. This is what remains, generally because it needs enormous processor resources. Dosbox remains for the same reason Wine does - it's pretty handy.
+**Note:** A lot of the old video game stuff has moved to MiSTer (because FPGA). This is what remains, generally because was originally a PC game and therefore I'm using software to emulate software (which makes more sense than software emulating hardware. FPGAs are for emulating hardware).
 
   1. Install video game things from apt:
 
-          sudo apt install dosbox wine-stable playonlinux steam jstest-gtk
+          sudo apt install wine-stable playonlinux steam jstest-gtk
 
   1. Allow steam in-home streaming ports.
     1. Ref: https://support.steampowered.com/kb_article.php?ref=8571-GLVN-8711
@@ -430,11 +450,22 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
          sudo ufw allow from 192.168.9.0/24 to any port 27036 proto tcp comment 'steam'
          sudo ufw allow from 192.168.9.0/24 to any port 27037 proto tcp comment 'steam'
 
-
   1. Add gcdemu
 
          sudo apt-add-repository ppa:cdemu/ppa
          sudo apt install gcdemu
+
+  1. Install modern DOSBox (dosbox-staging)
+
+     20.04 ships with 0.74 and there have been a lot of improvements since then, especially for modern joysticks and gamepad support. But, that's not official, even though it's widely used. See https://github.com/dosbox-staging/dosbox-staging and https://launchpad.net/~feignint/+archive/ubuntu/dosbox-staging/ for more details.
+
+         sudo add-apt-repository ppa:feignint/dosbox-staging
+         sudo apt update
+         sudo apt install dosbox-staging
+
+     And make sure fluidsynth is installed for the good tunes.
+
+         sudo apt install fluidsynth fluid-soundfont-gm fluid-soundfont-gs
 
   1. Install Lutris
 
@@ -458,7 +489,7 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
          1. Reboot.
 
   1. **RADEON ONLY** Fix the video card on machines with modern radeon cards and install Vulkan.
-      1. This is for a Radeon R9 390.
+      1. This was originally for a Radeon R9 390 and seems to work for RX 6600 too.
       1. These should use the AMDGPU driver, not RADEON.
       1. Refs:
           * [https://wiki.archlinux.org/index.php/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support](https://wiki.archlinux.org/index.php/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support)
@@ -558,6 +589,52 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
              # Nintendo Switch Pro Controller over bluetooth hidraw
              KERNEL=="hidraw*", KERNELS=="*057E:2009*", MODE="0666"
+  
+  1. Install Rise of The Triad (ROTT), symlink game files where expected, and configure it properly.
+
+         sudo apt install rott
+         cd /usr/share/games/
+         sudo ln -s ~/storage/dosbox/drive_c/games/rott .
+         sudo update-alternatives --set rott /usr/games/rott-commercial
+
+  1. Install Quake and symlink game files where expected.
+
+         sudo apt install quake
+         cd /usr/share/games/quake/
+         sudo ln -s ~/storage/dosbox/drive_c/games/quake/id1 .
+
+  1. Install doomsday (modernized Doom/Doom2/Heretic/Hexen native engine)
+
+         sudo apt install doomsday
+
+     (this is configured from inside its own menus)
+
+  1. Install Descent 1 and 2 rebirth, and symlink things to the correct places
+
+         sudo apt install d1x-rebirth d2x-rebirth
+         cd /usr/share/games/
+         sudo mkdir -p d1x-rebirth/Data d2x-rebirth/Data
+         cd d1x-rebirth/Data
+         sudo ln -s ~/storage/dosbox/drive_c/games/descent/descenta/* .
+         cd d2x-rebirth/Data
+         sudo ln -s ~/storage/dosbox/drive_c/games/descent/descent2/* .
+
+  1. Install protontricks (for Proton tweaking)
+
+         sudo apt install python3-pip python3-setuptools python3-venv pipx
+         pipx install protontricks
+
+  1. Install prerequisites to compile bstone
+       (https://github.com/bibendovsky/bstone)
+
+         sudo apt install libsdl2-dev
+
+  1. Add repo and install ECWolf (Wolfenstein 3D and Spear of Destiny source port)
+
+         wget -O- http://debian.drdteam.org/drdteam.gpg | sudo apt-key add -
+         sudo apt-add-repository 'deb http://debian.drdteam.org/ stable multiverse'
+         sudo apt-get update
+         sudo apt-get install ecwolf
 
 ### Random other things that may be needed on a case by case basis
 
