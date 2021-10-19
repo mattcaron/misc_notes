@@ -217,8 +217,12 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install an equalizer (among other effects)
 
-       sudo apt install pulseffects
+       sudo apt install pulseffects lsp-plugins
 
+  1. Install bleeding edge Amarok QT5 port
+
+       sudo add-apt-repository ppa:pgomes/amarok
+       sudo apt install amarok
 
 ## Things for monitored machines (servers, etc.), not standalone "islands"
 
@@ -243,7 +247,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install development tools.
 
-          sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client nant sqlite3 dia gsfonts-x11 python-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.0-gtk3-dev libwxbase3.0-dev ccache npm gdc libgphobos-dev libsqlite3-dev freecad openscad slic3r arduino adb cmake libncurses-dev flex bison gperf astyle
+          sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client nant sqlite3 dia gsfonts-x11 python-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.0-gtk3-dev libwxbase3.0-dev ccache npm gdc libgphobos-dev libsqlite3-dev freecad openscad slic3r arduino adb cmake libncurses-dev flex bison gperf astyle okteta
   
   1. Install snapcraft
 
@@ -635,6 +639,20 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
          sudo apt-add-repository 'deb http://debian.drdteam.org/ stable multiverse'
          sudo apt-get update
          sudo apt-get install ecwolf
+
+  1. Install and set up devilutionX (for Diablo/Hellfire
+
+         sudo add-apt-repository ppa:devilutionx/stable
+         sudo apt update
+         sudo apt install devilutionx
+
+     and then copy `*.mpq` from the respective CDs to
+     `~/.local/share/diasurgical/devilution/`
+
+  1. Install Return to Castle Wolfenstein and symlink things to the correct places:
+
+         sudo apt install rtcw
+         sudo ln -s ~/storage/video_games/installed/rtcw /usr/share/games/.
 
 ### Random other things that may be needed on a case by case basis
 
