@@ -1004,28 +1004,15 @@ I picked Newark for the location.
 
     1. Notes on configuring apps:
           - Thunderbird
-            - Address book
-              - Ref: http://doc.owncloud.org/server/6.0/user_manual/pim/sync_thunderbird.html
-              - Basically:
-                1. Install the Sogo connector.
-                1. In Thunderbird, click Tools -> Address Book - File -> New -> Remote Addressbook.
-                1. Name it whatever, but use addressbook:
-                  https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts
-                1. Close and reopen thunderbird to make it connect.
-                1. You may need to try to synchronize a couple of times - accept cert, enter creds, etc.
-            - Calendar
-              - Ref: http://forum.owncloud.org/viewtopic.php?f=23&t=14137
-              - Basically
-                1. Install Lightning.
-                1. In Thunderbird, click Events and Tasks -> Calendar.
-                1. Under "Calendar" right click -> New Calendar
-                    1. It's on the network.
-                    1. It's CalDAV.
-                1. Used URL
-                  https://owncloud.mattcaron.net/remote.php/caldav/calendars/matt/familycalendar
-                1. Ticked "Offline Support".
-                1. Named it "Family Calendar".
-                1. Entered creds.
+            - Refs:
+              - https://apps.nextcloud.com/apps/thunderbird
+              - https://docs.nextcloud.com/server/19/user_manual/pim/sync_thunderbird.html
+            - Basically:
+              1. Install the "TBSync" and the "Provider for CalDAV & CardDAV" Add-ons for Thunderbird.
+              1. Edit -> Synchronization Settings (TbSync)
+              1. Account Settings -> Add New Account -> CalDAV and CardDAV
+              1. Automatic Configuration
+              1. Fill in the boxes, and select what you want to sync.
           - Android
             - Address book
               1. Install "CardDAV sync free" or "CardDAV sync" from Google play.
