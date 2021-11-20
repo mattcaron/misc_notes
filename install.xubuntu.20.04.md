@@ -369,30 +369,6 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
              sudo usermod -a -G video matt
 
-  1. Install epson scanner and printer driver (Epson XP-610):
-      1. Install dependencies
-
-             sudo apt install xsltproc
-
-      1. Download it from [Epson](http://support.epson.net/linux/en/iscan_c.html), then uncompress it, cd into the dir, then install the packages with:
-
-             sudo dpkg -i core/iscan_2.30.2-2_amd64.deb data/iscan-data_1.37.0-3_all.deb plugins/iscan-network-nt_1.1.1-1_amd64.deb
-
-      1. Edit the `/etc/sane.d/epkowa.conf` file and add:
-
-             net EPSON632112
-
-         because that's the printer.
-      1. Make compatibility symlinks:
-
-             cd /usr/lib/x86_64-linux-gnu/sane
-             sudo ln -s /usr/lib/sane/* .
-
-      1. This adds an `iscan` app which will find the printer on the network and try to use it, or you can just use xsane....
-      1. In `/etc/default/ufw`, add `nf_conntrack_sane` to the end of the IPT_MODULES line, then do:
-
-             sudo ufw reload
-
   1. Change wodim to be suid root to limit having to sudo.
 
          sudo chmod u+s `which wodim`
