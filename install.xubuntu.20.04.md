@@ -379,6 +379,17 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
             sudo apt install libdvd-pkg
             sudo dpkg-reconfigure libdvd-pkg
 
+  1. Add the better airscan (eSCL) driver
+     * Ref:
+       https://software.opensuse.org//download.html?project=home%3Apzz&package=sane-airscan
+       
+           echo 'deb http://download.opensuse.org/repositories/home:/pzz/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/home:pzz.list
+           curl -fsSL https://download.opensuse.org/repositories/home:pzz/xUbuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_pzz.gpg > /dev/null
+           sudo apt update
+           sudo apt install sane-airscan
+
+      * Note that this is shipped as part of 20.10 so the extra repo is only temporary.
+
 ### Crazy desktop machine with too many drives.
 
 This machine has 2 NVMe drives set up in a RAID setup, as described above, and then a bunch of single drives for working, etc. - basically, stuff that doesn't need to be redundant because if I lose it, it's not a big deal, because I can download it again.
