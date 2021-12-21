@@ -332,7 +332,15 @@ We will assume the new drive is /dev/sde
 
 a.) Make sure the drive is decent and not defective by running badblocks on it.
 
-sudo badblocks -v -w -s /dev/sde
+sudo badblocks -svw /dev/sde
+
+Note that on very large drives, you need to use a larger blocksize, i.e.
+
+sudo badblocks -svw -b 4096 /dev/sde
+
+The blocksize can be retrieved with:
+
+sudo blockdev --getbsz /dev/sde
 
 b.) Set up the partition based off the existing drive partition
 
