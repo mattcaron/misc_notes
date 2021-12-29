@@ -399,7 +399,7 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
       1. Edit `/etc/fstab` and add the following lines:
 
             UUID=0049f26d-af97-4cf9-b962-c6dc5c30cdbc /home/matt/storage    ext4    defaults        0       2
-            /home/matt/storage/steam	/home/matt/.steam   none bind	       0       0 
+            /home/matt/storage1/steam	/home/matt/.steam   none bind	       0       0 
             UUID=6ea7f9c1-3204-483f-afa8-5b859a185661 /home/matt/storage2    ext4    defaults        0       2
 
          (Fill out the UUID appropriately.)
@@ -419,7 +419,7 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
       1. Make the other source point (may exist if the drive is old):
 
-             mkdir /mnt/storage/steam
+             mkdir /mnt/storage1/steam
 
       1. Mount it all:
 
@@ -585,14 +585,14 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
          sudo apt install rott
          cd /usr/share/games/
-         sudo ln -s ~/storage/dosbox/drive_c/games/rott .
+         sudo ln -s ~/storage1/dosbox/drive_c/games/rott .
          sudo update-alternatives --set rott /usr/games/rott-commercial
 
   1. Install Quake and symlink game files where expected.
 
          sudo apt install quake
          cd /usr/share/games/quake/
-         sudo ln -s ~/storage/dosbox/drive_c/games/quake/id1 .
+         sudo ln -s ~/storage1/dosbox/drive_c/games/quake/id1 .
 
   1. Install doomsday (modernized Doom/Doom2/Heretic/Hexen native engine)
 
@@ -639,7 +639,7 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
   1. Install Return to Castle Wolfenstein and symlink things to the correct places:
 
          sudo apt install rtcw
-         sudo ln -s ~/storage/video_games/installed/rtcw /usr/share/games/.
+         sudo ln -s ~/storage1/video_games/installed/rtcw /usr/share/games/.
 
 ### Random other things that may be needed on a case by case basis
 
