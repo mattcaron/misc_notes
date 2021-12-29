@@ -583,15 +583,25 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
      (this is configured from inside its own menus)
 
-  1. Install Descent 1 and 2 rebirth, and symlink things to the correct places
+  1. Install latest Descent 1 and 2 rebirth, and symlink things to the correct places
 
-         sudo apt install d1x-rebirth d2x-rebirth
-         cd /usr/share/games/
-         sudo mkdir -p d1x-rebirth/Data d2x-rebirth/Data
-         cd d1x-rebirth/Data
-         sudo ln -s ~/storage/dosbox/drive_c/games/descent/descenta/* .
-         cd d2x-rebirth/Data
-         sudo ln -s ~/storage/dosbox/drive_c/games/descent/descent2/* .
+       1. Compile it (if necessary - and we do a --clean first, just in case):
+
+              sudo apt-get install build-essential scons libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libphysfs-dev
+              cd ~/workspace/code/dxx-rebirth
+              scons --clean
+              scons -j 16 prefix=/usr
+              cp -a build/d1x-rebirth/d1x-rebirth build/d2x-rebirth/d2x-rebirth ~/games/bin/.
+
+       1. Put things in the correct places (these are the same places as used by
+          the Ubuntu packaged versions, to make switching between them easy.)
+
+              cd /usr/share/games/
+              sudo mkdir -p d1x-rebirth/Data d2x-rebirth/Data
+              cd d1x-rebirth/Data
+              sudo ln -s ~/storage1/dosbox/drive_c/games/descent/descenta/* .
+              cd d2x-rebirth/Data
+              sudo ln -s ~/storage1/dosbox/drive_c/games/descent/descnt2v/* .
 
   1. Install protontricks (for Proton tweaking)
 
