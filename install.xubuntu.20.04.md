@@ -479,23 +479,6 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
          1. Reboot.
 
-  1. **RADEON ONLY** Fix the video card on machines with modern radeon cards and install Vulkan.
-      1. This was originally for a Radeon R9 390 and seems to work for RX 6600 too.
-      1. These should use the AMDGPU driver, not RADEON.
-      1. Refs:
-          * [https://wiki.archlinux.org/index.php/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support](https://wiki.archlinux.org/index.php/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support)
-          * [https://forum.level1techs.com/t/r9-390x-has-garbage-performance-on-linux-please-help/140577](https://forum.level1techs.com/t/r9-390x-has-garbage-performance-on-linux-please-help/140577)
-      1. Basically:
-          1. Create `/etc/modprobe.d/blacklist-radeon.conf` as follows:
-
-                 sudo bash -c "echo blacklist radeon > /etc/modprobe.d/blacklist-radeon.conf"
-                 sudo bash -c "echo options amdgpu si_support=0 > /etc/modprobe.d/amdgpu.conf"
-                 sudo bash -c "echo options amdgpu cik_support=1 >> /etc/modprobe.d/amdgpu.conf"
-                 sudo chmod a+r /etc/modprobe.d/blacklist-radeon.conf /etc/modprobe.d/amdgpu.conf
-                 sudo update-initramfs -u
-
-          1. Reboot. Just rebooting with radeon blacklisted ensures it isn't loaded and everything uses `amdgpu`.
-
   1. **NVIDIA Optimus ONLY**
       * **Note** This works, kind of. It seems to completely break external monitor hookups, so I removed it. I tried to leave the module blacklist, however, to try and ensure that the card wouldn't be powered on accidentally, and therefore preserve battery life, but doing so *also* breaks external monitor hookups. So, basically, primus doesn't work with the card I have (because I get the DKMS error), but without it powered on, I don't get external monitors. Yay.
       * Refs:
