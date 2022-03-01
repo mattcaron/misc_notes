@@ -97,6 +97,12 @@ https://www.arduino.cc
 
           sudo apt-get install emacs-nox git
 
+   1. Bullseye video driver fixup
+      1. Ref: https://www.nanodlp.com/forum/viewtopic.php?pid=14124
+      1. Edit `/boot/config.txt`:
+         1. find `dtoverlay=vc4-fkms-v3d`
+         1. change to `dtoverlay=vc4-fkms-v3d`
+
    1. Reboot again, then proceed on and install all the NanoDLP bits per the
    instructions.. more or less. However, we need to do it as pi, not as me:
 
