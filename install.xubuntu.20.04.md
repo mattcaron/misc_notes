@@ -431,7 +431,7 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
   1. Install video game things from apt:
 
-          sudo apt install wine-stable playonlinux steam jstest-gtk
+          sudo apt install wine-stable playonlinux steam jstest-gtk pcsx2 gamemode dolphin-emu
 
   1. Allow steam in-home streaming ports.
     1. Ref: https://support.steampowered.com/kb_article.php?ref=8571-GLVN-8711
@@ -633,6 +633,12 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
          sudo apt install rtcw
          sudo ln -s ~/storage1/video_games/installed/rtcw /usr/share/games/.
+
+  1. Install mangohud
+
+         sudo add-apt-repository ppa:flexiondotorg/mangohud
+         sudo apt install mangohud
+
 
 ### Random other things that may be needed on a case by case basis
 
