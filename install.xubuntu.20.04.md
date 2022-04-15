@@ -46,7 +46,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install useful base things
 
-        sudo apt install synaptic
+         sudo apt install synaptic
 
   1. After machine is up, run synaptic and:
       1. go to settings->repositories make sure the following are enabled:
@@ -65,7 +65,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. Install generally useful things:
 
-       sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos thunderbird enigmail xul-ext-lightning firefox ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassx ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge mlocate gddrescue lzip lziprecover net-tools clusterssh smartmontools fdupes internetarchive
+         sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos thunderbird enigmail xul-ext-lightning firefox ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassx ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge mlocate gddrescue lzip lziprecover net-tools clusterssh smartmontools fdupes internetarchive
 
   1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
   
@@ -146,7 +146,7 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
 
   1. More applications
 
-        sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils gnome-calculator
+         sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils gnome-calculator tumbler tumbler-plugins-extra
 
   1. Install real chrome.
     - The ubuntu packaged chromium is broken in a couple of ways - NaCL support, etc. NaCL support is required for Hangouts to work. Solution: Install Chrome from a PPA.
