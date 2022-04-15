@@ -224,6 +224,19 @@ screen, where you should choose "OpenSSH server" and "Xubuntu desktop" and let i
        sudo add-apt-repository ppa:pgomes/amarok
        sudo apt install amarok
 
+  1. Add STL thumbnailer support
+
+     1. See <https://github.com/unlimitedbacon/stl-thumb> for the latest, but basically download the deb and install it:
+
+            sudo dpkg -i ./stl-thumb_0.4.0_amd64.deb
+
+  1. Floorplan software
+
+         sudo snap install sweethome3d-homedesign
+
+       Once installed, grab asset packs from
+       <http://www.sweethome3d.com/download.jsp> and install them.
+
 ## Things for monitored machines (servers, etc.), not standalone "islands"
 
   1. Fix cron - add the following to the top of personal crontab:
