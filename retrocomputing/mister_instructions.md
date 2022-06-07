@@ -160,16 +160,19 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 1. Software for most things goes in the `games` subdir. It's organized by platform. Put your roms in the right subdir for your platform.
 1. The directory names (filesystem case) are not always correct if using an ext4 formatted drive, as I am. Correct case is listed below:
     * AcornAtom
+    * AcornElectron
+    * AliceMC10
     * Altair8800
     * Amiga
     * Amstrad
-    * Amstrad PCW
+    * 'Amstrad PCW'
     * AO486
     * APOGEE
     * APPLE-I
     * Apple-II
     * AQUARIUS
-    * Archie
+    * Arcadia
+    * ARCHIE
     * Arduboy
     * Astrocade
     * ATARI2600
@@ -178,11 +181,13 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
     * ATARI800
     * AtariLynx
     * AtariST
+    * AVision
     * AY-3-8500
     * BBCMicro
     * BK0011M
     * C16
     * C64
+    * ChannelF
     * Chip8
     * CO2650
     * CoCo2
@@ -193,41 +198,56 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
     * EpochGalaxyII
     * Galaksija
     * GAMEBOY
+    * GAMEBOY2P
     * GBA
+    * GBA2P
     * Genesis
     * hbmame
     * Intellivision
+    * Interact
+    * Jaguar
     * Jupiter
     * Laser
+    * Lynx48
     * MACPLUS
     * mame
     * MegaCD
+    * MEMTEST
     * MSX
     * MultiComp
     * NEOGEO
     * NES
     * ODYSSEY2
+    * Ondra_SPO186
     * ORAO
     * Oric
     * PC88
+    * PC8801
     * PDP1
     * PET2001
+    * PMD85
+    * PSX
     * QL
     * RX78
+    * S32X
     * SAMCOUPE
-    * SharpMZ
+    * sharpmz
     * SMS
     * SNES
+    * 'Sord M5'
     * Spectrum
     * SPMX
     * SuperJacob
     * SVI328
+    * TatungEinstein
     * TGFX16
     * TGFX16-CD
-    * TomyScramble
     * TI-99_4A
+    * TomyScramble
     * TRS-80
     * TSConf
+    * UK101
+    * VC4000
     * VECTOR06
     * VECTREX
     * VIC20
@@ -312,7 +332,13 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
         1. This is a single zip file containing many subdirs of what look to be disk dumps from 5 people, plus some random files. I left them alone because there may be dupes and it just needs to be gone through.
     1. `macpack-20210626` -> `games/MACPLUS/macpack-20210626`
         1. Unzipped `MacPack-20210626.7z` and put the contents above.
-        1. This is a great multi-OS setup (HD20SC.vhd) with a disk image (DSK.zip) full of games and such.
+        1. This is a great multi-OS setup (HD20SC.vhd) with a disk image
+           (DSK.zip) full of games and such.
+    1. `Sony-Playstation-USA-Redump.org-2019-05-27` -> `games/PSX`
+        1. Unzipped all the files with `unzip_mkdir` (so each ends up in its own
+           directory)
+        1. Then I consolidated multiple disc games into a single directory.
+        
 
 1. Mame Mappings
     1. Put the MAME ROMS `games/mame`
