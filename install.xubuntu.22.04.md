@@ -84,7 +84,7 @@ and let it install (we'll install everything else later)
 
   1. Install generally useful things:
 
-         sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos thunderbird enigmail xul-ext-lightning firefox ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassx ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge mlocate gddrescue lzip lziprecover net-tools clusterssh smartmontools fdupes internetarchive wget apt-transport-https
+         sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos thunderbird enigmail xul-ext-lightning firefox ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassx ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge mlocate gddrescue lzip lziprecover net-tools clusterssh smartmontools nvme-cli fdupes internetarchive wget apt-transport-https
 
   1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
   
@@ -630,10 +630,9 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
          sudo apt-get install ecwolf
 
   1. Install and set up devilutionX (for Diablo/Hellfire)
-       **TODO: This won't install - missing libfmt7**
+       **TODO: There is a snap now, install and make sure it works.**
 
-         sudo add-apt-repository ppa:devilutionx/stable
-         sudo apt install devilutionx
+         sudo snap install devilutionx
 
      and then copy `*.mpq` from the respective CDs to
      `~/.local/share/diasurgical/devilution/`
