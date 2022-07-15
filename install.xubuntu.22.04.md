@@ -219,7 +219,7 @@ and let it install (we'll install everything else later)
 
   1. More applications
 
-         sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils gnome-calculator tumbler tumbler-plugins-extra
+         sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils gnome-calculator tumbler tumbler-plugins-extra audacious
 
   1. Install real chrome.
 
@@ -302,13 +302,6 @@ and let it install (we'll install everything else later)
   1. Install an equalizer (among other effects)
 
          sudo apt install pulseeffects lsp-plugins
-
-  1. Install bleeding edge Amarok QT5 port
-
-       **TODO - this is broken - there's no builds for 22.04.**
-
-         sudo add-apt-repository ppa:pgomes/amarok
-         sudo apt install amarok
 
   1. Add STL thumbnailer support
 
