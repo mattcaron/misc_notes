@@ -4,34 +4,6 @@ Note that this was the result of an upgrade of 20.04 to 22.04 - these
 may not be completely accurate for a clean install, as that has not
 been vetted.
 
-## UEFI TODO
-
-All systems are based off ancient disk images / installs and old install
-processes. Might be time to actually turn on UEFI and use that. On the one hand,
-I could do:
-
-    resize2fs
-    lvresize
-    pvresize
-    cryptsetup resize
-    then resize the partition in parted
-    convert from MBT to GPT
-    install all the other stuff to make it go
-    switch to UEFI boot
-    continue on
-
-But that seems a lot of work for marginal benefit (main benefit on laptop is
-being able to flash firmware from inside Linux. Desktop has a similar benefit,
-albeit that one would also possibly benefit from being able to turn on
-Resizeable BAR, which conflicts with the CSM). The downside is that this does
-make it easier for people who might compromise the system to flash the firmware
-making it almost impossible to remove.
-
-In the end, the next time I need to do a full reinstall, just back up the
-necessary filesystems, turn on UEFI boot mode, repartition and reinstall.
-
-(This section is a reminder to do that)
-
 ## Base Install
 
 Boot the minimal CD and perform a standard-spec install. Partitioning
@@ -214,6 +186,21 @@ and let it install (we'll install everything else later)
          sudo service procps restart
 
      To apply the change.
+
+  1. Fix the too long timeout for the boot selection menu
+
+     Edit `/etc/default/grub` and add:
+
+         GRUB_RECORDFAIL_TIMEOUT=5
+
+     Then do:
+
+         sudo update-grub
+
+  1. Add the `efi_sync` to the daily cron list:
+
+         cd /etc/cron.daily
+         sudo ln -s /home/matt/bin/efi_sync .
 
 ## Things common to most desktop machines
 
