@@ -184,6 +184,106 @@ the end.
 
   For RAID systems, make sure to set up the sync script.
 
+## Pitfalls - DON'T PANIC
+
+It is possible, through an odd confluence of events, that you could find
+yourself with a degraded array after the above changes. Both of my systems did
+this.
+
+For one, which had identical NVMe drives and therefore identical geometry, it
+was as simple as checking:
+
+    cat /proc/mdstat
+
+Noting that the results looked like this:
+
+    md1 : active raid1 nvme1n1p2[1]
+          1906151424 blocks super 1.2 [2/1] [_U]
+          bitmap: 15/15 pages [60KB], 65536KB chunk
+
+Inferring that nvme0n1p2 was missing, the following adds it back and triggers an
+array rebuild.
+
+    mdadm /dev/md1 --add /dev/nvme0n1p2
+
+On my desktop, however, I have 2 different NVMe drives, which have a different
+geometry. Depending on which drive is attached to which controller, which
+partition is primary, and so forth, you could end up with a situation where the
+array is degraded and the larger device size was used when you did the
+
+    mdadm --grow ... --size=max
+
+In this case, you will get an error that the other device you are trying to add
+into the array is too small.
+
+In that case, as I said above, **DON'T PANIC**. Your system is alive and working
+(else you wouldn't have been able to boot), we just need to fix the array.
+
+  1. Boot from our helpful rescue image, because we need to resize our things
+     down again.
+
+  1. First, figure out how much space we need. For example, here are the
+     partitions in questions on the two drives:
+  
+         2         1953792      3905077247   1.8 TiB     FD00  Linux RAID
+
+         2         1953792      3998844927   1.9 TiB     FD00  Linux RAID
+
+     Okay, so there's a 100GB discrepancy. So, let's make sure to shrink
+     the filesystem by 200GB and work down from there. (Don't worry, we'll
+     expand everything again later).
+
+  1. Follow the original steps to:
+
+     1. Open the crypto device (`cryptsetup`).
+     1. Check the filesystem (`e2fsck`).
+     1. Resize the filesystem (`resize2fs`) - we want a lot more than what we
+        need. So, I did 200GB in the above case.
+     1. Resize the logical volume (`lvresize`) to make it 195GB smaller.
+     1. Resize the physical volume (`pvs` and `pvresize` and maybe `lvdisplay`
+        and `pvmove` if necessary) so it's 190000MB smaller).
+     1. Resize the crypto volume (`cryptsetup resize`) so it's 185000MB smaller.
+     1. Resize the RAID device (`mdadm --grow`) so it's 180000MB smaller.
+     1. Once this is done, you could mess with the underlying partition, but
+        why? It can be larger than the RAID device, and it just seems to invite
+        additional trouble. Sure, you could have a random 100GB non-RAID
+        partition for.. something. And if you really want to, go ahead and do:
+          1. Stop the volume group (`vgchange`).
+          1. Stop the RAID array (`mdadm`).
+          1. Change the partition on the larger drive so the size exactly
+             matches that of the smaller drive.
+
+  1. Once the above is set, reboot into the main OS so we're doing this all on a
+   running OS and not the live USB.
+
+  1. First, add in the missing array bit, as described above:
+
+         mdadm /dev/md1 --add /dev/nvme0n1p2
+
+  1. Looking at `/proc/mdstat` should show a rebuild like this:
+
+         md1 : active raid1 nvme0n1p2[2] nvme1n1p2[1]
+               1906151424 blocks super 1.2 [2/1] [_U]
+               [===>.................]  recovery = 15.4% (294346944/1906151424) finish=164.0min speed=163762K/sec
+               bitmap: 14/15 pages [56KB], 65536KB chunk
+  1. Now, we can resize everything just like we did on the USB stick.
+     Fortunately, on line **growing** works on mounted filesystems these days.
+     Again, following the original steps:
+
+     1. Expand the RAID array (`mdadm --grow`).
+        1. Because **both** devices are now in the array, it won't get larger
+           the smallest device.
+     1. Expand the crypto device (`cryptsetup --resize`).
+     1. Expand the physical volume (`pvresize`).
+     1. Expand the logical volume (`lvresize`).
+     1. Expand the underlying filesystem (`resize2fs`).
+
+The array will finish rebuilding and all will be right in the world again.
+
+Oh, and you can keep using your system while this is happening, too, though the
+disk I/O subsystem is slammed, so you likely don't want to do anything too
+crazy, like a high FPS video game, because it will likely become a low FPS video
+game.
 
 ## Addendum - unencrypting an encrypted volume
 
