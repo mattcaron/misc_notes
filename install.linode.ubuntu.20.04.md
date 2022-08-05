@@ -1006,7 +1006,7 @@ I picked Newark for the location.
 
             and add:
 
-                */15  *  *  *  * php -f       /home/matt/public_html/owncloud.mattcaron.net/cron.php
+                */5  *  *  *  * php -f       /home/matt/public_html/owncloud.mattcaron.net/cron.php
 
         1. Then, in the Admin panel, tell it to use cron.
 
