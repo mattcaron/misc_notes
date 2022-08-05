@@ -1299,8 +1299,13 @@ I picked Newark for the location.
               and then follow the prompts.
 
         1. Set up DB snapshot - add to /etc/cron.d/matrix:
+		
+               # /etc/cron.d/matrix: crontab entries to backup matrix sqlite database
 
-               @daily              service matrix-synapse stop && /home/matt/bin/matrix-synapse_sqlite_backup > /dev/null ; service matrix-synapse start ; chown matt:matt /home/matt/attic/backup/linode/matrix-synapse_sqlite_backup.*
+               PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
+               MAILTO=root
+
+               @daily     root     service matrix-synapse stop && /home/matt/bin/matrix-synapse_sqlite_backup > /dev/null ; service matrix-synapse start ; chown matt:matt /home/matt/attic/backup/linode/matrix-synapse_sqlite_backup.*
 
 
 1. Element Web (frontend for Matrix server)
