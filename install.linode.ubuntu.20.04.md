@@ -964,6 +964,18 @@ I picked Newark for the location.
             sudo a2ensite owncloud.mattcaron.net
             sudo service apache2 reload
 
+    1. Set mysql binlogs to 1 day.
+	
+       There is a bug in Nextcloud (and possibly Ownclound) 21.x and
+       later where it updates auth tokens and sessions in the DB every
+       time someone logs in which, given the nature of the application
+       is a lot. As such, it generates a LOT of data per day and fills
+       up disks. We really only need this if the server crashes to
+       restore intermediate state, and we have backups from the
+       previous night. So, only keep one day.
+
+        1. Edit `/etc/my.cnf` and set `expire_logs_days` to 1.
+
     1. Go to:
 
         https://owncloud.mattcaron.net/
