@@ -309,6 +309,11 @@ and let it install (we'll install everything else later)
        Once installed, grab asset packs from
        <http://www.sweethome3d.com/download.jsp> and install them.
 
+  1. Remove audio apps that I don't use (mostly to stop them from showing in the
+     volume control menu):
+
+         sudo apt remove clementine rhythmbox
+
 ## Things for monitored machines (servers, etc.), not standalone "islands"
 
   1. Fix cron - add the following to the top of personal crontab:
