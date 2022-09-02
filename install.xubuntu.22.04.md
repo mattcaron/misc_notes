@@ -759,7 +759,8 @@ download it again.
 
              sudo apt install ethtool
 
-      1. Create `/etc/network/if-up.d/wol_fix` with the following content, replacing `[card]` with the card:
+      1. Create `/etc/network/if-up.d/wol_fix` with the following content,
+         replacing `[card]` with the card:
 
              #!/bin/sh
              /sbin/ethtool -s [card] wol g
@@ -767,3 +768,45 @@ download it again.
       1. And set the perms on it:
 
              sudo chmod +x /etc/network/if-up.d/wol_fix
+
+
+## Misc. Notes
+
+### Notifications
+
+There are some oddities as it relates to system notification icons.
+
+First, there are 3 options:
+  
+* Indicator Plugin
+* Status Tray Plugin
+* Status Notifier Plugin
+
+Of these, Indicator Plugin seems to be the most reliable - that is, when I start
+Slack, Slack shows up. For the others, it only shows up if you restart the
+plugin (which means either deleting and re-adding it, or restarting the panel,
+both of which are annoying). This makes Indicator Plugin superior to the other
+two.
+
+Second, and annoyingly, neither Indicator Plugin and Status Notifier plugin
+implement the "systray" handler - which is used by a few things, most notably
+the "print jobs status" notifier. It is, however, implemented by the Status Tray
+plugin. This means that we want to have both the Indicator Plugin and the Status
+Tray Plugin on the panel.
+
+However, this leads to some duplication, most notably in the networking icons,
+and occassionally in other things. Fortunately, we can configure Status Notifier
+to hide these things by default (they are all behind a `>` on the bar).
+
+There is some information about this here:
+
+<https://askubuntu.com/questions/1119638/what-is-the-difference-between-notification-area-systray-indicator-plugin>
+
+Which suggests that Indicator is a bit if Canonical sauce.
+
+And this:
+
+<https://docs.xfce.org/panel-plugins/xfce4-statusnotifier-plugin/start>
+
+Says that Status Notifier is deprecated and I should just use Status Tray -
+which would be great, apart from the "it don't work" issue.
