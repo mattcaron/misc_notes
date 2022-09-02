@@ -25,7 +25,8 @@ devices for each pairing (same partition on each drive) and then:
     1. Inside this, it should be LVM PV
     1. Inside this, create a VG with all necessary partitions.
 
-These should represent MINIMUM sizes, and is sized for 2TB HDD's. More is often better.
+These should represent MINIMUM sizes, and is sized for 2TB HDD's. More is often
+better.
 
     LVM Partition Size  Mountpoint
     swap          [1]
@@ -97,7 +98,8 @@ and let it install (we'll install everything else later)
 
      1. Methodology for arriving at the numbers:
 
-        a. Rough: Set it to the value that the CPU is rated for with no turbo boosting.
+        a. Rough: Set it to the value that the CPU is rated for with no turbo
+           boosting.
 
         b. Optimal: Run something computationally intensive for a long
            period of time (lzip a big file). The goal here is for it
@@ -139,7 +141,8 @@ and let it install (we'll install everything else later)
 
               sudo service ssh restart
 
-  1. Disable firewall logging (it can be quite verbose on a busy network), then turn on the firewall.
+  1. Disable firewall logging (it can be quite verbose on a busy network), then
+     turn on the firewall.
 
             sudo ufw logging off
             sudo ufw enable
@@ -166,7 +169,8 @@ and let it install (we'll install everything else later)
 
                server router
 
-  1. Add the fstab line for ramfs so I can easily mount a ramdisk whenever I have need of one:
+  1. Add the fstab line for ramfs so I can easily mount a ramdisk whenever I
+     have need of one:
 
          none    /mnt/ramfs    ramfs  noauto,user,mode=0770    0    0
 
@@ -390,7 +394,8 @@ and let it install (we'll install everything else later)
 
   1. Arduino hackery
 
-     I find myself using various old versions of Arduino, so some hackery is required because they link against old versions of things....
+     I find myself using various old versions of Arduino, so some hackery is
+     required because they link against old versions of things....
 
          cd /usr/lib/x86_64-linux-gnu/
          sudo ln -s libreadline.so.8 libreadline.so.6
@@ -465,7 +470,10 @@ and let it install (we'll install everything else later)
 
 ### Crazy desktop machine with too many drives.
 
-This machine has 2 NVMe drives set up in a RAID setup, as described above, and then a bunch of single drives for working, etc. - basically, stuff that doesn't need to be redundant because if I lose it, it's not a big deal, because I can download it again.
+This machine has 2 NVMe drives set up in a RAID setup, as described above, and
+then a bunch of single drives for working, etc. - basically, stuff that doesn't
+need to be redundant because if I lose it, it's not a big deal, because I can
+download it again.
 
   1. Steam drive
       1. Partition it and make a filesystem for it. Note the UUID it generated.
@@ -505,7 +513,10 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
 ### Video game machines
 
-**Note:** A lot of the old video game stuff has moved to MiSTer (because FPGA). This is what remains, generally because was originally a PC game and therefore I'm using software to emulate software (which makes more sense than software emulating hardware. FPGAs are for emulating hardware).
+**Note:** A lot of the old video game stuff has moved to MiSTer (because FPGA).
+ This is what remains, generally because was originally a PC game and therefore
+ I'm using software to emulate software (which makes more sense than software
+ emulating hardware. FPGAs are for emulating hardware).
 
   1. Install video game things from apt:
 
@@ -658,7 +669,8 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
      and then copy `*.mpq` from the respective CDs to
      `~/.local/share/diasurgical/devilution/`
 
-  1. Install Return to Castle Wolfenstein and symlink things to the correct places:
+  1. Install Return to Castle Wolfenstein and symlink things to the correct
+     places:
 
          sudo apt install rtcw
          sudo ln -s ~/storage1/video_games/installed/rtcw /usr/share/games/.
@@ -686,7 +698,8 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
              sudo service nmbd start
 
       1. Other machines (laptops, etc)
-          1. Remember to turn it off on places you don't want the server, just the client.
+          1. Remember to turn it off on places you don't want the server, just
+             the client.
 
                  echo "manual" | sudo tee /etc/init/smbd.override
                  echo "manual" | sudo tee /etc/init/nmbd.override
@@ -714,7 +727,9 @@ This machine has 2 NVMe drives set up in a RAID setup, as described above, and t
 
                      coretemp
 
-          1. For new machines, you figure out what you need by running `sensors-detect` and following the prompts - the defaults are typically fine.
+          1. For new machines, you figure out what you need by running
+             `sensors-detect` and following the prompts - the defaults are
+             typically fine.
 
           1. **FIXME - edit the conf file to fix scaling, etc.**
 
