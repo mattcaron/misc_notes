@@ -197,6 +197,7 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
     * Electron
     * EpochGalaxyII
     * Galaksija
+    * GameNWatch
     * GAMEBOY
     * GAMEBOY2P
     * GBA
@@ -338,6 +339,7 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
         1. Unzipped all the files with `unzip_mkdir` (so each ends up in its own
            directory)
         1. Then I consolidated multiple disc games into a single directory.
+    1. `gnw-games` -> `games/GameNWatch`
         
 
 1. Mame Mappings
