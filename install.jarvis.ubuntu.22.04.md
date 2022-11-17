@@ -48,12 +48,11 @@ upgraded to 22.04. It may not be completely accurate.
     * jammy multiverse
     * jammy-updates multiverse
     * jammy-backports multiverse universe restricted main
-    * jammy partner
     * jammy-security restricted main
     * jammy-security multiverse
     * jammy-security universe
 
-    (or just grab sources.list from some reasonable machine)
+    (they were after install for me)
 
 1. Make sure all is up to date.
 
@@ -152,20 +151,27 @@ the multicast packets.
 
         @daily  /home/matt/workspace/code/dashpodder/dashpodder.sh -v -c /home/matt/workspace/code/dashpodder/mp.conf
 
-1. Set up email backups (backs up my email from linode to here)
+1. Set up linode backups
 
-      sudo apt install offlineimap libexpect-perl
+    make target dir
 
-      crontab -e
+       mkdir ~/attic/backup/linode
 
-    then add:
+    on the remote server, you need to add the public key to authorized_keys, with the:
 
-      @hourly              /home/matt/bin/offlineimap_helper
+       command=rsync --server --sender -vlHogDtprRze.iLsf . /etc /home /var/lib/mysql /var/lib/syma
 
-    so it will sync email hourly
+    in front of it.
 
-    Of course, this is only half of it - it snapshots email, but doesn't really
-do an archive. For that, we do an rsnapshot
+    add to cron
+
+       @daily               /home/matt/bin/linode_backup
+
+    and make sure the following is in the ~/.rsnapshot.conf:
+
+       backup  /home/matt/attic/backup/linode/         localhost/
+
+1. Set up rsnapshot
 
       sudo apt install rsnapshot
 
@@ -259,26 +265,6 @@ do an archive. For that, we do an rsnapshot
 
        upsc ups
 
-1. Set up linode backups
-
-    make target dir
-
-       mkdir ~/attic/backup/linode
-
-    on the remote server, you need to add the public key to authorized_keys, with the:
-
-       command=rsync --server --sender -vlHogDtprRze.iLsf . /etc /home /var/lib/mysql /var/lib/syma
-
-    in front of it.
-
-    add to cron
-
-       @daily               /home/matt/bin/linode_backup
-
-    add to my rsnapshot config:
-
-       backup  /home/matt/attic/backup/linode/         localhost/
-
 1. Add monitoring (sortof):
 
     make sure landscape is installed (to get landscape-sysinfo):
@@ -327,7 +313,7 @@ do an archive. For that, we do an rsnapshot
            sudo -e /etc/netatalk/afp.conf
 
     1. Add a section for time machine:
-          
+
            [Liz's Time Machine]
                path = /home/liz/time-machine
                time machine = yes
