@@ -552,12 +552,7 @@ download it again.
 
   1. Install modern DOSBox (dosbox-staging)
 
-     **TODO - This isn't working. Build status says broken on amd64. Needs Research**
-
-     22.04 ships with 0.74 and there have been a lot of improvements since then, especially for modern joysticks and gamepad support. But, that's not official, even though it's widely used. See [https://github.com/dosbox-staging/dosbox-staging](https://github.com/dosbox-staging/dosbox-staging) and [https://launchpad.net/~feignint/+archive/ubuntu/dosbox-staging/](https://launchpad.net/~feignint/+archive/ubuntu/dosbox-staging/) for more details.
-
-         sudo add-apt-repository ppa:feignint/dosbox-staging
-         sudo apt install dosbox-staging
+         sudo snap install dosbox-staging
 
      And make sure fluidsynth is installed for the good tunes.
 
