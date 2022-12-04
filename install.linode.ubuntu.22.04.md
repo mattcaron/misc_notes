@@ -1,7 +1,7 @@
-# Installing Ubuntu 20.04 on Linode
+# Installing Ubuntu 22.04 on Linode
 
 This is based off a 12.04 reference image which I upgraded to 14.04, 16.04,
-18.04, and then to 20.04.
+18.04, 20.04, and then to 22.04.
 
 I picked Newark for the location.
 
@@ -129,10 +129,10 @@ I picked Newark for the location.
            sudo a2enmod userdir
            sudo a2enmod rewrite
            sudo a2enmod ssl
-           sudo a2enmod php7.4
+           sudo a2enmod php8.1
 
     1. Fix up the php configuration by editing
-  `/etc/apache2/mods-available/php7.4.conf` and commenting out this bit:
+  `/etc/apache2/mods-available/php8.1.conf` and commenting out this bit:
 
            #    <IfModule mod_userdir.c>
            #        <Directory /home/*/public_html>
@@ -170,6 +170,17 @@ I picked Newark for the location.
                   unix_listener auth-client {
                     mode = 0600
                     user = Debian-exim
+                  }
+
+           1. At the bottom, add the following:
+
+                  service stats {
+                      unix_listener stats-reader {
+                      mode = 0666
+                      }
+                      unix_listener stats-writer {
+                      mode = 0666
+                      }
                   }
 
        1. Edit `/etc/dovecot/conf.d/10-mail.conf` and find the `mail_location` line, uncomment it and set it to:
@@ -517,7 +528,7 @@ I picked Newark for the location.
 
             push_sympa
 
-       **== All the rest of this is on the linode server ==** 
+     **== All the rest of this is on the linode server ==** 
 
     1. Install prerequisites
 
@@ -892,7 +903,7 @@ I picked Newark for the location.
 
     1. Increase PHP's memory limit:
 
-       1. Edit `/etc/php/7.4/apache2/php.ini`
+       1. Edit `/etc/php/8.1/apache2/php.ini`
  
        1. Find:
 
@@ -901,6 +912,10 @@ I picked Newark for the location.
           and set it to:
 
               memory_limit = 512M
+
+       1. Also edit `/etc/php/8.1/mods-available/apcu.ini` and add:
+
+              apc.enable_cli=1
 
     1. Log in to the DB server and create a user and password
 
@@ -965,7 +980,7 @@ I picked Newark for the location.
             sudo service apache2 reload
 
     1. Set mysql binlogs to 1 day.
-
+	
        There is a bug in Nextcloud (and possibly Ownclound) 21.x and
        later where it updates auth tokens and sessions in the DB every
        time someone logs in which, given the nature of the application
@@ -1299,7 +1314,7 @@ I picked Newark for the location.
               and then follow the prompts.
 
         1. Set up DB snapshot - add to /etc/cron.d/matrix:
-
+		
                # /etc/cron.d/matrix: crontab entries to backup matrix sqlite database
 
                PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
@@ -1313,6 +1328,9 @@ I picked Newark for the location.
     1. In `/etc/apache2/sites-available/chat.mattcaron.net`, set the `DocumentRoot` to `/home/matt/public_html/chat.mattcaron.net`.
 
 1. Jitsi
+
+   **Note: The key storage is deprecated, rework these**
+
     1. Add video.mattcaron.net to DNS and get a cert.
     1. Add the repo and key.
         - From: https://www.digitalocean.com/community/tutorials/how-to-install-jitsi-meet-on-ubuntu-20-04
