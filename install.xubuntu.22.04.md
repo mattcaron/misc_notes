@@ -6,61 +6,256 @@ been vetted.
 
 ## Base Install
 
-Boot the minimal CD and perform a standard-spec install. Partitioning
-should be roughly as follows, adjusted for available disk size as
-appropriate (including for RAID). Disk labels should be representative
-of the mount point. Manual partitioning is required.
+As the minimal CD is no more, and the installer doesn't do everything we need,
+we'll need to boot a live image, do some console stuff, then do the install. So,
+without further ado....
 
-Physical Partitions (on both drives):
+Refs: <https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019>
 
-  1. 1GB  Physical volume for RAID (boot)
-  1. Rest Physical volume for RAID (everything else)
+1. Boot the desktop LiveCD
 
-You want the above physical partition scheme across all drives, with
-each one set up for "Physical volume for RAID". Then you create MD
-devices for each pairing (same partition on each drive) and then:
+1. Choose "Try and Install Xubuntu"
 
-  1. For boot, define it to be whatever filesystem you want.
-  1. For the rest, it should be physical volume for encryption.
-    1. Inside this, it should be LVM PV
-    1. Inside this, create a VG with all necessary partitions.
+1. Once it boots, choose language and "Try Xubuntu".
 
-These should represent MINIMUM sizes, and is sized for 2TB HDD's. More is often
-better.
+1. Once you get a desktop, open a terminal and start setting things up.
 
-    LVM Partition Size  Mountpoint
-    swap          [1]
-    tmp           25GB  /tmp
-    var           50GB  /var
-    root          50GB  /
-    home          Rest  /home
+   You need to become root (or enter `sudo` way too many times):
 
-[1] This is mainly important for machines where you want to
-hibernate. You need at least as much swap space as you have RAM, so do
-that plus a bit. See [this
-article](https://help.ubuntu.com/community/SwapFaq) for suggestions,
-but 64GB RAM gets 72GB swap. If you don't care about hibernation, you
-can go as small as you like. I typically use 8GB for most machines.
+   1. Partitioning
 
-**Note 1:** Over time, `/var` has gotten larger due to the
-  proliferation of containers (docker, snap, etc.). If you do not plan
-  to use these, it can be smaller.
+          sudo -i
 
-**Note 2:** For some machines, a common area of `/pub`, or `/shared`,
+      For the purposes of the following, we'll assume that disk 1 is
+   `/dev/nvme0n1` and disk 2 is `/dev/nvme1n1`. Adjust as appropriate for your
+   system. We start with exports to save some typing.
+
+          export DEV1="/dev/nvme0n1"
+          export DEV2="/dev/nvme1n1"
+
+      And, stealing from the clever trick in the reference, account for the NVME
+      drives having a "p" for the partition.
+
+          export DEV1P="${DEV1}$( if [[ "$DEV1" =~ "nvme" ]]; then echo "p"; fi )"
+          export DEV2P="${DEV2}$( if [[ "$DEV2" =~ "nvme" ]]; then echo "p"; fi )"
+
+      Delete all the partitions both drives:
+
+          sgdisk --zap-all $DEV1
+          sgdisk --zap-all $DEV2
+
+      You probably want to reboot at this time, because the installer tries to
+      be helpful by doing things like activating swap.. which means you need to
+      deactivate everything it activated in order to do the following steps.
+      Rebooting makes this easier.
+
+      After that, create some new ones, set their types and names correctly,
+      and create a hybrid MBR.
+
+          sgdisk --new=1:0:+1G $DEV1
+          sgdisk --new=2:0:+2M $DEV1
+          sgdisk --new=3:0:+1G $DEV1
+          sgdisk --new=4:0:0 $DEV1
+          sgdisk --typecode=1:FD00 --typecode=2:EF02 --typecode=3:EF00 --typecode=4:FD00 $DEV1
+          sgdisk --change-name=1:"Encrypted boot RAID" --change-name=2:"BIOS boot partition" --change-name=3:"EFI system partition" --change-name=4:"Encrypted LVM RAID" $DEV1
+          sgdisk --hybrid 1:2:3 $DEV1
+
+      Print the table to check it.
+
+          sgdisk --print $DEV1
+
+      Assuming it's good, copy the partition info from the first drive to the
+      second, so they match, making sure to create new GUIDs for the disk (so
+      they're not just plain copies).
+
+          sgdisk -R $DEV2 $DEV1
+          sgdisk -G $DEV2
+
+      And make sure the kernel has the new partition table in memory:
+
+          partprobe
+
+   1. RAID array creation
+
+      First, install the mdadm tool
+
+          sudo apt install mdadm
+
+      Then create the RAID arrays:
+
+          mdadm --create md0 --level=1 --raid-devices=2 ${DEV1P}1 ${DEV2P}1
+          mdadm --create md1 --level=1 --raid-devices=2 ${DEV1P}4 ${DEV2P}4
+
+   1. Set crypto for boot array.
+
+      Note that, due to GRUB limitations, the older LUKS1 format is required for
+      the boot partition. See [the explanation
+      here](https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019#LUKS_Encrypt)
+      for more information.
+
+          cryptsetup luksFormat --type=luks1 /dev/md/md0
+
+   1. And for the main array:
+
+          cryptsetup luksFormat /dev/md/md1
+
+   1. Then open both of them
+
+          cryptsetup open /dev/md/md0 md0_crypt
+          cryptsetup open /dev/md/md1 md1_crypt
+
+   1. Again, because of installer limitations, it doesn't let you create a
+      filesystem on the boot partition, so let's do that:
+
+          mkfs.ext4 -L boot /dev/mapper/md0_crypt
+
+      Alternatively, create a btrfs filesystem similarly:
+
+          mkfs.btrfs -L boot /dev/mapper/md0_crypt
+
+   1. Since we're formatting things, format the EFI partitions:
+
+          mkfs.vfat -n EFI ${DEV1P}3
+          mkfs.vfat -n EFI ${DEV2P}3
+
+   1. Create the LVM stuff (again, installer limitations...)
+
+          pvcreate /dev/mapper/md1_crypt
+          vgcreate drives /dev/mapper/md1_crypt
+          lvcreate --size 8G  --name swap drives
+          lvcreate --size 25G --name tmp drives
+          lvcreate --size 50G --name var drives
+          lvcreate --size 50G --name root drives
+          lvcreate --extents 100%FREE --name home drives
+
+      Which corresponds to the following partitions and sizes (mountpoints are
+      for reference and used later)
+
+          LVM Partition Size  Mountpoint
+          swap          [1]
+          tmp           25GB  /tmp
+          var           50GB  /var
+          root          50GB  /
+          home          Rest  /home
+
+      [1] This is mainly important for machines where you want to hibernate. You
+need at least as much swap space as you have RAM, so do that plus a bit. See
+[this article](https://help.ubuntu.com/community/SwapFaq) for suggestions, but
+64GB RAM gets 72GB swap. If you don't care about hibernation, you can go as
+small as you like. I typically use 8GB for most machines.
+
+      **Note 1:** Over time, `/var` has gotten larger due to the proliferation
+  of containers (docker, snap, etc.). If you do not plan to use these, it can be
+  smaller.
+
+      **Note 2:** For some machines, a common area of `/pub`, or `/shared`,
   might be appropriate, and should be taken out of `/home`.
 
-Once all that is done, you'll get the "Choose software to install"
-screen, where you should choose "OpenSSH server" and "Xubuntu desktop"
-and let it install (we'll install everything else later)
+   1. Once that is all done, minimize the terminal window (you'll want to leave
+      it open for later) and start the installer by double clicking the icon on
+      the desktop.
 
-**IMPORTANT:** If your grub-install fails, chances are you came up
-  with an invalid partitioning scheme. Go back to the partitioning
-  menu and ensure that you set your /boot partition to a non-encrypted
-  non-LVM partition which doesn't use a RAID greater than 1 (if
-  any). That is likely the culprit (otherwise, you'll spend 3 hours
-  trying to manually install grub only to realize that the partition
-  which is supposed to contain boot info is empty.. ask me how I
-  know).
+1. The installer
+
+   Proceed through as normal, selecting sane choices until you get to the
+   "Installation Type" screen, where you want to choose "Something else". It
+   will detect all of the volumes already created and you can set mountpoints
+   and filesystems as normal.
+
+   Set the boot loader installation to be on the first hard drive (doesn't
+   matter, it will fail anyway).
+
+   Let the installer run and then it will fail to install grub. This is expected
+   and is a result of some naming issues. Tell the installer to continue without
+   installing a bootloader - we'll do so manually in the next step.
+
+   The installer crashes (because, obviously, this is the correct behavior), but
+   this is the last step of the install, so we're okay. Let it continue and
+   crash, and then go on to the next step.
+
+   (You may need to kill the installer with `killall ubiquity`)
+
+1. Manual bootloader installation
+
+   The core issue is that, the installer isn't set up for working with
+   metadisks, so we need to set it up ourselves. But, we need to be in a chroot
+   environment to do the `grub-install`, so, mount our root fs:
+
+       mount /dev/mapper/drives-root /target
+
+   If using btrfs, the above needs to be like:
+
+       mount /dev/mapper/drives-root /target -o subvol=@
+
+   Then do:
+
+       for n in proc sys dev etc/resolv.conf; do mount --rbind /$n /target/$n; done
+       chroot /target
+       mount -a
+
+   We also need to tell grub to use crypto disks:
+
+       echo "GRUB_ENABLE_CRYPTODISK=y" > /etc/default/grub.d/local.cfg
+
+   And, neither the mdadm nor the cryptsetup tools are installed in the chroot,
+   and we need those for grub to be able to do useful things with the md arrays,
+   and to be able to boot afterwards. So, install them, then rebuild the initramfs.
+
+       apt install mdadm cryptsetup-initramfs
+
+   And now, finally, we can install grub:
+
+       grub-install /dev/sda
+       grub-install /dev/sdb
+
+   But, we also need to tell linux to unlock our filesystems and rebuild the inittab:
+
+       echo "md0_crypt UUID=$(blkid -s UUID -o value /dev/md0) none luks,discard" >> /etc/crypttab
+
+       echo "md1_crypt UUID=$(blkid -s UUID -o value /dev/md1) none luks,discard" >> /etc/crypttab
+
+       update-initramfs -u -k all
+
+   Once this is all done, you can reboot into your newly created machine.
+
+### Save typing with keyfiles (Optional)
+
+(You can do this after you've booted into the new machine)
+
+If you want to save some typing, you can create keyfiles which are built into
+the initramfs and used to unlock the encrypted volumes. Note that they are
+relatively safe because they are installed on an encrypted volume - but, if
+someone were to compromise the running system, they could conceivably grab the
+file then use it to decrypt the volume - your call.
+
+ 1. Configure it to build the keyfile into the initramfs:
+
+        echo "KEYFILE_PATTERN=/etc/luks/*.keyfile" >> /etc/cryptsetup-initramfs/conf-hook
+
+        echo "UMASK=0077" >> /etc/initramfs-tools/initramfs.conf
+
+ 1. Create the keyfile (a 512 byte random number), and add it as a key to the
+    volume.
+
+        mkdir /etc/luks
+        dd if=/dev/urandom of=/etc/luks/boot.keyfile bs=512 count=1
+        chmod 0500 /etc/luks
+        chmod 0400 /etc/luks/boot.keyfile
+        cryptsetup luksAddKey /dev/md0 /etc/luks/boot.keyfile
+        cryptsetup luksAddKey /dev/md1 /etc/luks/boot.keyfile
+
+ 1. Remove the existing `crypttab`, add the new lines which say to use the keys
+    we just created, then rebuild the `initramfs`.
+
+       rm /etc/crypttab
+
+       echo "md0_crypt UUID=$(blkid -s UUID -o value /dev/md0) /etc/luks/boot.keyfile luks,discard" >> /etc/crypttab
+
+       echo "md1_crypt UUID=$(blkid -s UUID -o value /dev/md1) /etc/luks/boot.keyfile luks,discard" >> /etc/crypttab
+
+       update-initramfs -u -k all
+
+ 1. Reboot and you'll enter your password less.
 
 ## Things common to most machines
 
