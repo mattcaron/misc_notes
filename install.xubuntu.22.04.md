@@ -681,6 +681,11 @@ then a bunch of single drives for working, etc. - basically, stuff that doesn't
 need to be redundant because if I lose it, it's not a big deal, because I can
 download it again.
 
+  1. The mouse controller software
+
+         sudo add-apt-repository ppa:solaar-unifying/stable
+         sudo apt install solaar
+
   1. Steam drive
       1. Partition it and make a filesystem for it. Note the UUID it generated.
       1. Edit `/etc/fstab` and add the following lines:
