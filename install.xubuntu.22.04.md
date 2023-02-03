@@ -886,6 +886,28 @@ download it again.
          sudo add-apt-repository ppa:flexiondotorg/mangohud
          sudo apt install mangohud
 
+  1. Enable variable refresh rate (aka FreeSync / G-Sync) for machines with
+     appropriate hardware and displays.
+
+     1. Check that the display supports it with `xrandr --props | grep
+        vrr_capable` and make sure that the connected display can do it.
+
+     1. Create `/etc/X11/xorg.conf.d/r.conf` as follows:
+
+            Section "Device"
+                Identifier "AMD"
+                Driver "amdgpu"
+                Option "DRI" "3"
+                Option "VariableRefresh" "true"
+            EndSection
+
+     1. And make sure it can be read via `sudo chmod a+r
+        /etc/X11/xorg.conf.d/r.conf`
+
+     1. Reboot
+
+     1. Check that it got enabled with `grep VariableRefresh /var/log/Xorg.0.log`
+
 ### Random other things that may be needed on a case by case basis
 
   1. Set up samba:
