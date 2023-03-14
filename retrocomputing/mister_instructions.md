@@ -191,15 +191,15 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
     * Chip8
     * CO2650
     * CoCo2
-    * COCO3
+    * CoCo3
     * Coleco
     * EDSAC
     * Electron
     * EpochGalaxyII
     * Galaksija
-    * GameNWatch
     * GAMEBOY
     * GAMEBOY2P
+    * GameNWatch
     * GBA
     * GBA2P
     * Genesis
@@ -280,17 +280,19 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
         1. `@Atari 7800 2021-04-26.zip` -> `ATARI7800`
         1. `Atari Jaguar 2020-10-28.7z` -> `Jaguar`
         1. `@Atari Lynx 2021-03-17.7z` -> `Lynx`
+        1. `@Channel F 2022-09-06.zip` -> ChannelF
         1. `@Colecovision 2020-12-17.zip` -> `Coleco`
-        1. `@Game Boy Color SMDB 2021-04-06.zip` -> `GAMEBOY`
+        1. `@Famicom Disk System 2022-05-16.zip` -> `NES`
+        1. `@Game Boy Color SMDB 2022-05-12.zip` -> `GAMEBOY`
         1. `@Game Boy - EverDrive GB 2020-12-22.zip` -> `GAMEBOY`
-        1. `@Game Boy SMDB 2021-01-06.zip` -> `GAMEBOY`
+        1. `@Game Boy SMDB 2022-05-20.zip` -> `GAMEBOY`
         1. `@Game Gear - EverDrive GG 2020-01-12.zip` -> `SMS`
             1. This is not a mistake - the MiSTer SMS game gear core does both.
-        1. `@GBA - EverDrive GBA 2020-04-22.zip` -> `GBA`
-        1. `@GBA - EverDrive GBA Game Series Collections Add-On 2020-04-22.zip` -> `GBA`
-        1. `@Genesis - MegaSD - Mega EverDrive 2020-06-04.zip` -> `Genesis`
-        1. `@Genesis - MegaSD - Mega EverDrive Game Series Collections 2020-05-03.zip` -> `Genesis`
-        1. `@Master System - Master EverDrive 2020-06-03.zip` -> `SMS`
+        1. `@GBA - EverDrive GBA 2022-08-08.zip` -> `GBA`
+        1. `@GBA - EverDrive GBA Game Series Collections Add-On 2022-08-08.zip` -> `GBA`
+        1. `@Genesis - MegaSD Mega EverDrive 2022-05-18.zip` -> `Genesis`
+        1. `@Genesis - MegaSD Mega EverDrive Game Series Collections 2022-05-18.zip` -> `Genesis`
+        1. `@Master System - Master EverDrive 2022-05-04.zip` -> `SMS`
             1. This is Sega's 8 bit console which was repackaged as the Game Gear portable later.
         1. `MegaCD` -> `MegaCD`
             1. This is several directories full of .7z files, and MiSTer doesn't grok those, so I ran `un7z_mkdir` on all of them, then removed all the .7z files.
@@ -301,12 +303,14 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
         1. `@MiSTer Pack Add-on - AtariST 2020-06-07.7z` -> `AtariST`
         1. `@MiSTer Pack Add-on - C64 2020-04-15.zip` -> `C64`
         1. `@MiSTer Pack Add-on - C64 Demos 2020-04-15.zip` -> `C64`
-        1. `@MiSTer Pack Add-on - MSX 2020-11-19.7z` -> `MSX`
+        1. `@MiSTer Pack Add-on - MSX 2022-05-26.7z` -> `MSX`
             1. There was a hard disk image in the `MSX` subdir so I just moved it to the root `MSX` dir so I didn't end up with `MSX/MSX`, because that would be dumb.
+        1. `@MiSTer Pack Add-on - NEC PC8801 2022-01-08.zip` -> `PC8801`
         1. `@MiSTer Pack Add-on - NEOGEO 2020-05-12.zip` -> `NEOGEO`
         1. `@MiSTer Pack Add-on - SNES 2020-04-15.zip` -> `SNES`
         1. `@MiSTer Pack Add-on - Spectrum 2020-04-15.zip` -> `Spectrum`
         1. `@MiSTer Pack Add-on - TSConf 2020-04-15.7z` -> `TSConf`
+        1. `@NES2.0 2022-09-15.zip` -> `NES`
         1. `@NES - EverDrive N8 2021-03-23.zip` -> `NES`
         1. `@NES - EverDrive N8 Game Series Collections Add-On 2020-09-17.zip` -> `NES`
         1. `PC Engine CD Redump Supplement` -> `TGFX16-CD/PC Engine CD Redump Supplement`
@@ -316,11 +320,14 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
             1. See https://www.retrorgb.com/project-peacock-2-0-every-shoot-em-up-for-the-pc-engine-platform-cd-pce-tg16-sgx.html
             1. I put it in TGFX16-CD because I had a shot that it should be able to run all of them (even the non-CD titles). We'll see.
             1. This is several directories full of .7z files, and MiSTer doesn't grok those, so I ran `un7z_mkdir` on all of them, then removed all the .7z files.
-        1. `@SNES - SD2SNES - Super EverDrive 2021-05-07.zip` -> `SNES`
-        1. `@SNES - SD2SNES - Super EverDrive Game Series Collections 2021-05-07.zip` -> `SNES`
+        1. `@Sega 32X - 2022-04-21.zip` -> `S32X`
+        1. `@Sega SG-1000 2022-05-20.zip` -> `Coleco` (The hardware is close
+       t    enough that the core supports both machines)
+        1. `@SNES - SD2SNES - Super EverDrive 2022-09-11.zip` -> `SNES`
+        1. `@SNES - SD2SNES - Super EverDrive Game Series Collections 2022-09-11.zip` -> `SNES`
         1. `@TurboGrafx - PC Engine - Turbo EverDrive 2020-06-06.zip` -> `TGFX16`
         1. `@Vectrex - Vextreme 2020-12-28.zip` -> `VECTREX`
-        1. `@WonderSwan 2021-05-05.zip` -> `WonderSwan`
+        1. `@WonderSwan 2022-04-22.zip` -> `WonderSwan`
     1. `gaplus-for-nes` -> Put in `NES`
     1. `pac-man-championship-edition-nes-demake` -> `NES`
     1. `TOSEC_V2017-04-23` (this has many things):
