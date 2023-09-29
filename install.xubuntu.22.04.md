@@ -286,6 +286,10 @@ file then use it to decrypt the volume - your call.
 
          sudo snap install firefox thunderbird
 
+  1. Update to the HWE stack
+
+         sudo apt install --install-recommends linux-generic-hwe-22.04
+
   1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
   
      1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot
