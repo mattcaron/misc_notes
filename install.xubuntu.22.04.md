@@ -555,7 +555,7 @@ file then use it to decrypt the volume - your call.
          sudo snap install code --classic
 
          code --install-extension DavidAnson.vscode-markdownlint
-         code --install-extension rust-lang.rust
+         code --install-extension rust-lang.rust-analyzer
          code --install-extension tamasfe.even-better-toml
          code --install-extension James-Yu.latex-workshop
          code --install-extension streetsidesoftware.code-spell-checker
@@ -563,6 +563,7 @@ file then use it to decrypt the volume - your call.
          code --install-extension ms-vscode.cpptools
          code --install-extension ms-vscode.cmake-tools
          code --install-extension chiehyu.vscode-astyle
+         code --install-extension leathong.openscad-language-support
 
   1. (Maybe) install some extra filesystems (as needed)
 
