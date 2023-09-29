@@ -4,7 +4,7 @@ Note that this was the result of an upgrade of 20.04 to 22.04 - these
 may not be completely accurate for a clean install, as that has not
 been vetted.
 
-## Base Install
+## Base Install - RAID
 
 As the minimal CD is no more, and the installer doesn't do everything we need,
 we'll need to boot a live image, do some console stuff, then do the install. So,
@@ -39,7 +39,7 @@ Refs: <https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019>
           export DEV1P="${DEV1}$( if [[ "$DEV1" =~ "nvme" ]]; then echo "p"; fi )"
           export DEV2P="${DEV2}$( if [[ "$DEV2" =~ "nvme" ]]; then echo "p"; fi )"
 
-      Delete all the partitions both drives:
+      Delete all the partitions on both drives:
 
           sgdisk --zap-all $DEV1
           sgdisk --zap-all $DEV2
@@ -132,17 +132,18 @@ Refs: <https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019>
       for reference and used later)
 
           LVM Partition Size  Mountpoint
-          swap          [1]
+          swap           8GB
           tmp           25GB  /tmp
           var           50GB  /var
           root          50GB  /
           home          Rest  /home
 
-      [1] This is mainly important for machines where you want to hibernate. You
-need at least as much swap space as you have RAM, so do that plus a bit. See
-[this article](https://help.ubuntu.com/community/SwapFaq) for suggestions, but
-64GB RAM gets 72GB swap. If you don't care about hibernation, you can go as
-small as you like. I typically use 8GB for most machines.
+      Note that a larger swap is necessary for machines where you want to
+hibernate. If so, you need at least as much swap space as you have RAM, so do
+that plus a bit. See [this article](https://help.ubuntu.com/community/SwapFaq)
+for suggestions, but 64GB RAM gets 72GB swap. If you don't care about
+hibernation, you can go as small as you like. I typically use 8GB for most
+machines.
 
       **Note 1:** Over time, `/var` has gotten larger due to the proliferation
   of containers (docker, snap, etc.). If you do not plan to use these, it can be
@@ -199,7 +200,7 @@ small as you like. I typically use 8GB for most machines.
 
    And, neither the mdadm nor the cryptsetup tools are installed in the chroot,
    and we need those for grub to be able to do useful things with the md arrays,
-   and to be able to boot afterwards. So, install them, then rebuild the initramfs.
+   and to be able to boot afterwards. So, install them.
 
        apt install mdadm cryptsetup-initramfs
 
@@ -220,7 +221,8 @@ small as you like. I typically use 8GB for most machines.
 
 ### Save typing with keyfiles (Optional)
 
-(You can do this after you've booted into the new machine)
+(You can do this after you've booted into the new machine, but remember to set
+`DEV1`, `DEV2`, `DEV1P`, and `DEV2P` first, as described at the beginning of this section.)
 
 If you want to save some typing, you can create keyfiles which are built into
 the initramfs and used to unlock the encrypted volumes. Note that they are
