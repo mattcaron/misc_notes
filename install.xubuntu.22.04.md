@@ -879,9 +879,10 @@ download it again.
          cd /usr/share/games/quake/
          sudo ln -s ~/storage1/dosbox/drive_c/games/quake/id1 .
 
-  1. Install doomsday (modernized Doom/Doom2/Heretic/Hexen native engine)
+  1. Install doomsday (modernized Doom/Doom2/Heretic/Hexen native engine) and
+     eureka level editor
 
-         sudo apt install doomsday
+         sudo apt install doomsday eureka
 
      (this is configured from inside its own menus)
 
