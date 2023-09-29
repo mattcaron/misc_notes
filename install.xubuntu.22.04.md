@@ -729,6 +729,55 @@ download it again.
 
              sudo chown -R matt:matt /home/matt/storage*
 
+  1. `udev` rule to program programmable keyboard (Keychron K10 pro)
+     1. Edit `/etc/udev/rules.d/50-keychron-k10-pro.rules`
+     1. Add this line:
+
+            KERNEL=="hidraw*", ATTRS{idVendor}=="3434", MODE="0664", GROUP="plugdev"
+
+     1. Fix perms:
+
+            chmod a+r /etc/udev/rules.d/50-keychron-k10-pro.rules
+
+     1. Reload the rules and rerun them:
+
+            udevadm control --reload-rules
+            udevadm trigger
+
+  1. ZenBleed vuln mitigation.
+     1. Ref: <https://lock.cmpxchg8b.com/zenbleed.html>
+     1. TODO: Remove once microcode fix is released in Ubuntu repos. Estimated
+         Dec 2023.
+     1. Reference - at time of writing, register `0xc0011029`'s value is:
+
+            0x3000310e08002
+
+     1. Create `/etc/systemd/system/zenbleed-mitigation.service` as follows:
+
+            [Service]
+            Type=oneshot
+            RemainAfterExit=yes
+            ExecStart=/bin/bash -c 'wrmsr -a 0xc0011029 $(($(rdmsr -c 0xc0011029) | (1<<9)))'
+
+
+            [Install]
+            WantedBy=multi-user.target
+
+     1. Enable and then start it:
+
+            systemctl enable zenbleed-mitigation.service
+            systemctl start zenbleed-mitigation.service
+
+     1. After running it, the register is:
+
+            0x3000310e08202
+
+        Which confirms bit 9 being set.
+
+     1. You can check the register at any time with:
+
+            sudo rdmsr -c 0xc0011029
+
 ### Video game machines
 
 **Note:** A lot of the old video game stuff has moved to MiSTer (because FPGA).
