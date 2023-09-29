@@ -513,16 +513,16 @@ I picked Newark for the location.
            cd ~/workspace/code
            git clone https://github.com/sympa-community/sympa.git
            cd sympa
-           git checkout -b production 6.2.66
+           git checkout -b production 6.2.70
 
        to upgrade later:
 
            cd ~/workspace/code/sympa
            git fetch
            git checkout production
-           git merge 6.2.66
+           git merge 6.2.70
 
-       (where 6.2.66 is the current version)
+       (where 6.2.70 is the current version)
 
     1. Copy this whole mess over to the linode server:
 
@@ -532,7 +532,7 @@ I picked Newark for the location.
 
     1. Install prerequisites
 
-           sudo apt install libapache2-mod-fcgid libdbd-mysql-perl apache2-suexec-pristine apache2-suexec-pristine intltool libclass-singleton-perl libdatetime-format-mail-perl libemail-simple-perl libnet-cidr-perl libproc-processtable-perl libcrypt-openssl-x509-perl libcrypt-smime-perl libdata-password-perl libauthcas-perl libdbd-odbc-perl libclone-perl libcrypt-eksblowfish-perl libdbd-csv-perl
+           sudo apt install libapache2-mod-fcgid libdbd-mysql-perl apache2-suexec-pristine apache2-suexec-pristine intltool libclass-singleton-perl libdatetime-format-mail-perl libemail-simple-perl libnet-cidr-perl libproc-processtable-perl libcrypt-openssl-x509-perl libcrypt-smime-perl libdata-password-perl libauthcas-perl libdbd-odbc-perl libclone-perl libcrypt-eksblowfish-perl libdbd-csv-perl cpanminus
 
     1. Create a user w/ no shell and a given uid/gid which are the next available
 
@@ -546,8 +546,8 @@ I picked Newark for the location.
 
     1. Set the versions in the environment (subsequent shells use this to save typing):
 
-           export VER=6.2.66
-           export OLDVER=6.2.64
+           export VER=6.2.70
+           export OLDVER=6.2.68
 
     1. Make the destination directory:
 
@@ -616,9 +616,8 @@ I picked Newark for the location.
 
     1. Auto-install a pile of perl modules:
 
-           sudo /opt/sympa-${VER}/bin/sympa_wizard.pl --check
-
-       (hit enter a bunch of times)
+           cd ~/workspace/code/sympa
+           sudo cpanm --installdeps --with-recommends .
 
     1. Fix up supporting bits and bobs
 
