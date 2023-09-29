@@ -92,7 +92,6 @@ I picked Newark for the location.
           sudo certbot --standalone certonly -d owncloud.mattcaron.net
           sudo certbot --standalone certonly -d sympa.mattcaron.net
           sudo certbot --standalone certonly -d mail.mattcaron.net
-          sudo certbot --standalone certonly -d lists.pfmbonsai.com
           sudo certbot --standalone certonly -d pfmbonsai.com
           sudo certbot --standalone certonly -d school.mattcaron.net
           sudo certbot --standalone certonly -d chat.mattcaron.net
