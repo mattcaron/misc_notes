@@ -1333,10 +1333,8 @@ I picked Newark for the location.
     1. Add the repo and key.
         - From: https://www.digitalocean.com/community/tutorials/how-to-install-jitsi-meet-on-ubuntu-20-04
 
-              wget https://download.jitsi.org/jitsi-key.gpg.key
-              sudo apt-key add jitsi-key.gpg.key
-              rm jitsi-key.gpg.key
-              echo "deb https://download.jitsi.org stable/" | sudo tee /etc/apt/sources.list.d/jitsi-stable.list
+              sudo wget -O /usr/share/keyrings/jitsi-key.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
+              echo "deb [signed-by=/usr/share/keyrings/jitsi-key.gpg.key] https://download.jitsi.org stable/" | sudo tee /etc/apt/sources.list.d/jitsi-stable.list
     1. Install from repo:
 
            sudo apt update
