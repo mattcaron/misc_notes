@@ -93,7 +93,6 @@ I picked Newark for the location.
           sudo certbot --standalone certonly -d sympa.mattcaron.net
           sudo certbot --standalone certonly -d mail.mattcaron.net
           sudo certbot --standalone certonly -d pfmbonsai.com
-          sudo certbot --standalone certonly -d school.mattcaron.net
           sudo certbot --standalone certonly -d chat.mattcaron.net
           sudo certbot --standalone certonly -d video.mattcaron.net
 
@@ -1177,20 +1176,6 @@ I picked Newark for the location.
         1. It lives in `/home/megamek/`
         1. `/home/megamek/megamek` is a symlink to the current version.
         1. Download from https://megamek.org/downloads.html (just MegaMek stable)
-
-1. MediaWiki (school.mattcaron.net)
-    1. Make the dir.
-    1. Grab the mediawiki tarball and untar it in the root.
-    1. Make `/etc/apache2/sites-available` and enable it:
-
-           sudo a2ensite rpg.mattcaron.net && sudo systemctl reload apache2
-
-    1. Create the database and user:
-
-           CREATE DATABASE mw_school;
-           GRANT ALL PRIVILEGES ON mw_school.* TO "mw_school"@"localhost" IDENTIFIED BY "password";
-
-    1. Push everything up and then go to https://school.mattcaron.net/ to configure it, grab the `LocalSettings.php` file and stuff it where it needs to be. Yay.
 
 1. Coturn (STUN/TURN server, used by Synapse for VoIP stuff)
     - Ref: https://github.com/matrix-org/synapse/blob/master/docs/turn-howto.md
