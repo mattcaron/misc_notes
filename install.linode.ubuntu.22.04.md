@@ -511,16 +511,16 @@ I picked Newark for the location.
            cd ~/workspace/code
            git clone https://github.com/sympa-community/sympa.git
            cd sympa
-           git checkout -b production 6.2.70
+           git checkout -b production 6.2.72
 
        to upgrade later:
 
            cd ~/workspace/code/sympa
            git fetch
            git checkout production
-           git merge 6.2.70
+           git merge 6.2.72
 
-       (where 6.2.70 is the current version)
+       (where 6.2.72 is the current version)
 
     1. Copy this whole mess over to the linode server:
 
@@ -544,8 +544,8 @@ I picked Newark for the location.
 
     1. Set the versions in the environment (subsequent shells use this to save typing):
 
-           export VER=6.2.70
-           export OLDVER=6.2.68
+           export VER=6.2.72
+           export OLDVER=6.2.72
 
     1. Make the destination directory:
 
@@ -707,7 +707,7 @@ I picked Newark for the location.
                   </Directory>
                </VirtualHost>
 
-        1. Fake out `suexec`, because it is hardcoded to want things in `/var/www`:
+      1. Fake out `suexec`, because it is hardcoded to want things in `/var/www`:
 
            1. Make dir:
 
@@ -838,8 +838,8 @@ I picked Newark for the location.
                 general
                 title General Membership
 
-        1. Restart
-
+        1. Reload daemon and restart
+                sudo systemctl daemon-reload
                 sudo service sympa restart
 
 1. Set up mysql snapshot
