@@ -76,6 +76,32 @@ I picked Newark for the location.
 
    This will prevent bounce messages from some mailservers, since they rely on the host name that the server claims to be (which is gotten from /etc/hostname) and then try to reverse that and make sure they're the same.
 
+1. Configure the extra IPv6 address
+
+    1. Create `/etc/netplan/01-netcfg.yaml` as follows:
+
+           network:
+             version: 2
+             renderer: networkd
+             ethernets:
+               eth0:
+               dhcp4: yes
+               accept-ra: no
+               ipv6-privacy: no
+               addresses:
+                 - "2600:3c03:e000:8c4::1/64"
+               routes:
+                 - to: default
+                   via: "fe80::1"
+
+       Because the default SLAAC IP block is listed as a bunch of spammers, and
+       this one is mine.
+
+    2. Generate and apply
+
+           sudo netplan generate
+           sudo netplan apply
+
 1. Install useful things
 
        sudo apt install tree emacs-nox git software-properties-common snapd iftop htop
