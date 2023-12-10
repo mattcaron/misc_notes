@@ -347,7 +347,9 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
            directory)
         1. Then I consolidated multiple disc games into a single directory.
     1. `gnw-games` -> `games/GameNWatch`
-        
+        1. This is the older Game and Watch core.
+    1. `fpga-gnw-opt` -> `games/Game\ and\ Watch`
+        1. This is the newer Game and Watch core.
 
 1. Mame Mappings
     1. Put the MAME ROMS `games/mame`
