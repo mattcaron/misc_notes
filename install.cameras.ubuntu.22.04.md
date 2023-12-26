@@ -50,6 +50,10 @@
 
 1. Add any necessary user accounts
 
+1. Set the timezone, if necessary:
+
+       sudo timedatectl set-timezone America/New_York
+
 1. Make ssh work:
 
     1. For an old machine, use the old keys - you did save /etc, didn't you?
@@ -132,6 +136,7 @@
        sudo a2enmod expires
        sudo a2enmod headers
        sudo a2enconf zoneminder
+       sudo systemctl reload apache2
 
 1. Let it through the firewall
 
@@ -148,13 +153,48 @@
 
 1. Going to http://cameras/zm should now work.
 
-## Add neolink
+## Configure the server
 
-(So Reolink wireless cameras work)
+This is all under **Options**
 
-**Note**: I did this on my desktop, not the server. Since both run the same OS
-and it's a (mostly) statically compiled rust binary, I just plan to copy it
-over from dev box to server.
+All changes noted are from the defaults.
+
+1. **System**:
+    1. **LANG_DEFAULT** = `en_us`
+    1. **DATE_FORMAT_PATTERN** = `yyyyMMdd`
+    1. TODO - enable logins
+    1. **OPT_USE_LEGACY_API_AUTH** = unchecked
+      * Because it's a new installation
+    1. **TIMEZONE** = `(GMT-05:00) America, New York`
+    1. **OPT_CONTROL** = unchecked
+      * Because we don't have any PTZ cameras.
+    1. TODO - **OPT_TRIGGERS** will be handy for SMTP uploads + triggers
+    1. **CHECK_FOR_UPDATES** = unchecked
+      * Redundant with the package manager having updates.
+1. **API**
+    1. TODO - Per-user API is going to be useful.
+1. **Email**
+    1. TODO - Various notifications here may be useful.
+1. **Users**
+    1. TODO - Add users, then enable authentication.
+
+1. Because the server is set up with most of the space in `/home`:
+    1. `sudo mkdir /home/zm-storage`
+    1. `sudo chown www-data:www-data /home/zm-storage`
+    1. Then go in and add it in **Options->Storage**. I called mine `Bulk
+       Storage`.
+    1. **Do not delete the default storage** It's still the default. We'll just
+       set up cameras to not use it anymore.
+
+## Add Neolink
+
+So Reolink wireless cameras work.
+
+### Compiling Neolink
+
+I did this on my desktop, not the server. Since both run the same OS and it's a
+(mostly) statically compiled rust binary, I just plan to copy it over from dev
+box to server.
 
 1. Clone it from its repo:
 
@@ -172,3 +212,181 @@ over from dev box to server.
 1. Then one can build it successfully with:
 
        cargo build
+
+### Install on server
+
+1. Install dependencies:
+
+       sudo apt install libgstrtspserver-1.0-0 libgstreamer1.0-0  libgstreamer-plugins-bad1.0-0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad
+
+1. Copy the binary over to the server.
+
+1. Copy over the `sample_config.toml` (I called it `neolink_config.toml`) and
+   adjust as follows:
+
+    1. Set `bind` to 127.0.0.1, because we don't need anyone other than this
+       server to be able to get those streams.
+
+    1. Because it's localhost access only, we're not going to bother with
+       credentials or encryption, as there's little point when it's two daemons
+       talking to each other across the same system bus.
+
+    1. The cameras have limited user functionality, so their username is always
+       `admin`. The password is saved in Keepass.
+
+1. Create a config section for each camera (see below).
+
+1. Set it up to start on boot
+
+### Installing on the server
+
+## Set up cameras
+
+### Reolink RLC-520A
+
+#### Camera Config
+
+1. Connect it to power and network, let it boot up, then go to the router to see
+   what MAC is has. Give it a static IP assignment on the router and reboot it.
+   It should be at the new IP.
+
+1. Go to https://<cameraname> and login. Default username is admin with no
+   password.
+
+1. Configure the camera however. You like. Of note:
+
+   1. https://support.reolink.com/hc/en-us/articles/360005238413-The-Difference-Between-Clear-Fluent-and-Balanced
+      explains the difference between the different streams.
+
+1. Other settings to change on the camera from defaults:
+
+   1. **Camera**:
+       1. **Display**:
+           1. **Camera Name**: Hide
+           1. **Date & Time**: Hide
+           1. **Watermark**: Off
+           1. **Anti-flicker**: 60Hz
+       1. **Stream**
+           1. Set the **Clear** resolution to `2304*1296`
+              * Anything HD and better is good enough, and the more pixels, the
+                more disk usage and CPU needed for processing.
+              * Turning down the FPS is also a good way to save CPU time - 15
+                and over are good enough.
+       1. **Audio and Light**
+           1. **Record Audio**: On
+       1. **Info**
+           1. Set the name
+   1. **Surveillance**:
+       1. **Record**:
+           1. **Record**: Off
+       1. **Email**:
+           1. **Enable Email Alerts**: Off
+       1. **FTP**:
+           1. **Enable FTP**: Off
+       1. **Push**:
+           1. Disable Push
+   1. **Network Settings** -> **Advanced** drop down:
+       1. **Enable UID**: Off
+           1. We use this for the battery cameras, but not this type.
+       1. **Port Settings** click "Set Up"
+           1. **RTSP**: On
+           1. **ONVIF**: Off
+               * ONVIF autodiscovery didn't work, and I'm not going to mess
+                  with it right now. Might turn it on later.
+   1. **System**:
+       1. **Maintenance**:
+           1. **Auto Reboot**: Off
+       1. **User Management**:
+           1. Set the admin password.
+           1. Add another normal user for zoneminder.
+              * Note that the password for the zoneminder user is passed in a
+               URL, so can't contain special characters.
+           * I saved both of these in Keepass.
+
+#### Zoneminder Config
+
+1. Add the camera in Zoneminder as follows (only non-default values are noted):
+    1. **General**:
+        1. **Function**: Modect
+        1. **Reference Image Blend**: 12.5% (Outdoor)
+        1. **Alarm Reference Image Blend**: 12.5%
+    1. **Source**:
+        1. **Source Path**:
+           rtsp://user:pass@hostname/h264Preview_01_main
+           and replace hostname, user and pass appropriately.
+        1. **Method**: UDP
+        1. **Capture Resolution** 2560 x 1920 (Custom)
+    1. **Storage**:
+        1. **Storage Area**: Bulk Storage
+        1. **Video Writer**: Camera Passthrough
+        1. Tick the box to store audio too
+    1. **Timestamp**
+        1. **Timestamp Label Format** = `%N - %Y%m%d %I:%M:%S %p`
+        1. **Font Size** = `Extra Large`
+
+### Reolink Argus Eco
+
+#### Notes
+
+1. This is a battery powered camera.
+
+1. The only way I could figure out to do initial setup is with the app - this
+   gets it connected to the network.
+
+1. It only works via the Neolink RTSP bridge software (see above).
+
+1. References: <https://github.com/thirtythreeforty/neolink>
+
+#### Camera Config
+
+1. Set up the camera using the app - follow the voice prompts, scan the barcode,
+   etc.
+
+1. Once it's connected to the router, you can set the static DHCP reservation
+   and DNS - though we won't actually use it.
+
+1. In the app, configure it as follows (these are changes from default)
+    1. Under **Display**:
+        1. **Camera Name**: Hide
+        1. **Date**: Hide
+        1. **Watermark**: Off
+    1. **Camera Recording**: Off
+        1. There is no SD card.
+    1. **Email Alerts**: Off
+
+1. In the neolink config, add a section like this:
+
+       [[cameras]]
+       name = "batterycamera1"
+       username = "admin"
+       password = "something super secret"
+       uid = "ABCD01234567890EFG"
+       stream = "mainStream"
+
+  Name should match what is set in the camera (but is probably not strictly
+  necessary), username is always admin, password is what we set it to, and uid
+  can be gotten from **Device Info** (which shows up if you tap on the gear icon
+  and then the camera's name). **stream** can be either `mainStream` (which is
+  the HD stream) or `subStream` (which is the low res stream).
+
+#### Zoneminder Config
+
+1. Add the camera in Zoneminder as follows (only non-default values are noted):
+    1. **General**:
+        1. **Function**: Modect
+        1. **Reference Image Blend**: 12.5% (Outdoor)
+        1. **Alarm Reference Image Blend**: 12.5%
+    1. **Source**:
+        1. **Source Path**:
+           rtsp://localhost:8554/camera-name
+           replace camera-name with the camera name
+        1. **Method**: UDP
+        1. **Capture Resolution** 1080p
+    1. **Storage**:
+        1. **Storage Area**: Bulk Storage
+        1. **Video Writer**: Camera Passthrough
+        1. Tick the box to store audio too
+    1. **Timestamp**
+        1. **Timestamp Label Format** = `%N - %Y%m%d %I:%M:%S %p`
+        1. **Font Size** = `Extra Large`
+

@@ -338,6 +338,32 @@ the multicast packets.
            sudo ufw allow from any to any port 206 comment at-zis
            sudo ufw allow from any to any port 1900 comment ssdp
 
+1. Install and configure up to date gerbera (UPnP server)
+
+   Excellent reference at <https://docs.gerbera.io>, though not all applies
+   because the version with 22.04 is older.
+
+    1. Install it:
+
+           sudo apt install gerbera
+
+    1. Edit the config file and change the following:
+
+        1. Set the port so we can let it through the firewall:
+ 
+               <port>49152</port>
+
+        1. Add some directories:
+
+               <visible-directories>
+                   <add-path name="/mnt/shared/dlna"/>
+               </visible-directories>
+
+
+    1. Let it through the firewall
+
+           sudo ufw allow 49152
+
 
 ## APPENDIX:
 

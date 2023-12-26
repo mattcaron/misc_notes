@@ -259,6 +259,226 @@ file then use it to decrypt the volume - your call.
 
  1. Reboot and you'll enter your password less.
 
+## Base Install - Single Disk
+
+As the minimal CD is no more, and the installer doesn't do everything we need,
+we'll need to boot a live image, do some console stuff, then do the install. So,
+without further ado....
+
+Refs: <https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019>
+
+1. Boot the desktop LiveCD
+
+1. Choose "Try and Install Xubuntu"
+
+1. Once it boots, choose language and "Try Xubuntu".
+
+1. Once you get a desktop, open a terminal and start setting things up.
+
+   You need to become root (or enter `sudo` way too many times):
+
+   1. Partitioning
+
+          sudo -i
+
+      For the purposes of the following, we'll assume that the disk is
+   `/dev/nvme0n1`. Adjust as appropriate for your system. We start with exports
+   to save some typing.
+
+          export DEV="/dev/nvme0n1"
+
+      And, stealing from the clever trick in the reference, account for the NVME
+      drives having a "p" for the partition.
+
+          export DEVP="${DEV}$( if [[ "$DEV" =~ "nvme" ]]; then echo "p"; fi )"
+
+      Delete all the partitions:
+
+          sgdisk --zap-all $DEV
+
+      You probably want to reboot at this time, because the installer tries to
+      be helpful by doing things like activating swap.. which means you need to
+      deactivate everything it activated in order to do the following steps.
+      Rebooting makes this easier.
+
+      After that, create some new ones, set their types and names correctly,
+      and create a hybrid MBR.
+
+          sgdisk --new=1:0:+1G $DEV
+          sgdisk --new=2:0:+2M $DEV
+          sgdisk --new=3:0:+1G $DEV
+          sgdisk --new=4:0:0 $DEV
+          sgdisk --typecode=1:FD00 --typecode=2:EF02 --typecode=3:EF00 --typecode=4:FD00 $DEV
+          sgdisk --change-name=1:"Encrypted boot" --change-name=2:"BIOS boot partition" --change-name=3:"EFI system partition" --change-name=4:"Encrypted LVM" $DEV
+          sgdisk --hybrid 1:2:3 $DEV
+
+      Print the table to check it.
+
+          sgdisk --print $DEV
+
+      And make sure the kernel has the new partition table in memory:
+
+          partprobe
+
+   1. Set crypto for boot array.
+
+      Note that, due to GRUB limitations, the older LUKS1 format is required for
+      the boot partition. See [the explanation
+      here](https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019#LUKS_Encrypt)
+      for more information.
+
+          cryptsetup luksFormat --type=luks1 ${DEVP}1
+
+   1. And for the main partition:
+
+          cryptsetup luksFormat ${DEVP}4
+
+   1. Then open both of them
+
+          cryptsetup open ${DEVP}1 boot_crypt
+          cryptsetup open ${DEVP}4 lvm_crypt
+
+   1. Again, because of installer limitations, it doesn't let you create a
+      filesystem on the boot partition, so let's do that:
+
+          mkfs.ext4 -L boot /dev/mapper/boot_crypt
+
+      Alternatively, create a btrfs filesystem similarly:
+
+          mkfs.btrfs -L boot /dev/mapper/boot_crypt
+
+   1. Since we're formatting things, format the EFI partition:
+
+          mkfs.vfat -n EFI ${DEVP}3
+
+   1. Create the LVM stuff (again, installer limitations...)
+
+          pvcreate /dev/mapper/lvm_crypt
+          vgcreate drives /dev/mapper/lvm_crypt
+          lvcreate --size 8G  --name swap drives
+          lvcreate --size 25G --name tmp drives
+          lvcreate --size 50G --name var drives
+          lvcreate --size 50G --name root drives
+          lvcreate --extents 100%FREE --name home drives
+
+      Which corresponds to the following partitions and sizes (mountpoints are
+      for reference and used later)
+
+          LVM Partition Size  Mountpoint
+          swap           8GB
+          tmp           25GB  /tmp
+          var           50GB  /var
+          root          50GB  /
+          home          Rest  /home
+
+       (See the discussion in the RAID section for information about swap size, etc.)
+
+   1. Once that is all done, minimize the terminal window (you'll want to leave
+      it open for later) and start the installer by double clicking the icon on
+      the desktop.
+
+1. The installer
+
+   Proceed through as normal, selecting sane choices until you get to the
+   "Installation Type" screen, where you want to choose "Something else". It
+   will detect all of the volumes already created and you can set mountpoints
+   and filesystems as normal.
+
+   Set the boot loader installation to be on the first hard drive (doesn't
+   matter, it will fail anyway).
+
+   Let the installer run and then it will fail to install grub. This is expected
+   and is a result of some naming issues. Tell the installer to continue without
+   installing a bootloader - we'll do so manually in the next step.
+
+   The installer crashes (because, obviously, this is the correct behavior), but
+   this is the last step of the install, so we're okay. Let it continue and
+   crash, and then go on to the next step.
+
+   (You may need to kill the installer with `killall ubiquity`)
+
+1. Manual bootloader installation
+
+   Technically, you can get the bootloader to install if you edit some config
+   files while it is working, but we need to do some post-install setup anyway,
+   so we might as well just install the bootloader manually as well. But, we
+   need to be in a chroot environment to do the `grub-install`, so, mount our
+   root fs:
+
+       mount /dev/mapper/drives-root /target
+
+   If using btrfs, the above needs to be like:
+
+       mount /dev/mapper/drives-root /target -o subvol=@
+
+   Then do:
+
+       for n in proc sys dev etc/resolv.conf; do mount --rbind /$n /target/$n; done
+       chroot /target
+       mount -a
+
+   We also need to tell grub to use crypto disks:
+
+       echo "GRUB_ENABLE_CRYPTODISK=y" > /etc/default/grub.d/local.cfg
+
+   And, the cryptsetup tools are installed in the chroot. So, install them.
+
+       apt install cryptsetup-initramfs
+
+   And now, finally, we can install grub:
+
+       grub-install /dev/sda
+
+   But, we also need to tell linux to unlock our filesystems and rebuild the inittab:
+
+       echo "boot_crypt UUID=$(blkid -s UUID -o value ${DEVP}1) none luks,discard" >> /etc/crypttab
+
+       echo "lvm_crypt UUID=$(blkid -s UUID -o value ${DEVP}4) none luks,discard" >> /etc/crypttab
+
+       update-initramfs -u -k all
+
+   Once this is all done, you can reboot into your newly created machine.
+
+### Save typing with keyfiles (Optional)
+
+(You can do this after you've booted into the new machine, but remember to set
+`DEV` and `DEVP` first, as described at the beginning of this section.
+
+If you want to save some typing, you can create keyfiles which are built into
+the initramfs and used to unlock the encrypted volumes. Note that they are
+relatively safe because they are installed on an encrypted volume - but, if
+someone were to compromise the running system, they could conceivably grab the
+file then use it to decrypt the volume - your call.
+
+ 1. Configure it to build the keyfile into the initramfs:
+
+        echo "KEYFILE_PATTERN=/etc/luks/*.keyfile" >> /etc/cryptsetup-initramfs/conf-hook
+
+        echo "UMASK=0077" >> /etc/initramfs-tools/initramfs.conf
+
+ 1. Create the keyfile (a 512 byte random number), and add it as a key to the
+    volume.
+
+        mkdir /etc/luks
+        dd if=/dev/urandom of=/etc/luks/boot.keyfile bs=512 count=1
+        chmod 0500 /etc/luks
+        chmod 0400 /etc/luks/boot.keyfile
+        cryptsetup luksAddKey /dev/${DEVP}1 /etc/luks/boot.keyfile
+        cryptsetup luksAddKey /dev/${DEVP}4 /etc/luks/boot.keyfile
+
+ 1. Remove the existing `crypttab`, add the new lines which say to use the keys
+    we just created, then rebuild the `initramfs`.
+
+       rm /etc/crypttab
+
+       echo "boot_crypt UUID=$(blkid -s UUID -o value /dev/${DEVP}1) /etc/luks/boot.keyfile luks,discard" >> /etc/crypttab
+
+       echo "lvm_crypt UUID=$(blkid -s UUID -o value /dev/${DEVP}4) /etc/luks/boot.keyfile luks,discard" >> /etc/crypttab
+
+       update-initramfs -u -k all
+
+ 1. Reboot and you'll enter your password less.
+
 ## Things common to most machines
 
   1. Install useful base things
@@ -806,9 +1026,10 @@ download it again.
          sudo apt-add-repository ppa:cdemu/ppa
          sudo apt install gcdemu
 
-  1. Install modern DOSBox (dosbox-staging)
+  1. Install modern DOSBox (dosbox-x)
 
-         sudo snap install dosbox-staging
+         - compiling this from source because the snap currently can't do
+           joysticks and there aren't any other prepackaged builds.
 
      And make sure fluidsynth is installed for the good tunes.
 
@@ -865,6 +1086,30 @@ download it again.
 
              # Nintendo Switch Pro Controller over bluetooth hidraw
              KERNEL=="hidraw*", KERNELS=="*057E:2009*", MODE="0666"
+
+  1. Set up the 8BitDo Ultimate controller
+
+         sudo apt install xboxdrv
+
+     To set perms and automatically run xboxdrv, add `/etc/udev/rules.d/99-8bitdo-ultimate.rules` with the contents of:
+
+         # 8BitDo Ultimate controller
+         SUBSYSTEM=="usb", ATTRS{idVendor}=="2dc8", ATTRS{idProduct}=="3106", MODE="0666"
+
+     Fix perms:
+
+         sudo chmod a+r /etc/udev/rules.d/99-8bitdo-ultimate.rules
+
+     And then kick it:
+
+         sudo udevadm control --reload-rules && sudo udevadm trigger
+
+     Once that is done, the following driver line will work:
+
+         /usr/bin/xboxdrv --device-by-id 2dc8:3106 --type xbox360
+
+     **Note:** this must be kept running in order for the controller to not time
+     out and power off after about 2 minutes.
   
   1. Install Rise of The Triad (ROTT), symlink game files where expected, and configure it properly.
 
@@ -964,6 +1209,53 @@ download it again.
      1. Reboot
 
      1. Check that it got enabled with `grep VariableRefresh /var/log/Xorg.0.log`
+
+  1. Install racing wheel stuff
+
+     NOTE: This will likely be deprecated once they are included in mainline
+     kernels.
+
+     NOTE: This is mainly for Assetto Corsa. For setting that up, see
+     <https://steamcommunity.com/app/244210/discussions/0/3824163953451160286/>
+     and <https://steamcommunity.com/sharedfiles/filedetails/?id=2828364666>
+
+     1. Install `hid-tmff2` for the wheel (including DKMS setup)
+
+        Ref: <https://github.com/Kimplul/hid-tmff2>
+
+            cd ~/workspace/code
+            git clone --recurse-submodules https://github.com/Kimplul/hid-tmff2.git
+            cd hid-tmff2
+            sudo ./dkms-install.sh
+            echo 'blacklist hid_thrustmaster' | sudo tee /etc/modprobe.d/blacklist-hid-thrustmaster.conf
+            echo "options hid-tmff-new timer_msecs=2" | sudo tee /etc/modprobe.d/hid-tmff-new.conf
+
+     1. Install oversteer
+
+        Ref: <https://github.com/berarma/oversteer>
+
+            sudo apt install meson appstream-util
+            cd ~/workspace/code
+            git clone https://github.com/berarma/oversteer.git
+            cd oversteer
+            meson build
+            cd build
+            sudo ninja install
+            sudo udevadm control --reload-rules && sudo udevadm trigger
+
+     1. After that, wheel should work when plugging it in.
+
+     1. Create the following udev rule as
+        `/etc/udev/rules.d/99-thrustmaster_t-lcm_pedals.rules` to fix
+        permissions for the pedals when plugged in via USB. The ENV bit also
+        forces it to be a joystick for SDL (and therefore wine/proton)
+        visibility purposes.
+
+            SUBSYSTEM=="input", ATTRS{idVendor}=="044f", ATTRS{idProduct}=="b371", MODE="0664", ENV{ID_INPUT_JOYSTICK}="1", TAG+="uaccess"
+
+        and then kick udev to reread it all:
+
+            sudo udevadm control --reload-rules && sudo udevadm trigger
 
 ### Random other things that may be needed on a case by case basis
 
