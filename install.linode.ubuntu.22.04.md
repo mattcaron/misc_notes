@@ -169,7 +169,7 @@ I picked Newark for the location.
            sudo service apache2 restart
 
     1. Go through this and apply all settings:
-        - https://www.insecure.ws/linux/apache_ssl.html
+        - <https://www.insecure.ws/linux/apache_ssl.html>
 
     1. Allow it through the firewall
 
@@ -177,7 +177,7 @@ I picked Newark for the location.
             sudo ufw allow https
 
 1. Install dovecot (imap)
-    - Based on: https://help.ubuntu.com/community/Dovecot
+    - Based on: <https://help.ubuntu.com/community/Dovecot>
 
     1. Install it:
 
@@ -187,7 +187,7 @@ I picked Newark for the location.
 
        1. Edit `/etc/dovecot/conf.d/10-master.conf` and:
            1. find the `inet_listener imaps` line, and uncomment the body.
-               - ref: http://wiki2.dovecot.org/HowTo/EximAndDovecotSASL
+               - ref: <http://wiki2.dovecot.org/HowTo/EximAndDovecotSASL>
            1. find the `service auth` section and add to the bottom:
   
                   #SASL                                                                         
@@ -279,14 +279,14 @@ I picked Newark for the location.
 
               data = ${lookup{$local_part}lsearch{/etc/aliases}}
 
-           Ref: https://github.com/Exim/exim/wiki/AuthenticatedSmtpUsingPam
+           Ref: <https://github.com/Exim/exim/wiki/AuthenticatedSmtpUsingPam>
 
        1. At the bottom of the main section (before ACL CONFIGURATION), add:
 
               # Only allow auth over TLS, otherwise folks would be sending plaintext passwords
               auth_advertise_hosts = ${if eq {$tls_cipher}{}{}{*}}
 
-          Ref: http://wiki2.dovecot.org/HowTo/EximAndDovecotSASL
+          Ref: <http://wiki2.dovecot.org/HowTo/EximAndDovecotSASL>
 
        1. Down at the bottom, at the end of the AUTHENTICATION CONFIGURATION, add:
 
@@ -317,7 +317,7 @@ I picked Newark for the location.
 
 1. Integrate exim with dovecot
 
-   - Ref: http://wiki2.dovecot.org/LDA/Exim
+   - Ref: <http://wiki2.dovecot.org/LDA/Exim>
   
     1. Edit `/etc/exim4/exim4.conf`
 
@@ -367,7 +367,7 @@ I picked Newark for the location.
 
 1. Set up DKIM signing (because, you know, spammers won't sign messages or spoofing is a problem or, something..)
   
-    - From: https://www.debian-administration.org/article/718/DKIM-signing_outgoing_mail_with_exim4
+    - From: <https://www.debian-administration.org/article/718/DKIM-signing_outgoing_mail_with_exim4>
 
     1. Make some directories to hold things:
 
@@ -552,7 +552,7 @@ I picked Newark for the location.
 
             push_sympa
 
-     **== All the rest of this is on the linode server ==** 
+     **== All the rest of this is on the linode server ==**
 
     1. Install prerequisites
 
@@ -692,7 +692,7 @@ I picked Newark for the location.
                  file_transport = address_file
                  pipe_transport = address_pipe
 
-      1. Remove `/etc/apache2/conf.d/sympa` (if it exists; it's just a symlink) and instead set up `/etc/apache2/sites-available/sympa` as follows:
+    1. Remove `/etc/apache2/conf.d/sympa` (if it exists; it's just a symlink) and instead set up `/etc/apache2/sites-available/sympa` as follows:
 
               <VirtualHost *:80>
                   ServerName sympa.mattcaron.net
@@ -733,7 +733,7 @@ I picked Newark for the location.
                   </Directory>
                </VirtualHost>
 
-      1. Fake out `suexec`, because it is hardcoded to want things in `/var/www`:
+    1. Fake out `suexec`, because it is hardcoded to want things in `/var/www`:
 
            1. Make dir:
 
@@ -809,7 +809,7 @@ I picked Newark for the location.
                   file_transport = address_file
                   pipe_transport = address_pipe 
 
-           Ref: http://www.sympa.org/manual/virtual-hosts
+           Ref: <http://www.sympa.org/manual/virtual-hosts>
 
         1. Add any new domains to the top of `/etc/mail/sympa/aliases`, as necessary. As in:
 
@@ -909,7 +909,7 @@ I picked Newark for the location.
 
     1. Optimization ref (probably obsolete)
 
-        http://forum.owncloud.org/viewtopic.php?f=8&t=10692
+        <http://forum.owncloud.org/viewtopic.php?f=8&t=10692>
 
     1. Install deps:
 
@@ -917,7 +917,7 @@ I picked Newark for the location.
 
     1. Download tarball (add to source control, etc.)
   
-        - https://nextcloud.com/install
+        - <https://nextcloud.com/install>
 
     1. Make the xsendfile cache:
 
@@ -927,7 +927,7 @@ I picked Newark for the location.
     1. Increase PHP's memory limit:
 
        1. Edit `/etc/php/8.1/apache2/php.ini`
- 
+
        1. Find:
 
               memory_limit = 128M
@@ -1003,7 +1003,7 @@ I picked Newark for the location.
             sudo service apache2 reload
 
     1. Set mysql binlogs to 1 day.
-	
+
        There is a bug in Nextcloud (and possibly Ownclound) 21.x and
        later where it updates auth tokens and sessions in the DB every
        time someone logs in which, given the nature of the application
@@ -1016,7 +1016,7 @@ I picked Newark for the location.
 
     1. Go to:
 
-        https://owncloud.mattcaron.net/
+        <https://owncloud.mattcaron.net/>
 
         and do the initial setup, entering random admin credentials and choosing MySQL for the DB. Enter the DB credentials for the owncloud user on the owncloud DB you established above.
 
@@ -1055,8 +1055,8 @@ I picked Newark for the location.
     1. Notes on configuring apps:
           - Thunderbird
             - Refs:
-              - https://apps.nextcloud.com/apps/thunderbird
-              - https://docs.nextcloud.com/server/19/user_manual/pim/sync_thunderbird.html
+              - <https://apps.nextcloud.com/apps/thunderbird>
+              - <https://docs.nextcloud.com/server/19/user_manual/pim/sync_thunderbird.html>
             - Basically:
               1. Install the "TBSync" and the "Provider for CalDAV & CardDAV" Add-ons for Thunderbird.
               1. Edit -> Synchronization Settings (TbSync)
@@ -1069,7 +1069,7 @@ I picked Newark for the location.
               1. Launch CardDAV.
               1. Add account.
               1. Use the same URL as Thunderbird:
-                https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts
+                <https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts>
               1. Tick "Use SSL".
               1. Enter credentials.
               1. Next.
@@ -1081,8 +1081,8 @@ I picked Newark for the location.
               1. Open Calendar.
               1. Top right corner, click "Add Account".
               1. Choose "CalDAV sync adapter".
-              1. Enter creds, and use the same URL as Thunderbird: 
-                https://owncloud.mattcaron.net/remote.php/caldav/calendars/matt/familycalendar
+              1. Enter creds, and use the same URL as Thunderbird:
+                <https://owncloud.mattcaron.net/remote.php/caldav/calendars/matt/familycalendar>
               1. Of note - under account name, use your email, because that's used as the address of the organizer.
               1. Click "sign in or register".
               1. Once the account is there, click on it, and click "Accounts & sync".
@@ -1091,13 +1091,12 @@ I picked Newark for the location.
               1. Calendar should now work.
               1. Theoretically, a long press on the calendar name during set up will change the ugly poop color, but I couldn't get that to work, so I left it.
 
-
 1. MySQL and Apache tuning
 
     The default MySQL and Apache configs that ship with Ubuntu do not seem particularly suited to "low RAM boxes" (though, the old curmudgeon in me is amazed that 1.5GB if "low ram" these days, but I don't build a box with less than 1GB, as it's so cheap....)
 
     1. Apache
-        - Ref: http://emergent.urbanpug.com/?p=60
+        - Ref: <http://emergent.urbanpug.com/?p=60>
         1. Disable unused modules
 
                 sudo a2dismod auth_basic
@@ -1138,9 +1137,9 @@ I picked Newark for the location.
         - **TODO** - revisit this because it has been many years.
 
         - Refs:
-          - http://emergent.urbanpug.com/?p=61
-          - http://lowendbox.com/blog/reducing-mysql-memory-usage-for-low-end-boxes/
-          - http://opensourcehacker.com/2011/03/31/reducing-mysql-memory-usage-on-ubuntu-debian-linux/
+          - <http://emergent.urbanpug.com/?p=61>
+          - <http://lowendbox.com/blog/reducing-mysql-memory-usage-for-low-end-boxes/>
+          - <http://opensourcehacker.com/2011/03/31/reducing-mysql-memory-usage-on-ubuntu-debian-linux/>
 
         1. Edit `/etc/mysql/my.conf` and change parameters in the `[mysql]` section as follows:
 
@@ -1201,10 +1200,10 @@ I picked Newark for the location.
     1. Notes:
         1. It lives in `/home/megamek/`
         1. `/home/megamek/megamek` is a symlink to the current version.
-        1. Download from https://megamek.org/downloads.html (just MegaMek stable)
+        1. Download from <https://megamek.org/downloads.html> (just MegaMek stable)
 
 1. Coturn (STUN/TURN server, used by Synapse for VoIP stuff)
-    - Ref: https://github.com/matrix-org/synapse/blob/master/docs/turn-howto.md
+    - Ref: <https://github.com/matrix-org/synapse/blob/master/docs/turn-howto.md>
 
     1. Install it from the repos:
 
@@ -1323,14 +1322,13 @@ I picked Newark for the location.
               and then follow the prompts.
 
         1. Set up DB snapshot - add to /etc/cron.d/matrix:
-		
+  
                # /etc/cron.d/matrix: crontab entries to backup matrix sqlite database
 
                PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
                MAILTO=root
 
                @daily     root     service matrix-synapse stop && /home/matt/bin/matrix-synapse_sqlite_backup > /dev/null ; service matrix-synapse start ; chown matt:matt /home/matt/attic/backup/linode/matrix-synapse_sqlite_backup.*
-
 
 1. Element Web (frontend for Matrix server)
     1. Copy over `~/public_html/chat.mattcaron.net`.
@@ -1342,7 +1340,7 @@ I picked Newark for the location.
 
     1. Add video.mattcaron.net to DNS and get a cert.
     1. Add the repo and key.
-        - From: https://www.digitalocean.com/community/tutorials/how-to-install-jitsi-meet-on-ubuntu-20-04
+        - From: <https://www.digitalocean.com/community/tutorials/how-to-install-jitsi-meet-on-ubuntu-20-04>
 
               sudo wget -O /usr/share/keyrings/jitsi-key.gpg.key https://download.jitsi.org/jitsi-key.gpg.key
               echo "deb [signed-by=/usr/share/keyrings/jitsi-key.gpg.key] https://download.jitsi.org stable/" | sudo tee /etc/apt/sources.list.d/jitsi-stable.list
