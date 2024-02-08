@@ -878,9 +878,16 @@ I picked Newark for the location.
            mkdir ~/bin
            cd ~/bin
            ln -s ~/workspace/code/scripts/backup_scripts/mysql_backup .
+           ln -s ~/workspace/code/scripts/backup_scripts/postgresql_backup .
            mkdir -p ~/attic/backup/`hostname`
 
-    1. Create `~/attic/backup/``hostname``/mysql.pw` and put the root password into it.
+    1. Create `~/attic/backup/``hostname``/mysql.pw` and put the root password
+       into it.
+
+    1. Create `/etc/sudoers.d/matt_pgdump` with the following contents:
+
+       matt linode = (postgres) NOPASSWD: /bin/pg_dumpall
+
     1. fix perms:
 
            chmod 600 ~/attic/backup/`hostname`/mysql.pw
@@ -888,6 +895,7 @@ I picked Newark for the location.
     1. Add to crontab:
 
            @daily               /home/matt/bin/mysql_backup > /dev/null
+           @daily               /home/matt/bin/postgresql_backup > /dev/null
 
 1. Lock root account
 
@@ -1244,9 +1252,18 @@ I picked Newark for the location.
            echo "deb [signed-by=/usr/share/keyrings/matrix-org-archive-keyring.gpg] https://packages.matrix.org/debian/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/matrix-org.list
 
            sudo apt update
-           sudo apt install matrix-synapse-py3
+           sudo apt install matrix-synapse-py3 libpq5 postgresql
 
-       follow the instruction prompts, setting the domain and sumbitting anonymous usage statistics.
+       follow the instruction prompts, setting the domain and sumbitting
+       anonymous usage statistics.
+
+    1. Set up the database.
+
+        1. Create account and database. Don't forget to note the password.
+
+               sudo -u postgres -i
+               createuser --pwprompt synapse_user
+               createdb --encoding=UTF8 --locale=C --template=template0 --owner=synapse_user synapse
 
     1. Configure it by editing `/etc/matrix-synapse/homeserver.yml`
 
@@ -1264,6 +1281,22 @@ I picked Newark for the location.
             1. Set the `turn_uris` to have `chat.mattcaron.net` as the list.
             1. Set the `turn_shared_secret` to be the same as the one in `/etc/turnserver.conf`.
             1. Set `turn_allowed_guests` to `false`.
+        1. Set the database ny commenting out any existing section and adding
+           the following:
+
+               database:
+                 name: psycopg2
+                 args:
+                   user: synapse_user
+                   password: <its a secret>
+                   dbname: synapse
+                   host: localhost
+                   cp_min: 5
+                   cp_max: 10
+                   keepalives_idle: 10
+                   keepalives_interval: 10
+                   keepalives_count: 3
+
         1. Note that we don't:
             1. Set the certs because we run this unencrypted on localhost and then proxy it through apache, which does our TLS termination.
             1. Set it up to send emails - the app notifies one of new messages, so I'm not enabling this unless people ask for it.
@@ -1321,14 +1354,13 @@ I picked Newark for the location.
 
               and then follow the prompts.
 
-        1. Set up DB snapshot - add to /etc/cron.d/matrix:
-  
-               # /etc/cron.d/matrix: crontab entries to backup matrix sqlite database
+        1. Backups are handled as follows:
 
-               PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
-               MAILTO=root
+            1. Database is PostgreSQL and is handled by `postgresql_backup`.
 
-               @daily     root     service matrix-synapse stop && /home/matt/bin/matrix-synapse_sqlite_backup > /dev/null ; service matrix-synapse start ; chown matt:matt /home/matt/attic/backup/linode/matrix-synapse_sqlite_backup.*
+            2. Media is in `/var/lib/matrix-synapse` which is backed up by
+               `rsync` in the `linode-backup` script which is run on Jarvis to
+               pull it all down.
 
 1. Element Web (frontend for Matrix server)
     1. Copy over `~/public_html/chat.mattcaron.net`.
