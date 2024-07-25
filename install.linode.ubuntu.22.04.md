@@ -13,11 +13,20 @@ I picked Newark for the location.
   - ns3.linode.com
   - ns4.linode.com
   - ns5.linode.com
+
 - And make sure to add an SPF record - it's a text record. By default, it's just:
 
       v=spf1 mx ~all
+
   - Which says "accept mail from any servers which have an a record, and
   if it's not, soft fail it."
+
+- Also, add a DMARC record:
+
+	  v=DMARC1; p=reject; rua=mailto:postmaster@mattcaron.net
+
+- Which says "use DMARC 1 version, reject emails that don't meet
+    criteria, and then email postmaster aboutit".
 
 1. Updates!
 
