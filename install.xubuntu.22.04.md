@@ -794,9 +794,11 @@ file then use it to decrypt the volume - your call.
 
          sudo apt install qt5-qmake qtbase5-dev qttools5-dev-tools
 
-  1. Install Virtualbox and give users permission to use it:
+  1. Install Virtualbox package archive, install Virtualbox, and give users permission to use it:
 
-         sudo apt install virtualbox
+		 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian jammy contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+		 wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg --dearmor
+         sudo apt install virtualbox-7.0
          sudo usermod -a -G vboxusers matt
 
   1. Install docker and give users permission to use it:
@@ -1125,6 +1127,10 @@ download it again.
          cd /usr/share/games/quake/
          sudo ln -s ~/storage1/dosbox/drive_c/games/quake/id1 .
 
+       1. Allow Quake server port through
+
+            sudo ufw allow 26000 comment 'quake'
+
   1. Install doomsday (modernized Doom/Doom2/Heretic/Hexen native engine) and
      eureka level editor
 
@@ -1151,6 +1157,10 @@ download it again.
               sudo ln -s ~/storage1/dosbox/drive_c/games/descent/descenta/* .
               cd d2x-rebirth/Data
               sudo ln -s ~/storage1/dosbox/drive_c/games/descent/descnt2v/* .
+
+       1. Allow the network port through the firewall (so we can host games)
+
+              sudo ufw allow 42424/udp comment 'descent'
 
   1. Install protontricks (for Proton tweaking)
 
