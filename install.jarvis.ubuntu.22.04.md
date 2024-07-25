@@ -222,7 +222,7 @@ the multicast packets.
     disambiguation.
 
      Also, if you just installed nut, but the UPS is already plugged in, you'll
-     need to unplug and replug it to fire the notplug events.
+     need to unplug and replug it to fire the hotplug events.
 
      Start it:
 
