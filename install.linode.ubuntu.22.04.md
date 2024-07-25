@@ -1475,7 +1475,7 @@ I picked Newark for the location.
 
           sudo a2ensite rpg.mattcaron.net && sudo systemctl reload apache2
 
-   1. Create the database and user
+   1. Create the databases and users
 
        1. Log in to MySQL server and do:
 
@@ -1485,5 +1485,14 @@ I picked Newark for the location.
 
               GRANT ALL PRIVILEGES ON mw_wwn.* TO "mw_wwn"@"localhost";
 
+			  CREATE DATABASE mw_fallout;
+
+              CREATE USER "mw_fallout"@"localhost" IDENTIFIED BY 'PASSWORD';
+
+              GRANT ALL PRIVILEGES ON mw_fallout.* TO "mw_fallout"@"localhost";
+
    1. Push everything up and then go to <https://rpg.mattcaron.net/wwn> to
-      configure it, grab the `LocalSettings.php` file and stuff it where it needs to be. Yay.
+      configure it, grab the `LocalSettings.php` file and stuff it
+      where it needs to be. Yay.
+
+   1. And then do the same for https://rpg.mattcaron.net/fallout>
