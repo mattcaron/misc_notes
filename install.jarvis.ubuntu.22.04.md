@@ -275,6 +275,12 @@ the multicast packets.
 
        @daily               /usr/bin/ntpq -p; echo; df -lh; echo; cat /proc/mdstat; landscape-sysinfo
 
+1. Add monitoring for thermostat to my crontab:
+
+        @hourly              /home/matt/bin/thermostat_check
+
+    So, it will now email me if the thermostat goes dead.
+
 1. Make common shared bind mounts:
 
        sudo mkdir /home/matt/shared
