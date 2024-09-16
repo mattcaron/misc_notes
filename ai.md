@@ -207,6 +207,12 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
   Base](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/tree/main)
     * Python throws an exception when it tries to load the model.
 
+### Extensions
+
+* [ReActor](https://github.com/Gourieff/sd-webui-reactor)
+  * For face swaps.
+  * Good for pranking your friends or just for using a face consistently
+    throughout a photo set.
 
 # Ollama Web UI
 
