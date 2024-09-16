@@ -3,7 +3,7 @@
 **Note:** This is an install of 16.04, upgraded to 18.04, upgraded to 20.04,
 upgraded to 22.04. It may not be completely accurate.
 
-## Base install and configs:
+## Base install and configs
 
 1. Install Ubuntu server as normal from an Ubuntu install CD.
 
@@ -120,7 +120,7 @@ upgraded to 22.04. It may not be completely accurate.
         smbpasswd -a
 
     for each user
- 
+
 1. Enable firewall (after allowing some other things through)
 
         sudo ufw allow from 192.168.9.0/24 to any port mdns
@@ -350,7 +350,7 @@ the multicast packets.
     1. Edit the config file and change the following:
 
         1. Set the port so we can let it through the firewall:
- 
+
                <port>49152</port>
 
         1. Add some directories:
@@ -359,13 +359,11 @@ the multicast packets.
                    <add-path name="/mnt/shared/dlna"/>
                </visible-directories>
 
-
     1. Let it through the firewall
 
            sudo ufw allow 49152
 
-
-## APPENDIX:
+## APPENDIX
 
 1. Backup scripts
 
