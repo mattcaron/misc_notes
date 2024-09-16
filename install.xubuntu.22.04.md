@@ -984,25 +984,12 @@ download it again.
              UUID=34106401-02ac-4148-9ac2-50e29847208f /home/matt/storage2   ext4    defaults        0       2
              UUID=4a3f0b96-e61e-461a-a3f8-215799516415 /home/matt/storage3   ext4    defaults        0       2
              UUID=d58b4aa3-e32a-460a-9734-a84ccab5a61d /home/matt/storage4   ext4    defaults        0       2
-             /home/matt/storage1/steam	/home/matt/.steam   none bind	       0       0 
 
          (Fill out the UUID appropriately.)
 
       1. Make the mount points
 
-             mkdir ~/.steam ~/storage1 ~/storage2 ~/storage3 ~/storage4
-
-      1. Mount the first thing
-
-             sudo mount /home/matt/storage1
-
-      1. Fix perms
-
-             sudo chown -R matt:matt /home/matt/storage1
-
-      1. Make the other source point (may exist if the drive is old):
-
-             mkdir /mnt/storage1/steam
+             mkdir ~/storage1 ~/storage2 ~/storage3 ~/storage4
 
       1. Mount it all:
 
