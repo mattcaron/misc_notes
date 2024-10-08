@@ -1,7 +1,7 @@
 # Installing Ubuntu 24.04 on Linode
 
 Note that this is based off a 12.04 reference image which I upgraded to 14.04, 16.04,
-18.04, 20.04, 22.04, and then to 22.04.
+18.04, 20.04, 22.04, and then to 24.04.
 
 I picked Newark for the location.
 
@@ -682,7 +682,6 @@ I picked Newark for the location.
                  file_transport = address_file
                  pipe_transport = address_pipe
 
-               # Aliases for sympa                                                             
                sympa_aliases:
                  driver = redirect
                  domains = +local_domains
