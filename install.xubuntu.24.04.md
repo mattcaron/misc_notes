@@ -770,6 +770,7 @@ file then use it to decrypt the volume - your call.
          codium --install-extension ms-vscode.cmake-tools
          codium --install-extension chiehyu.vscode-astyle
          codium --install-extension leathong.openscad-language-support
+         codium --install-extension continue.continue
 
   1. (Maybe) install some extra filesystems (as needed)
 
@@ -981,6 +982,30 @@ download it again.
 
             udevadm control --reload-rules
             udevadm trigger
+			
+### Laptop
+
+1. Video drivers
+
+    This has a discrete nVidia M1200 which I don't use for video games,
+	but actually for AI compute. It's too old for the new nVidia open
+	source drivers, and the Nouveau drivers don't support compute
+	applications, so I'm installing the proprietary drivers - and the
+	PPA has the most recent ones.
+
+		sudo add-apt-repository ppa:graphics-drivers/ppa
+        sudo apt install nvidia-driver-560
+		
+	You can check what version is what here:
+	
+	https://www.nvidia.com/en-us/drivers/unix/
+		
+	And then reboot.
+	
+	Note: you can find these by:
+
+        ubuntu-drivers devices
+
 
 ### Video game machines
 
@@ -1298,16 +1323,31 @@ download it again.
              @hourly              /home/matt/bin/tempChecker
 
   1. Fix Wake On Lan
+	 
+	  Ref: https://www.golinuxcloud.com/wake-on-lan-ubuntu/
+  
       1. Install ethtool
 
              sudo apt install ethtool
 
-      1. Create `/etc/network/if-up.d/wol_fix` with the following content,
-         replacing `[card]` with the card:
+      1. Run:
 
-             #!/bin/sh
-             /sbin/ethtool -s [card] wol g
+             sudo --preserve-env systemctl edit --force --full wol-enable.service
+	  
+         In the editor window, add the following to create the
+         service, replacing `[card]` with the name of the card.
+		 
+		    [Unit]
+            Description=Enable Wake-up on LAN
 
-      1. And set the perms on it:
+            [Service]
+            Type=oneshot
+            ExecStart=/sbin/ethtool -s [card] wol g
 
-             sudo chmod +x /etc/network/if-up.d/wol_fix
+            [Install]
+            WantedBy=basic.target
+		 
+      1. And then set it to kick off on boot
+	  
+	         sudo systemctl daemon-reload
+			 sudo systemctl enable wol-enable.service
