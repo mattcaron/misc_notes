@@ -1,15 +1,23 @@
-# Stable diffusion Web UI
+# Various AI web UIs
 
-## Refs
+## Notes
 
-* https://github.com/AUTOMATIC1111/stable-diffusion-webui?tab=readme-ov-file#installation-and-running
-* https://easywithai.com/guide/how-to-install-sdxl-locally/
+* These instructions are for Ubuntu 24.04
 
-## Dependencies
+## General dependencies
+
+This is an aggregate set of dependencies for everything in this file. Many of them have the same dependencies, so it reduces duplication.
 
 My main box has an AMD GPU, hence the rocm stuff.
 
-    sudo apt install wget git python3 python3-venv libgl1 libglib2.0-0 libtcmalloc-minimal4 rocminfo
+    sudo add-apt-repository ppa:deadsnakes/ppa
+    sudo apt install wget git python3.11 python3.11-venv python3.11-dev libgl1 libglib2.0-0 libtcmalloc-minimal4 build-essential libssl-dev libffi-dev cmake golang libclblast-dev
+
+### Laptop specific dependencies (nVidia)
+
+### Desktop specific dependencies (AMD)
+
+    sudo apt install rocminfo
 
 ## Permissions
 
@@ -17,21 +25,30 @@ This is so the rocm utilities work. Add/sub any other users as needed.
 
     sudo usermod -a -G render matt
 
-## Code
+## Stable Diffusion Web UI (Image Generation)
+
+### Refs
+
+* https://github.com/AUTOMATIC1111/stable-diffusion-webui?tab=readme-ov-file#installation-and-running
+* https://easywithai.com/guide/how-to-install-sdxl-locally/
+
+### Code
 
 1. Clone as normal with:
 
        git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
+       cd stable-diffusion-webui
+       git checkout v1.10.1
 
-## Custom setup
+### Custom setup
 
-Edit `webui-user.sh` and change `COMMANDLINE_ARGS` to:
+Edit `webui-user.sh` set  `python_cmd` to:
 
-    export COMMANDLINE_ARGS="--skip-torch-cuda-test"
+    python_cmd="python3.11"
 
-The first skips the CUDA test because I don't have a team green card.
+Because the system default python on Ubuntu 24.04 is too new.
 
-## Setup
+### Setup
 
 Run this once. It won't work, but it will get the dependencies and set
 everything else up. It won't have any checkpoints, and will complain because of
@@ -40,7 +57,7 @@ that. See next step.
     cd stable-diffusion-webui
     ./webui.sh
 
-## Download checkpoints, LoRAs, VAEs, etc.
+### Download checkpoints, LoRAs, VAEs, etc.
 
 Look around https://civitai.com
 
@@ -48,7 +65,7 @@ Look around https://civitai.com
 * LoRAs go in `stable-diffusion-webui/models/Lora`.
 * VAEs go in `stable-diffusion-webui/models/VAE`.
 
-## Overall notes
+### Overall notes
 
 1. As of time of writing, it seems that the best models still have below 50%
    user acceptance of their output. More workaday models have around a 20%
@@ -65,11 +82,11 @@ Look around https://civitai.com
 1. Certain models (for example, base Flux), seem to also not like LoRA's applied
    to them, having a similar failure as described above.
 
-### Short list of models
+#### Short list of models
 
-#### Models that work reliably
+##### Models that work reliably
 
-##### For people
+###### For people
 
 Prompt for these was "a girl with pink hair wearing a long trenchcoat, a rainy
 neon-lit futuristic city in the background". No negative prompt. Everything else
@@ -106,7 +123,7 @@ left at defaults (even if this is not optimal use of the model).
 
     ![AbsoluteReality example](./images/absolute_reality.png "AbsoluteReality example")
 
-##### For monsters
+###### For monsters
 
 Prompt for these was "a photorealistic humanoid crocodile standing upright in a swamp with jaws open".
 
@@ -143,7 +160,7 @@ they are supposed to generate - mecha and soldiers and such.
   generator example](./images/rpg2000sInkAndPencil.png "RPG 2000's Ink and pencil style character
   generator example")
 
-##### LoRAs
+###### LoRAs
 
 LoRAs (Low Rank Adaptations) can be thought of as "mods" for fine tuning a base
 model without generating a new model.
@@ -164,18 +181,20 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
     exactly the same way, so I'm using the latest.
   * Triggers with the keyphrase `star wars`.
 
-  * Without: 
-  ![Star Wars style without LoRA
+  * Without:
+
+    ![Star Wars style without LoRA
   example](./images/star_wars_without_lora.png "Star Wars style without
   LoRA example")
   
   * With:
-  ![Star Wars style with LoRA example](./images/star_wars_with_lora.png "Star
+
+    ![Star Wars style with LoRA example](./images/star_wars_with_lora.png "Star
   Wars style with LoRA example")
   
   * Honestly, I kind of like the "without" better - but both are fine.
 
-#### Models that work sometimes
+##### Models that work sometimes
 
 * [Flux.1
   [schnell]](https://huggingface.co/black-forest-labs/FLUX.1-schnell/tree/main)
@@ -200,24 +219,115 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
  "Flux Unchained by SCG
   [SchnFu] example")
 
-
-#### Models that don't work
+##### Models that don't work
 
 * [Stable Diffusion XL
   Base](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/tree/main)
-    * Python throws an exception when it tries to load the model.
+  * Python throws an exception when it tries to load the model.
 
-### Extensions
+#### Extensions
 
 * [ReActor](https://github.com/Gourieff/sd-webui-reactor)
   * For face swaps.
   * Good for pranking your friends or just for using a face consistently
     throughout a photo set.
 
-# Ollama Web UI
+## Ollama (for text interactions)
 
-TODO
+### References
 
-# Integrating Stable Diffusion With Ollama
+* https://github.com/ollama/ollama/blob/main/docs/linux.md#manual-install
+
+### Installation
+
+  1. Base install:
+
+         wget https://ollama.com/download/ollama-linux-amd64.tgz
+         tar -xf ollama-linux-amd64.tgz
+
+  1. Optional extra package for AMD GPUs
+
+         wget https://ollama.com/download/ollama-linux-amd64-rocm.tgz
+         tar -xf ollama-linux-amd64-rocm.tgz
+
+### Pull models with
+
+    ollama pull <model>
+    
+  You can find more models at <https://ollama.com/models>
+
+### Run it
+
+  Just to test - we'll write a script to tie it all together later.
+
+    ollama serve
+
+  It should start up without any errors.
+
+### Interfaces
+
+#### Ollama Web UI
+
+##### References
+
+* https://docs.openwebui.com/getting-started/#build-and-install-%EF%B8%8F
+
+##### Installation
+
+1. Clone it and go there
+
+       git clone https://github.com/open-webui/open-webui.git
+       cd open-webui
+       git checkout v0.3.30
+
+1. Create a venv for into which we install things (to keep it all compartmentalized)
+
+       npm install
+       npm run build
+       python3.11 -m venv venv
+       source venv/bin/activate
+       pip install --upgrade pip
+       pip install -r backend/requirements.txt -U
+
+1. Note that updates are an abbreviated version of the above:
+
+       cd open-webui
+       git checkout main
+       git pull
+       git checkout <new version>
+
+       npm install
+       npm run build
+       source venv/bin/activate
+       pip install -r backend/requirements.txt -U
+
+1. Run it with:
+
+     source venv/bin/activate
+     ./backend/start.sh
+
+(But, again, we'll have a script to make this all easy later in the document.)
+
+#### Continue plugin for VSCode / Codium
+
+TODO - document
+
+#### Page Assist for Firefox
+
+TODO - document
+
+#### ThunderAI for Thunderburd
+
+TODO - document
+
+## MusicGPT (For music generation)
+
+## One startup script to rule them all
+
+This covers integrating Stable Diffusion with Open-Webui/Ollama, because we do so via a configuration fed via environment variables.
+
+Alas, MusicGPT is not yet integrated with Open WebUI, so we'll have to use it separately.
+
+Now, all that said, as nice as the Stable Diffusion integration is, it's a more simplified interface, and the one provided by Automatic111 as so many more knobs to frob.
 
 TODO
