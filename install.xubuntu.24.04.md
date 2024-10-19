@@ -770,7 +770,6 @@ file then use it to decrypt the volume - your call.
          codium --install-extension ms-vscode.cmake-tools
          codium --install-extension chiehyu.vscode-astyle
          codium --install-extension leathong.openscad-language-support
-         codium --install-extension continue.continue
 
   1. (Maybe) install some extra filesystems (as needed)
 
