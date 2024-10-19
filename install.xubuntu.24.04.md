@@ -1323,31 +1323,16 @@ download it again.
              @hourly              /home/matt/bin/tempChecker
 
   1. Fix Wake On Lan
-	 
-	  Ref: https://www.golinuxcloud.com/wake-on-lan-ubuntu/
-  
       1. Install ethtool
 
              sudo apt install ethtool
 
-      1. Run:
+      1. Create `/etc/network/if-up.d/wol_fix` with the following content,
+         replacing `[card]` with the card:
 
-             sudo --preserve-env systemctl edit --force --full wol-enable.service
-	  
-         In the editor window, add the following to create the
-         service, replacing `[card]` with the name of the card.
-		 
-		    [Unit]
-            Description=Enable Wake-up on LAN
+             #!/bin/sh
+             /sbin/ethtool -s [card] wol g
 
-            [Service]
-            Type=oneshot
-            ExecStart=/sbin/ethtool -s [card] wol g
+      1. And set the perms on it:
 
-            [Install]
-            WantedBy=basic.target
-		 
-      1. And then set it to kick off on boot
-	  
-	         sudo systemctl daemon-reload
-			 sudo systemctl enable wol-enable.service
+             sudo chmod +x /etc/network/if-up.d/wol_fix
