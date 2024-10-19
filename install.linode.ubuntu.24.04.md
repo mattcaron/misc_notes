@@ -3,6 +3,8 @@
 Note that this is based off a 12.04 reference image which I upgraded to 14.04, 16.04,
 18.04, 20.04, 22.04, and then to 24.04.
 
+## Basic setup
+
 I picked Newark for the location.
 
 - I picked 2048MB swap and used the rest for the single server
@@ -120,74 +122,89 @@ I picked Newark for the location.
 
        sudo apt install tree emacs-nox git software-properties-common snapd iftop htop
 
-1. Set up letsencrypt certbot
+1. Lock root account
 
-   1. Install certbot snap
+       sudo usermod -L root
 
-          sudo snap install --classic certbot
+1. Add monitoring:
 
-   1. Set it up semi-manually:
+    1. Make sure landscape is installed (to get landscape-sysinfo):
 
-          sudo certbot --standalone certonly -d mattcaron.net,www.mattcaron.net
-          sudo certbot --standalone certonly -d owncloud.mattcaron.net
-          sudo certbot --standalone certonly -d sympa.mattcaron.net
-          sudo certbot --standalone certonly -d mail.mattcaron.net
-          sudo certbot --standalone certonly -d pfmbonsai.com
-          sudo certbot --standalone certonly -d chat.mattcaron.net
-          sudo certbot --standalone certonly -d video.mattcaron.net
-          sudo certbot --standalone certonly -d rpg.mattcaron.net
+           sudo apt install landscape-common
 
-   1. Make the directories in /etc group accessible by ssl-cert and make the gid sticky
+    1. Then add the following to my crontab:
 
-          sudo chgrp -R ssl-cert /etc/letsencrypt
-          sudo chmod -R g+rX /etc/letsencrypt
-          find /etc/letsencrypt -type d -execdir chmod g+s '{}' \;
+           @daily               /usr/bin/ntpq -p; echo; df -lh; echo; landscape-sysinfo
 
-   1. Move everything in `/etc/ssl/private` to old, and then make new symlinks to the things in `/etc/letsencrypt/live`.
+## Certificates - letsencrypt certbot
 
-   1. Add create `/etc/cron.d/letsencrypt` thusly:
+1. Install certbot snap
 
-          # /etc/cron.d/letsencrypt: crontab entries to check for new certs
+       sudo snap install --classic certbot
 
-          PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
-          MAILTO=root
+1. Set it up semi-manually:
 
-          37 01 * * *     root     service apache2 stop; certbot renew; chmod -R g+r /etc/letsencrypt; service apache2 start; service dovecot reload; service exim4 reload
+       sudo certbot --standalone certonly -d mattcaron.net,www.mattcaron.net
+       sudo certbot --standalone certonly -d owncloud.mattcaron.net
+       sudo certbot --standalone certonly -d sympa.mattcaron.net
+       sudo certbot --standalone certonly -d mail.mattcaron.net
+       sudo certbot --standalone certonly -d pfmbonsai.com
+       sudo certbot --standalone certonly -d chat.mattcaron.net
+       sudo certbot --standalone certonly -d video.mattcaron.net
+       sudo certbot --standalone certonly -d rpg.mattcaron.net
 
-      Note that:
-        - we restart services
-        - we fix up the permissions to be group readable, because new files will be created as 0600.
+1. Make the directories in /etc group accessible by ssl-cert and make the gid sticky
 
-1. Install apache
+       sudo chgrp -R ssl-cert /etc/letsencrypt
+       sudo chmod -R g+rX /etc/letsencrypt
+       find /etc/letsencrypt -type d -execdir chmod g+s '{}' \;
 
-    1. Install packages:
+1. Move everything in `/etc/ssl/private` to old, and then make new symlinks to the things in `/etc/letsencrypt/live`.
 
-           sudo apt install apache2 libapache2-mod-php php php-cli php-pear php-db php-apcu
+1. Add create `/etc/cron.d/letsencrypt` thusly:
 
-    1. Enable the userdir and rewrite modules
+       # /etc/cron.d/letsencrypt: crontab entries to check for new certs
 
-           sudo a2enmod userdir
-           sudo a2enmod rewrite
-           sudo a2enmod ssl
-           sudo a2enmod php8.3
+       PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
+       MAILTO=root
 
-    1. Fix up the php configuration so people can run php web content in their homedirs by editing
-       `/etc/apache2/mods-available/php8.3.conf` and commenting out this bit:
+       37 01 * * *     root     service apache2 stop; certbot renew; chmod -R g+r /etc/letsencrypt; service apache2 start; service dovecot reload; service exim4 reload
 
-           #    <IfModule mod_userdir.c>
-           #        <Directory /home/*/public_html>
-           #            php_admin_value engine Off
-           #        </Directory>
-           #    </IfModule>
+   Note that:
+     - we restart services
+     - we fix up the permissions to be group readable, because new files will be created as 0600.
 
-    1. Restart
+## Webserver - apache
 
-           sudo service apache2 restart
+1. Install packages:
 
-    1. Allow it through the firewall
+       sudo apt install apache2 libapache2-mod-php php php-cli php-pear php-db php-apcu
 
-            sudo ufw allow http
-            sudo ufw allow https
+1. Enable the userdir and rewrite modules
+
+       sudo a2enmod userdir
+       sudo a2enmod rewrite
+       sudo a2enmod ssl
+       sudo a2enmod php8.3
+
+1. Fix up the php configuration so people can run php web content in their homedirs by editing `/etc/apache2/mods-available/php8.3.conf` and commenting out this bit:
+
+       #    <IfModule mod_userdir.c>
+       #        <Directory /home/*/public_html>
+       #            php_admin_value engine Off
+       #        </Directory>
+       #    </IfModule>
+
+1. Restart
+
+       sudo service apache2 restart
+
+1. Allow it through the firewall
+
+       sudo ufw allow http
+       sudo ufw allow https
+
+## Mail - dovecot / exim / spamassassin / sympa
 
 1. Install dovecot (imap)
     - Based on: <https://help.ubuntu.com/community/Dovecot>
@@ -875,290 +892,284 @@ I picked Newark for the location.
                 sudo systemctl daemon-reload
                 sudo service sympa restart
 
-1. Set up mysql snapshot
+## Database backups - MySQL and PostgreSQL
 
-    1. Clone backup utils:
+1. Clone backup utils:
 
-           mkdir -p ~/workspace/code/scripts
-           cd ~/workspace/code/scripts
-           git clone https://github.com/mattcaron/backup_scripts.git
-           mkdir ~/bin
-           cd ~/bin
-           ln -s ~/workspace/code/scripts/backup_scripts/mysql_backup .
-           ln -s ~/workspace/code/scripts/backup_scripts/postgresql_backup .
-           mkdir -p ~/attic/backup/`hostname`
+       mkdir -p ~/workspace/code/scripts
+       cd ~/workspace/code/scripts
+       git clone https://github.com/mattcaron/backup_scripts.git
+       mkdir ~/bin
+       cd ~/bin
+       ln -s ~/workspace/code/scripts/backup_scripts/mysql_backup .
+       ln -s ~/workspace/code/scripts/backup_scripts/postgresql_backup .
+       mkdir -p ~/attic/backup/`hostname`
 
-    1. Create `~/attic/backup/``hostname``/mysql.pw` and put the root password
-       into it.
+1. Create `~/attic/backup/``hostname``/mysql.pw` and put the root password into it.
 
-    1. Create `/etc/sudoers.d/matt_pgdump` with the following contents:
+1. Create `/etc/sudoers.d/matt_pgdump` with the following contents:
 
        matt linode = (postgres) NOPASSWD: /bin/pg_dumpall
 
-    1. fix perms:
+1. fix perms:
 
-           chmod 600 ~/attic/backup/`hostname`/mysql.pw
+       chmod 600 ~/attic/backup/`hostname`/mysql.pw
 
-    1. Add to crontab:
+1. Add to crontab:
 
-           @daily               /home/matt/bin/mysql_backup > /dev/null
-           @daily               /home/matt/bin/postgresql_backup > /dev/null
+       @daily               /home/matt/bin/mysql_backup > /dev/null
+       @daily               /home/matt/bin/postgresql_backup > /dev/null
 
-1. Lock root account
+## Nextcloud
 
-       sudo usermod -L root
+1. Make sure to add `owncloud.mattcaron.net` to linode DNS
 
-1. Add monitoring:
+1. Install deps:
 
-    1. Make sure landscape is installed (to get landscape-sysinfo):
+       sudo apt install apache2 php php-mbstring php-gd php-xml php-intl php-sqlite3 php-mysql mysql-server curl libcurl4 php-curl libapache2-mod-xsendfile php-apcu php-bz2 php-zip php-pclzip php-imagick php-bcmath php-gmp
 
-           sudo apt install landscape-common
-
-    1. Then add the following to my crontab:
-
-           @daily               /usr/bin/ntpq -p; echo; df -lh; echo; landscape-sysinfo
-
-1. Install NextCloud
-
-    1. Make sure to add owncloud.mattcaron.net to linode DNS
-
-    1. Install deps:
-
-           sudo apt install apache2 php php-mbstring php-gd php-xml php-intl php-sqlite3 php-mysql mysql-server curl libcurl4 php-curl libapache2-mod-xsendfile php-apcu php-bz2 php-zip php-pclzip php-imagick php-bcmath php-gmp
-
-    1. Download tarball (add to source control, etc.)
+1. Download tarball (add to source control, etc.)
   
-        - <https://nextcloud.com/install>
+    - <https://nextcloud.com/install>
 
-    1. Make the xsendfile cache:
+1. Make the xsendfile cache:
 
-           sudo mkdir /tmp/oc-noclean
-           sudo chown www-data:www-data /tmp/oc-noclean
+       sudo mkdir /tmp/oc-noclean
+       sudo chown www-data:www-data /tmp/oc-noclean
 
-    1. Increase PHP's memory limit:
+1. Increase PHP's memory limit:
 
-       1. Edit `/etc/php/8.3/apache2/php.ini`
+    1. Edit `/etc/php/8.3/apache2/php.ini`
 
-          1. Find:
+    1. Find:
 
-                 memory_limit = 128M
+           memory_limit = 128M
 
-             and set it to:
+        and set it to:
 
-                 memory_limit = 512M
+           memory_limit = 512M
 
-          1. Find:
+    1. Find:
 
-                 ;opcache.interned_strings_buffer=8
+           ;opcache.interned_strings_buffer=8
 
-             uncomment it and set it to:
+        uncomment it and set it to:
 
-                 opcache.interned_strings_buffer=16
+           opcache.interned_strings_buffer=16
 
-       1. Also edit `/etc/php/8.3/mods-available/apcu.ini` and add:
+    1. Also edit `/etc/php/8.3/mods-available/apcu.ini` and add:
 
-              apc.enable_cli=1
+           apc.enable_cli=1
 
-    1. Log in to the DB server and create a user and password
+1. Log in to the DB server and create a user and password
 
-            CREATE DATABASE owncloud;
+       CREATE DATABASE owncloud;
 
-            GRANT ALL PRIVILEGES ON owncloud.* TO "owncloud"@"localhost" IDENTIFIED BY "password";
+       GRANT ALL PRIVILEGES ON owncloud.* TO "owncloud"@"localhost" IDENTIFIED BY "password";
 
-    1. Make an `/etc/apache2/sites-available/owncloud.mattcaron.net.conf` as follows:
+1. Make an `/etc/apache2/sites-available/owncloud.mattcaron.net.conf` as follows:
 
-            <VirtualHost *:80>
-                ServerName owncloud.mattcaron.net
-                ServerAdmin matt@mattcaron.net
+       <VirtualHost *:80>
+           ServerName owncloud.mattcaron.net
+           ServerAdmin matt@mattcaron.net
 
-                DocumentRoot /home/matt/public_html/owncloud.mattcaron.net
-                <Directory /home/matt/public_html/owncloud.mattcaron.net>
-                    Options Indexes FollowSymLinks MultiViews
-                    AllowOverride All
-                    Order allow,deny
-                    allow from all
-
-              SetEnv MOD_X_SENDFILE_ENABLED 1
-              XSendFile On
-                  XSendFilePath /tmp/oc-noclean
-                </Directory>
-            </VirtualHost>
-
-            <VirtualHost *:443>
-                ServerName owncloud.mattcaron.net
-                ServerAdmin matt@mattcaron.net
-
-                SSLEngine on
-                SSLCertificateFile    /etc/ssl/private/owncloud.mattcaron.net/fullchain.pem
-                SSLCertificateKeyFile /etc/ssl/private/owncloud.mattcaron.net/privkey.pem
-
-                # Standard SSL protocol adustments for IE
-                BrowserMatch "MSIE [2-6]" \
-                           nokeepalive ssl-unclean-shutdown \
-                           downgrade-1.0 force-response-1.0
-                BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-
-                DocumentRoot /home/matt/public_html/owncloud.mattcaron.net
-                <Directory /home/matt/public_html/owncloud.mattcaron.net>
-                    Options Indexes FollowSymLinks MultiViews
-                    AllowOverride All
-                    Order allow,deny
-                    allow from all
+           DocumentRoot /home/matt/public_html/owncloud.mattcaron.net
+           <Directory /home/matt/public_html/owncloud.mattcaron.net>
+               Options Indexes FollowSymLinks MultiViews
+               AllowOverride All
+               Order allow,deny
+               allow from all
 
               SetEnv MOD_X_SENDFILE_ENABLED 1
               XSendFile On
-                  XSendFilePath /tmp/oc-noclean
-                </Directory>
-            </VirtualHost>
+              XSendFilePath /tmp/oc-noclean
+           </Directory>
+       </VirtualHost>
 
-    1. Enable headers and rewrite modules:
+       <VirtualHost *:443>
+           ServerName owncloud.mattcaron.net
+           ServerAdmin matt@mattcaron.net
 
-            sudo a2enmod headers
-            sudo a2enmod rewrite
+           SSLEngine on
+           SSLCertificateFile    /etc/ssl/private/owncloud.mattcaron.net/fullchain.pem
+           SSLCertificateKeyFile /etc/ssl/private/owncloud.mattcaron.net/privkey.pem
 
-    1. Enable it:
+           # Standard SSL protocol adustments for IE
+           BrowserMatch "MSIE [2-6]" \
+               nokeepalive ssl-unclean-shutdown \
+               downgrade-1.0 force-response-1.0
+           BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
-            sudo a2ensite owncloud.mattcaron.net
-            sudo service apache2 reload
+           DocumentRoot /home/matt/public_html/owncloud.mattcaron.net
+           <Directory /home/matt/public_html/owncloud.mattcaron.net>
+               Options Indexes FollowSymLinks MultiViews
+               AllowOverride All
+               Order allow,deny
+               allow from all
 
-    1. Set mysql binlogs to 1 day.
+               SetEnv MOD_X_SENDFILE_ENABLED 1
+               XSendFile On
+              XSendFilePath /tmp/oc-noclean
+           </Directory>
+       </VirtualHost>
 
-       There is a bug in Nextcloud (and possibly Ownclound) 21.x and
-       later where it updates auth tokens and sessions in the DB every
-       time someone logs in which, given the nature of the application
-       is a lot. As such, it generates a LOT of data per day and fills
-       up disks. We really only need this if the server crashes to
-       restore intermediate state, and we have backups from the
-       previous night. So, only keep one day.
+1. Enable headers and rewrite modules:
 
-        1. Edit `/etc/my.cnf.migrated` and, in the `[mysqld]` section, add `skip-log-bin`.
+       sudo a2enmod headers
+       sudo a2enmod rewrite
 
-    1. Make sure 4 byte support is enabled
+1. Enable it:
 
-        1. Edit `/etc/my.cnf.migrated` and, in the `[mysqld]` section, set `innodb_file_per_table = 1`.
-           1. If you change the above, restart the server `sudo service mysql restart`.
-           1. And, if it wasn't enabled, you likely need to conver the Nextcloud DB. See the [instructions](https://docs.nextcloud.com/server/30/admin_manual/configuration_database/mysql_4byte_support.html).
+       sudo a2ensite owncloud.mattcaron.net
+       sudo service apache2 reload
 
-    1. And make sure `mysql` is starting on boot:
+1. Set mysql binlogs to 1 day.
 
-            sudo systemctl enable mysql
+    There is a bug in Nextcloud (and possibly Ownclound) 21.x and later where it updates auth tokens and sessions in the DB every time someone logs in which, given the nature of the application is a lot. As such, it generates a LOT of data per day and fills up disks. We really only need this if the server crashes to restore intermediate state, and we have backups from the previous night. So, only keep one day.
 
-    1. Go to:
+    1. Edit `/etc/my.cnf.migrated` and, in the `[mysqld]` section, add `skip-log-bin`.
 
-        <https://owncloud.mattcaron.net/>
+1. Make sure 4 byte support is enabled
 
-        and do the initial setup, entering random admin credentials and choosing MySQL for the DB. Enter the DB credentials for the owncloud user on the owncloud DB you established above.
+    1. Edit `/etc/my.cnf.migrated` and, in the `[mysqld]` section, set `innodb_file_per_table = 1`.
+        1. If you change the above, restart the server `sudo service mysql restart`.
+        1. And, if it wasn't enabled, you likely need to conver the Nextcloud DB. See the [instructions](https://docs.nextcloud.com/server/30/admin_manual/configuration_database/mysql_4byte_support.html).
 
-    1. Once logged in:
+1. And make sure `mysql` is starting on boot:
 
-        1. Under the "Apps" menu, office & text section, enable:
-            - Calendar
-            - Contacts
-            - Notes
+       sudo systemctl enable mysql
 
-            (these are all official apps)
+1. Go to:
 
-        1. Under the "Users" menu
-            - Give appropriate people admin access
-            - Delete the admin account
+    <https://owncloud.mattcaron.net/>
 
-        1. Set up cron:
+    and do the initial setup, entering random admin credentials and choosing MySQL for the DB. Enter the DB credentials for the owncloud user on the owncloud DB you established above.
 
-                sudo -u www-data crontab -e
+1. Once logged in:
 
-            and add:
+    1. Under the "Apps" menu, office & text section, enable:
+        - Calendar
+        - Contacts
+        - Notes
 
-                */5  *  *  *  * php -f       /home/matt/public_html/owncloud.mattcaron.net/cron.php
+       (these are all official apps)
 
-        1. Then, in the Admin panel, tell it to use cron.
+    1. Under the "Users" menu
+        - Give appropriate people admin access
+        - Delete the admin account
 
-        1. A note on backups:
+    1. Set up cron:
 
-            These are already handled by the mysql_backup script and backing up homedirs. So, nothing additional need be done here, so long as the previous stuff is set up.
+           sudo -u www-data crontab -e
 
-    1. Notes on configuring apps:
-          - Thunderbird
-            - Refs:
-              - <https://apps.nextcloud.com/apps/thunderbird>
-              - <https://docs.nextcloud.com/server/19/user_manual/pim/sync_thunderbird.html>
-            - Basically:
-              1. Install the "TBSync" and the "Provider for CalDAV & CardDAV" Add-ons for Thunderbird.
-              1. Edit -> Synchronization Settings (TbSync)
-              1. Account Settings -> Add New Account -> CalDAV and CardDAV
-              1. Automatic Configuration
-              1. Fill in the boxes, and select what you want to sync.
-          - Android
-            - Address book
-              1. Install "CardDAV sync free" or "CardDAV sync" from Google play.
-              1. Launch CardDAV.
-              1. Add account.
-              1. Use the same URL as Thunderbird:
-                <https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts>
-              1. Tick "Use SSL".
-              1. Enter credentials.
-              1. Next.
-              1. Enter an appropriate name.
-              1. Untick "Sync from server to phone only".
-              1. Next.
-            - Calendar
-              1. Install "CalDAV sync free" or "CalDAV sync" from google play.
-              1. Open Calendar.
-              1. Top right corner, click "Add Account".
-              1. Choose "CalDAV sync adapter".
-              1. Enter creds, and use the same URL as Thunderbird:
-                <https://owncloud.mattcaron.net/remote.php/caldav/calendars/matt/familycalendar>
-              1. Of note - under account name, use your email, because that's used as the address of the organizer.
-              1. Click "sign in or register".
-              1. Once the account is there, click on it, and click "Accounts & sync".
-              1. Click the "CalDav sync adapter" account when that comes up.
-              1. Tick the box next to the sync state to turn it on
-              1. Calendar should now work.
-              1. Theoretically, a long press on the calendar name during set up will change the ugly poop color, but I couldn't get that to work, so I left it.
+       and add:
 
-1. MegaMek
+           */5  *  *  *  * php -f       /home/matt/public_html/owncloud.mattcaron.net/cron.php
 
-    1. Create a user, then disable it.
+    1. Then, in the Admin panel, tell it to use cron.
 
-            sudo adduser megamek
-            sudo usermod -s /usr/sbin/nologin -L megamek
+    1. A note on backups:
 
-    1. Install a JRE:
+       These are already handled by the mysql_backup script and backing up homedirs. So, nothing additional need be done here, so long as the previous stuff is set up.
 
-            sudo apt install default-jre
+1. Notes on configuring apps:
+    - Thunderbird
+        Recent versions of Thunderbird have CalDAV and CardDav integrated.
 
-    1. Open up a firewall port:
+        The URL is always `https://owncloud.mattcaron.net/remote.php/dav`
 
-            sudo ufw allow from any to any port 2346 proto tcp comment 'megamek'
+        1. Address book
+           1. Tools -> Address Book
+           1. Click "New Address Book".
+           1. Choose "CardDAV"
+           1. Fill out the fields.
+           1. Choose the address books.
 
-    1. Create `/lib/systemd/system/megamek.service` with the following (and the correct password):
+        1. Calendar
+           1. Events and Tasks -> Calendar
+           1. New Calendar
+           1. On the Network
+           1. Fill out the fields.
+           1. Choose the calendars you want to see.
 
-            [Unit]
-            Description=MegaMek service
-            After=network.target auditd.service
+    - Android
+        - Address book
+            1. Install "CardDAV sync free" or "CardDAV sync" from Google play.
+            1. Launch CardDAV.
+            1. Add account.
+            1. URL:
 
-            [Service]
-            ExecStart=/usr/bin/java -Xmx1024m -jar /home/megamek/megamek/MegaMek.jar -dedicated -port 2346 -password XXX
-            ExecReload=/bin/kill -HUP $MAINPID
-            KillMode=process
-            Restart=always
-            RestartPreventExitStatus=255
-            Type=simple
-            WorkingDirectory=/home/megamek/megamek
-            RuntimeDirectoryMode=0755
-            User=megamek
+                   https://owncloud.mattcaron.net/remote.php/carddav/addressbooks/matt/contacts
 
-            [Install]
-            Alias=megamek.service
+            1. Tick "Use SSL".
+            1. Enter credentials.
+            1. Next.
+            1. Enter an appropriate name.
+            1. Untick "Sync from server to phone only".
+            1. Next.
+        - Calendar
+            1. Install "CalDAV sync free" or "CalDAV sync" from google play.
+            1. Open Calendar.
+            1. Top right corner, click "Add Account".
+            1. Choose "CalDAV sync adapter".
+            1. Enter creds, and the URL is:
 
-    1. Enable and start the service:
+                   https://owncloud.mattcaron.net/remote.php/caldav/calendars/matt/familycalendar
 
-            sudo systemctl enable megamek
-            sudo systemctl start megamek
+            1. Of note - under account name, use your email, because that's used as the address of the organizer.
+            1. Click "sign in or register".
+            1. Once the account is there, click on it, and click "Accounts & sync".
+            1. Click the "CalDav sync adapter" account when that comes up.
+            1. Tick the box next to the sync state to turn it on
+            1. Calendar should now work.
+            1. Theoretically, a long press on the calendar name during set up will change the ugly poop color, but I couldn't get that to work, so I left it.
 
-    1. Notes:
-        1. It lives in `/home/megamek/`
-        1. `/home/megamek/megamek` is a symlink to the current version.
-        1. Download from <https://megamek.org/downloads.html> (just MegaMek stable)
+## MegaMek
+
+1. Create a user, then disable it.
+
+       sudo adduser megamek
+       sudo usermod -s /usr/sbin/nologin -L megamek
+
+1. Install a JRE:
+
+       sudo apt install default-jre
+
+1. Open up a firewall port:
+
+       sudo ufw allow from any to any port 2346 proto tcp comment 'megamek'
+
+1. Create `/lib/systemd/system/megamek.service` with the following (and the correct password):
+
+       [Unit]
+       Description=MegaMek service
+       After=network.target auditd.service
+
+       [Service]
+       ExecStart=/usr/bin/java -Xmx1024m -jar /home/megamek/megamek/MegaMek.jar -dedicated -port 2346 -password XXX
+       ExecReload=/bin/kill -HUP $MAINPID
+       KillMode=process
+       Restart=always
+       RestartPreventExitStatus=255
+       Type=simple
+       WorkingDirectory=/home/megamek/megamek
+       RuntimeDirectoryMode=0755
+       User=megamek
+
+       [Install]
+       Alias=megamek.service
+
+1. Enable and start the service:
+
+       sudo systemctl enable megamek
+       sudo systemctl start megamek
+
+1. Notes:
+    1. It lives in `/home/megamek/`
+    1. `/home/megamek/megamek` is a symlink to the current version.
+    1. Download from <https://megamek.org/downloads.html> (just MegaMek stable)
+
+## Matrix Server (synapse), and friends (Coturn, Jitsi, etc.)
 
 1. Coturn (STUN/TURN server, used by Synapse for VoIP stuff)
     - Ref: <https://github.com/matrix-org/synapse/blob/master/docs/turn-howto.md>
@@ -1377,7 +1388,7 @@ I picked Newark for the location.
               authentication = "internal_plain"
 
     1. But we want invited guests to be able to create temporary accounts:
-    
+
        1. Add the following VirtualHost entry in the file:
 
               VirtualHost "guest.video.mattcaron.net"
@@ -1423,6 +1434,8 @@ I picked Newark for the location.
 
            sudo ufw allow 10000 comment "jitsi media"
 
+## Other websites
+
 1. MediaWiki (rpg.mattcaron.net)
 
    1. Make the dir, index.html, etc. (this is all in git, so will just get pushed).
@@ -1446,7 +1459,7 @@ I picked Newark for the location.
 
               GRANT ALL PRIVILEGES ON mw_wwn.* TO "mw_wwn"@"localhost";
 
-			  CREATE DATABASE mw_fallout;
+              CREATE DATABASE mw_fallout;
 
               CREATE USER "mw_fallout"@"localhost" IDENTIFIED BY 'PASSWORD';
 
