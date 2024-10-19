@@ -18,15 +18,20 @@ I picked Newark for the location.
 
       v=spf1 mx ~all
 
-  - Which says "accept mail from any servers which have an a record, and
+  Which says "accept mail from any servers which have an a record, and
   if it's not, soft fail it."
 
 - Also, add a DMARC record:
 
-      v=DMARC1; p=reject; rua=mailto:postmaster@mattcaron.net
+      v=DMARC1; p=reject;
 
-- Which says "use DMARC 1 version, reject emails that don't meet
-    criteria, and then email postmaster about it".
+- Which says "use DMARC version 1, reject emails that don't meet criteria"
+
+- You can also add:
+
+      rua=mailto:postmaster@mattcaron.net
+
+  Which says "email the postmaster with summaries".. but that results in a lot of annoying emails saying "hey, stuff got passed through", so I didn't.
 
 1. Updates!
 
@@ -135,9 +140,10 @@ I picked Newark for the location.
    1. Make the directories in /etc group accessible by ssl-cert and make the gid sticky
 
           sudo chgrp -R ssl-cert /etc/letsencrypt
-          sudo chmod -R g+rsX /etc/letsencrypt
+          sudo chmod -R g+rX /etc/letsencrypt
+          find /etc/letsencrypt -type d -execdir chmod g+s '{}' \;
 
-   1. Move everything in `/etc/ssl/private` to old, and then make new symlinks to the things in `/etc/letsencrypt`.
+   1. Move everything in `/etc/ssl/private` to old, and then make new symlinks to the things in `/etc/letsencrypt/live`.
 
    1. Add create `/etc/cron.d/letsencrypt` thusly:
 
