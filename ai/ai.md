@@ -304,7 +304,7 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 
        git clone https://github.com/open-webui/open-webui.git
        cd open-webui
-       git checkout v0.3.30
+       git checkout v0.3.32
 
 1. Create a venv for into which we install things (to keep it all compartmentalized)
 
@@ -318,8 +318,7 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 1. Note that updates are an abbreviated version of the above:
 
        cd open-webui
-       git checkout main
-       git pull
+       git fetch
        git checkout <new version>
 
        npm install
@@ -382,5 +381,3 @@ This covers integrating Stable Diffusion with Open-Webui/Ollama, because we do s
 Alas, MusicGPT is not yet integrated with Open WebUI, so we'll have to use it separately.
 
 Now, all that said, as nice as the Stable Diffusion integration is, it's a more simplified interface, and the one provided by Automatic111 as so many more knobs to frob.
-
-TODO
