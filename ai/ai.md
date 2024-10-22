@@ -348,6 +348,33 @@ TODO - document
 
 ## MusicGPT (For music generation)
 
+### Install
+
+**Note**: This assumes a functional Rust/cargo install (which I have).
+
+    git clone https://github.com/gabotechs/MusicGPT.git
+    cd MusicGPT
+    git checkout v0.3.4
+    cargo build
+
+### Running
+
+It has 2 modes, GUI and CLI. They take common args, which you can view with `--help`.
+
+#### GUI
+
+    musicgpt
+
+Note that the GUI is a WebUI running locally, and the music playback is all distorted under Firefox. Chrome works fine, however.
+
+#### CLI
+
+    musicgpt "Your prompt goes here"
+
+#### Storage hack
+
+By default, MusicGPT stores things in `~/.local/share/musicgpt`. Let's not. So, move that dir to `~/storage1/ai` and then symlink back - `cd ~/.local/share && ln -s ~/storage1/ai/musicgpt .`
+
 ## One startup script to rule them all
 
 This covers integrating Stable Diffusion with Open-Webui/Ollama, because we do so via a configuration fed via environment variables.
