@@ -136,6 +136,12 @@ I picked Newark for the location.
 
            @daily               /usr/bin/ntpq -p; echo; df -lh; echo; landscape-sysinfo
 
+1. Configure the time zone:
+
+       sudo dpkg-reconfigure tzdata
+
+   and set it to America/New York
+
 ## Certificates - letsencrypt certbot
 
 1. Install certbot snap
@@ -157,7 +163,7 @@ I picked Newark for the location.
 
        sudo chgrp -R ssl-cert /etc/letsencrypt
        sudo chmod -R g+rX /etc/letsencrypt
-       find /etc/letsencrypt -type d -execdir chmod g+s '{}' \;
+       sudo find /etc/letsencrypt -type d -execdir chmod g+s '{}' \;
 
 1. Move everything in `/etc/ssl/private` to old, and then make new symlinks to the things in `/etc/letsencrypt/live`.
 
@@ -295,13 +301,14 @@ I picked Newark for the location.
            domainlist relay_to_domains = hostlist
            relay_from_hosts = localhost
            tls_advertise_hosts = *
+           tls_certificate = /etc/ssl/private/mail.mattcaron.net/fullchain.pem
            tls_privatekey = /etc/ssl/private/mail.mattcaron.net/privkey.pem
            daemon_smtp_ports = 25 : 465
            tls_on_connect_ports = 465
            qualify_domain = mattcaron.net
            auth_advertise_hosts = ${if eq {$tls_cipher}{}{}{*}}
 
-       1. Find the system_aliases router and change the line:
+       1. Find the `system_aliases` router and change the line:
 
               data = ${lookup{$local_part}lsearch{SYSTEM_ALIASES_FILE}}
 
@@ -389,11 +396,11 @@ I picked Newark for the location.
 
     1. Generate keys for each domain:
 
-           sudo openssl genrsa -out mattcaron.net.private.pem 2048 -outform PEM
-           sudo openssl rsa -in mattcaron.net.private.pem -out mattcaron.net.pem -pubout -outform PEM
+           sudo openssl genrsa -out mattcaron.net.private.pem 2048
+           sudo openssl rsa -in mattcaron.net.private.pem -out mattcaron.net.pem -pubout 
 
-           sudo openssl genrsa -out pfmbonsai.com.private.pem 2048 -outform PEM
-           sudo openssl rsa -in pfmbonsai.com.private.pem -out pfmbonsai.com.pem -pubout -outform PEM
+           sudo openssl genrsa -out pfmbonsai.com.private.pem 2048
+           sudo openssl rsa -in pfmbonsai.com.private.pem -out pfmbonsai.com.pem -pubout
 
     1. Publish the public keys in DNS using the date as the selector.
        1. IMPORTANT - my current exim config exim uses the same selector (date) for ALL domains, so they all need to match.
@@ -417,12 +424,6 @@ I picked Newark for the location.
 
               local_sender_retain = true
               local_from_check = false
-
-1. Configure the time zone:
-
-       sudo dpkg-reconfigure tzdata
-
-   and set it to America/New York
 
 1. Add spamassassin and other optional dependencies:
 
@@ -501,11 +502,17 @@ I picked Newark for the location.
 
           rewrite_header Subject *****SPAM*****
 
-   1. Once all of the above is set up, edit `/etc/default/spamassassin` and set:
+      Then add the following to `/etc/spamassassin/local.cf`, so that it uses the above (note that the last part of `bayes_path` is a prefix, not a directory).
 
-          CRON=1
+          use_bayes 1
+          bayes_path /var/spamassassin/bayes_db/bayes
+          bayes_file_mode 0660          
 
-   1. And edit both `/etc/default/spamassassin` and  `/etc/default/spamd`
+   1. Once all of the above is set up, do:
+
+          echo CRON=1 | sudo tee /etc/default/spamassassin
+
+   1. And edit `/etc/default/spamd`
 
        and change the line :
 
@@ -531,12 +538,6 @@ I picked Newark for the location.
            sudo usermod -a -G debian-spamd <user list>
 
        The g+s looks a little odd here, but let me explain. The `spamcheck` transport runs as `Debian-exim`, which will create `/var/spamassassin/bayes_journal` if it does not exist. However, the `spamd` process likes to run as `debian-spamd` (so it can access all its files), which won't be able to read said journal and will complain  bitterly. By setting the directory to be setgid, all created files will have the correct gid set, ensuring that both `Debian-exim` and `debian-spamd` can read and write everything in it. This also means that the `sa_learn` wrapper that I run periodically will work, because I am in the `debian-spamd` group.
-
-   1. Add the following to `/etc/spamassassin/local.cf`, so that it uses the above (note that the last part of `bayes_path` is a prefix, not a directory).
-
-          use_bayes 1
-          bayes_path /var/spamassassin/bayes_db/bayes
-          bayes_file_mode 0660
 
    1. And, because linode's customers regularly exceed the allowable DNS queries from the free services (see [this post](https://www.linode.com/community/questions/21413/rcvd_in_dnswl_hi-false-positives)), add mthe following lines to the bottom of `/etc/spamassassin/local.cf`, so they won't be used in the scoring.
 
