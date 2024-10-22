@@ -3,6 +3,7 @@
 ## Notes
 
 * These instructions are for Ubuntu 24.04
+* There are a pile of scripts to run them in <https://github.com/mattcaron/ai_scripts>.
 
 ## General dependencies
 
@@ -284,7 +285,7 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 
 ### Run it
 
-  Just to test - we'll write a script to tie it all together later.
+  (Just to test - we'll use one of the scripts to run it for real).
 
     ollama serve
 
@@ -376,8 +377,8 @@ By default, MusicGPT stores things in `~/.local/share/musicgpt`. Let's not. So, 
 
 ## One startup script to rule them all
 
-This covers integrating Stable Diffusion with Open-Webui/Ollama, because we do so via a configuration fed via environment variables.
+The scripts are in <https://github.com/mattcaron/ai_scripts> and handles optionally integrating Stable Diffusion with Open-Webui/Ollama (conditional as to whether SD is running), because we do so via a configuration fed via environment variables set by the scripts.
 
 Alas, MusicGPT is not yet integrated with Open WebUI, so we'll have to use it separately.
 
-Now, all that said, as nice as the Stable Diffusion integration is, it's a more simplified interface, and the one provided by Automatic111 as so many more knobs to frob.
+Now, all that said, as nice as the Stable Diffusion integration is, it's a more simplified interface, and the one provided by Automatic111 as so many more knobs to frob - so it's accessible via the traditional web UI even when it's integrated with Open WebUI.
