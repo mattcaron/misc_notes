@@ -1159,6 +1159,7 @@ I picked Newark for the location.
 
        [Install]
        Alias=megamek.service
+       WantedBy=multi-user.target
 
 1. Enable and start the service:
 
@@ -1526,6 +1527,7 @@ I'm setting this up based on the prerequisite of only allowing IPv4 connections 
 
        [Install]
        Alias=minecraft.service
+       WantedBy=multi-user.target
 
 1. Enable and start the service:
 
