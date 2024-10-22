@@ -1429,7 +1429,8 @@ I picked Newark for the location.
 
        1. Once configured, add users as follows:
 
-              sudo prosodyctl register user your_domain password
+              sudo prosodyctl register user video.mattcaron.net password
+
     1. Allow media port through the firewall:
 
            sudo ufw allow 10000 comment "jitsi media"
@@ -1470,3 +1471,189 @@ I picked Newark for the location.
       where it needs to be. Yay.
 
    1. And then do the same for https://rpg.mattcaron.net/fallout>
+
+## Minecraft server
+
+### Overview
+
+This is setting up a private Minecraft Bedrock server. For optimal cross platform support, we will also be setting up a small DNS server so people using XBoxes and Switches can switch to use our DNS server to get around the fact that those platforms don't allow connecting to arbitrary servers. By setting up our own DNS and having them use our DNS server, we can lie about it.
+
+### Base server
+
+Note:
+
+I'm setting this up based on the prerequisite of only allowing IPv4 connections - that way I don't have to worry about people having to try different ports.
+
+1. Add a DNS entry for the IPv4 address for `minecraft.mattcaron.net`.
+
+1. Download from <https://www.minecraft.net/en-us/download/server/bedrock>
+
+1. Create a user, then disable it.
+
+       sudo adduser minecraft
+       sudo usermod -s /usr/sbin/nologin -L minecraft
+
+1. Open up firewall ports:
+
+       sudo ufw allow from any to 0.0.0.0/0 port 19133 proto udp comment 'minecraft'
+
+1. Edit `/home/minecraft/minecraft/server.properties` and set the config appropriately.
+
+    - IMPORTANT - set the port to 19133, as BedrockConnect (below) is going to get 19132.
+
+1. Create `/home/minecraft/runminecraft` as follows:
+
+       #!/bin/bash
+       cd /home/minecraft/minecraft
+       LD_LIBRARY_PATH=. ./bedrock_server > /home/minecraft/logs/bedrock_server-`date +%s`.log
+
+1. Create `/lib/systemd/system/minecraft.service` with the following:
+
+       [Unit]
+       Description=Minecraft service
+       After=network.target auditd.service
+
+       [Service]
+       ExecStart=/home/minecraft/runminecraft
+       KillMode=control-group
+       Restart=always
+       RestartPreventExitStatus=255
+       Type=simple
+       WorkingDirectory=/home/minecraft/minecraft
+       RuntimeDirectoryMode=0755
+       User=minecraft
+
+       [Install]
+       Alias=minecraft.service
+
+1. Enable and start the service:
+
+       sudo systemctl enable minecraft
+       sudo systemctl start minecraft
+
+1. Notes:
+    1. It lives in `/home/minecraft/`
+    1. `/home/minecraft/minecraft` is a symlink to the current version.
+    1. Download from <https://www.minecraft.net/en-us/download/server/bedrock> (just Minecraft Dedicated Server Software for Ubuntu (Linux))
+    1. [Addon install tutorial](https://nodecraft.com/support/games/minecraft-bedrock/how-to-install-addons-to-your-minecraft-bedrock-edition-server)
+        - Basically boils down to:
+            1. Install it locally.
+            2. Copy the `behavior_packs`, `resource_packs` directories and the `world_behavior_pack_history.json`, `world_behavior_packs.json`, `world_resource_pack_history.json`, `world_resource_packs.json` to the world directory on the server.
+    1. [File install locations for the minecraft launcher](https://mcpelauncher.readthedocs.io/en/latest/faq/index.html#can-i-use-resource-packs)
+        - Basically - `~/.local/share/mcpelauncher/games/com.mojang/minecraftWorlds`
+
+### BedrockConnect
+
+Because Microsoft likes to limit who can run servers, we have to make our own server list which has our server on it, and then we can replace their list. We do this with a server (BedrockConnect) and some DNS trickery.
+
+1. Download the latest version from:
+
+    <https://github.com/Pugmatt/BedrockConnect/releases>
+
+1. And then put it in the `~/minecraft/BedrockConnect` dir.
+
+1. In that directory, create `config.yml` containing the following:
+
+       nodb: true
+       custom_servers: servers.json
+       user_servers: false
+       featured_servers: false
+
+1. And also create `servers.json` containing the following:
+
+       [
+           {
+               "name": "Caron Server",
+               "address": "minecraft.mattcaron.net",
+               "port": 19132
+           }
+       ]
+
+1. Create `/lib/systemd/system/bedrockconnect.service` with the following (and the correct password):
+
+       [Unit]
+       Description=Bedrock Connect service
+       After=network.target auditd.service
+
+       [Service]
+       ExecStart=/usr/bin/java -jar /home/minecraft/BedrockConnect/BedrockConnect-1.0-SNAPSHOT.jar
+       ExecReload=/bin/kill -HUP $MAINPID
+       KillMode=process
+       Restart=always
+       RestartPreventExitStatus=255
+       Type=simple
+       WorkingDirectory=/home/minecraft/BedrockConnect
+       RuntimeDirectoryMode=0755
+       User=minecraft
+
+       [Install]
+       Alias=bedrockconnect.service
+
+1. Allow it through the firewall
+
+sudo ufw allow from any to 0.0.0.0/0 port 19132 proto udp comment 'minecraft server list'
+
+1. Enable and start the service:
+
+       sudo systemctl enable bedrockconnect
+       sudo systemctl start bedrockconnect
+
+### dnsmasq (DNS)
+
+Note: The original instructions specified BIND9, which is fine, but a bit heavyweight for our purposes. We'll use dnsmasq instead.
+
+1. Install
+
+       sudo apt install dnsmasq
+
+1. Edit `/etc/dnsmasq.conf` and:
+    1. Uncomment `domain-needed`
+    1. Uncomment `bogus-priv`
+    1. Set `interface=eth0`
+    1. Below `# bind-interfaces`, add `bind-dynamic`.
+    1. Set `domain=mattcaron.net`
+
+1. Switch over to using `dnsmasq` instead of using (only) `systemd-resolved`:
+
+       sudo ln -fs /run/systemd/resolve/resolv.conf /etc/resolv.conf
+       sudo systemctl restart dnsmasq systemd-resolved
+
+    This works because, changing the link apparently fixes `systemd-resolved` to not bind on all interfaces, which is what uncommenting `bind-interfaces` does in `dnsmasq.conf`.
+
+1. Add the following to `/etc/hosts`:
+
+       # The following are minecraft server aliases.
+       162.216.16.102       geo.hivebedrock.network
+       162.216.16.102       hivebedrock.network
+       162.216.16.102       play.inpvp.net
+       162.216.16.102       mco.lbsg.net
+       162.216.16.102       play.galaxite.net
+       162.216.16.102       play.enchanted.gg
+
+   And then bump it:
+
+       systemctl reload dnsmasq 
+
+1. And allow it through the firewall
+
+       sudo ufw allow 53/tcp comment 'dns'
+       sudo ufw allow 53/udp comment 'dns'
+
+### Set up backups
+
+1. Add the symlink to the backup script (cloned above):
+
+       cd ~/bin
+       ln -s ~/workspace/code/scripts/backup_scripts/minecraft_backup .
+
+1. And add it to cron. Create `/etc/cron.d/minecraft`
+
+       # /etc/cron.d/minecraft: crontab entries for minecraft maintenance
+
+       PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
+       MAILTO=root
+
+       # run every day at 6AM
+       * 6 * * *     root     /home/matt/bin/minecraft_backup
+       
+       # EOF
