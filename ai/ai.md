@@ -254,6 +254,10 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
   * Good for pranking your friends or just for using a face consistently
     throughout a photo set.
 
+* [text2video](https://github.com/kabachuha/sd-webui-text2video)
+  * For generating short video
+  * Note that [you need to manually download and install some extra models](https://github.com/kabachuha/sd-webui-text2video?tab=readme-ov-file#where-to-get-the-weights)
+
 ## Ollama (for text interactions)
 
 ### References
