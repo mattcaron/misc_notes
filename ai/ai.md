@@ -84,6 +84,8 @@ Look around https://civitai.com
 
 #### Short list of models
 
+**Note:** See [Stable Diffusion Notes](./stable_diffusion_notes.md) for model-specific config notes.
+
 ##### Models that work reliably
 
 ###### For people
@@ -92,36 +94,57 @@ Prompt for these was "a girl with pink hair wearing a long trenchcoat, a rainy
 neon-lit futuristic city in the background". No negative prompt. Everything else
 left at defaults (even if this is not optimal use of the model).
 
-* [Pony Diffusion V6 XL](https://civitai.com/models/257749)
-  * Recommends a VAE, but when I use it, the final step ends up getting all
-      messed up - funny colors, etc.
-  * Cartoonish style, fun.
+* [AbsoluteReality](https://civitai.com/models/81458)
 
-    ![Pony Diffusion V6 XL example](./images/pony_diffusion_v6_xl.png "Pony Diffusion V6 XL example")
-* [Pony Realism](https://civitai.com/models/372465)
-  * Realistic version of Pony.
+  ![AbsoluteReality example](./images/absolute_reality.png "AbsoluteReality example")
 
-    ![Pony Realism example](./images/pony_realism.png "Pony Realism example")
+* [CyberRealistic Pony](https://civitai.com/models/443821)
 
-* [RPG v5](https://civitai.com/models/1116)
-  * Stylized semi-realistic.
+  ![CyberRealistic Pony example](./images/cyber_pony.png "CyberRealistic Pony example")
 
-    ![RPG v5 example](./images/rpgv5.png "RPG v5 example")
+* [DreamShaper XL](https://civitai.com/models/112902)
+
+  ![DreamShaper example](./images/dreamshaperxl.png "DreamShaper example")
 
 * [GhostXL](https://civitai.com/models/312431/ghostxl)
 
   * Ghost in the Shell inspired.
   * Would likely benefit from some mechanically-related prompting (because, robots)
 
-    ![GhostXL example](./images/ghostxl.png
+  ![GhostXL example](./images/ghostxl.png
  "GhostXL example")
 
-* [AbsoluteReality](https://civitai.com/models/81458)
+* [Juggernaut XL](https://civitai.com/models/133005/juggernaut-xl)
 
-  * Less artsy, more realistic.
-  * Results seem similar to Pony Realism.
+  ![Juggernaut XL example](./images/juggernautxl.png
+ "JuggernautXL example")
 
-    ![AbsoluteReality example](./images/absolute_reality.png "AbsoluteReality example")
+* [Lyriel](https://civitai.com/models/22922/lyriel)
+  
+  ![Lyriel example](./images/lyriel.png
+ "Lyriel example")
+
+* [Pony Diffusion V6 XL](https://civitai.com/models/257749)
+  * Recommends a VAE, but when I use it, the final step ends up getting all
+      messed up - funny colors, etc.
+
+  ![Pony Diffusion V6 XL example](./images/pony_diffusion_v6_xl.png "Pony Diffusion V6 XL example")
+
+* [Pony Realism](https://civitai.com/models/372465)
+
+  ![Pony Realism example](./images/pony_realism.png "Pony Realism example")
+
+* [Real Dream](https://civitai.com/models/153568/real-dream)
+
+  ![Real Dream example](./images/real_dream.png "Real Dream example")
+
+* [Realistic Vision (Hyper)](https://civitai.com/models/4201?modelVersionId=501240)
+
+  ![Realistic Vision example](./images/realistic_vision.png "Realistic Vision example")
+
+* [RPG v5](https://civitai.com/models/1116)
+
+  ![RPG v5 example](./images/rpgv5.png "RPG v5 example")
 
 ###### For monsters
 
@@ -138,8 +161,7 @@ This may seem oddly specific, but I have fond memories of Twilight 2000 and Batt
 which used this art style - apparently, so do other people. Prompts were based on what
 they are supposed to generate - mecha and soldiers and such.
 
-* [RPG Rifting in the
-  90s](https://civitai.com/models/5324/rpg-rifting-in-the-90s)
+* [RPG Rifting in the 90s](https://civitai.com/models/5324/rpg-rifting-in-the-90s)
 
   * Art style reminiscent of RIFTS.
   * Also good for WEG D6 Star Wars space ships.
@@ -154,7 +176,7 @@ they are supposed to generate - mecha and soldiers and such.
 
   * Art style reminiscent of Twilight 2000.
   * Also good for WEG D6 Star Wars characters.
-  * Trigger is `TheRPGCharGenEsAFArt`, with a recommended weight between 0.5 and 1.12.
+  * Trigger is `TheRPGCharGenEsAFArt`, with a recommended weight between 0.5 and 1.12 (e.g. `(TheRPGCharGenEsAFArt:0.7)`)
 
   ![RPG 2000's Ink and pencil style character
   generator example](./images/rpg2000sInkAndPencil.png "RPG 2000's Ink and pencil style character
