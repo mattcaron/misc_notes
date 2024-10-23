@@ -156,95 +156,86 @@ I picked Dallas for the location.
 
 1. Create `/etc/nginx/sites-available/joyofnerding.com` as follows:
 
-    # joyofnerding.com is the default server.
+       # joyofnerding.com is the default server.
 
-    server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
+       server {
+           listen 80 default_server;
+           listen [::]:80 default_server;
 
-        server_name joyofnerding.com www.joyofnerding.com;
+           server_name joyofnerding.com www.joyofnerding.com;
 
-        # All http gets redirected to https
-        rewrite ^/$ https://www.joyofnerding.com permanent;
-        rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
-    }
-	
-    server {
-        listen 443 ssl default_server;
-        listen [::]:443 ssl default_server;
+           # All http gets redirected to https
+           rewrite ^/$ https://www.joyofnerding.com permanent;
+           rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
+       }
 
-        server_name joyofnerding.com www.joyofnerding.com;
+       server {
+           listen 443 ssl default_server;
+           listen [::]:443 ssl default_server;
 
-        ssl_certificate /etc/ssl/private/joyofnerding.com/fullchain.pem;
-        ssl_certificate_key /etc/ssl/private/joyofnerding.com/privkey.pem;
+           server_name joyofnerding.com www.joyofnerding.com;
 
-        #  Note: You should disable gzip for SSL traffic.
-        # See: https://bugs.debian.org/773332
-        gzip off;
+           ssl_certificate /etc/ssl/private/joyofnerding.com/fullchain.pem;
+           ssl_certificate_key /etc/ssl/private/joyofnerding.com/privkey.pem;
+
+           # Note: You should disable gzip for SSL traffic.
+           # See: https://bugs.debian.org/773332
+           gzip off;
     
-        #
-        # Read up on ssl_ciphers to ensure a secure configuration.
-        # See: https://bugs.debian.org/765782
+           root /home/matt/public_html/www.joyofnerding.com;
 
-        root /home/matt/public_html/www.joyofnerding.com;
+           # Add index.php to the list if you are using PHP
+           index index.html index.htm index.nginx-debian.html;
 
-        # Add index.php to the list if you are using PHP
-        index index.html index.htm index.nginx-debian.html;
+           location / {
+               # First attempt to serve request as file, then
+               # as directory, then fall back to displaying a 404.
+               try_files $uri $uri/ =404;
+           }
 
-        location / {
-            # First attempt to serve request as file, then
-            # as directory, then fall back to displaying a 404.
-            try_files $uri $uri/ =404;
-        }
-
-        # deny access to .htaccess files, if Apache's document root
-        # concurs with nginx's one
-        #
-        location ~ /\.ht {
-            deny all;
-        }
-    }
+           # deny access to .htaccess files, if Apache's document root
+           # concurs with nginx's one
+           #
+           location ~ /\.ht {
+               deny all;
+           }
+       }
 
 1. Create `/etc/nginx/sites-available/thejoyofnerding.com` as follows:
 
-    # thejoyofnerding.com redirects to joyofnerding.com
+       # thejoyofnerding.com redirects to joyofnerding.com
 
-    server {
-        listen 80;
-        listen [::]:80;
+       server {
+           listen 80;
+           listen [::]:80;
 
-        server_name thejoyofnerding.com www.thejoyofnerding.com;
+           server_name thejoyofnerding.com www.thejoyofnerding.com;
 
-        # All thejoyofnerding.com gets redirected to joyofnerding.com
-        rewrite ^/$ https://www.joyofnerding.com permanent;
-        rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
-    }
+           # All thejoyofnerding.com gets redirected to joyofnerding.com
+           rewrite ^/$ https://www.joyofnerding.com permanent;
+           rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
+       }
 
-    server {
-        listen 443 ssl;
-        listen [::]:443 ssl;
+       server {
+           listen 443 ssl;
+           listen [::]:443 ssl;
 
-        server_name thejoyofnerding.com www.thejoyofnerding.com;
+           server_name thejoyofnerding.com www.thejoyofnerding.com;
 
-        ssl_certificate /etc/ssl/private/thejoyofnerding.com/fullchain.pem;
-        ssl_certificate_key /etc/ssl/private/thejoyofnerding.com/privkey.pem;
+           ssl_certificate /etc/ssl/private/thejoyofnerding.com/fullchain.pem;
+           ssl_certificate_key /etc/ssl/private/thejoyofnerding.com/privkey.pem;
 
-        #  Note: You should disable gzip for SSL traffic.
-        # See: https://bugs.debian.org/773332
-        gzip off;
+           #  Note: You should disable gzip for SSL traffic.
+           # See: https://bugs.debian.org/773332
+           gzip off;
 
-        #
-        # Read up on ssl_ciphers to ensure a secure configuration.
-        # See: https://bugs.debian.org/765782
+           # All thejoyofnerding.com gets redirected to joyofnerding.com
+           rewrite ^/$ https://www.joyofnerding.com permanent;
+           rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
+       }
 
-        # All thejoyofnerding.com gets redirected to joyofnerding.com
-        rewrite ^/$ https://www.joyofnerding.com permanent;
-        rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
-    }
-	
-1. Edit `/etc/nginx/nginx.conf`. Find the `SSL Settings` section,
-   remove all the existing code, and add the following:
-   
+1. Edit `/etc/nginx/nginx.conf`. Find the `SSL Settings` section, remove all the existing code, and add the following:
+
         # Generated from https://ssl-config.mozilla.org/
 
         ssl_session_timeout 1d;
@@ -263,12 +254,10 @@ I picked Dallas for the location.
 
 1. Disable the default site, enable these, and restart the server.
 
-    cd /etc/nginx/sites-enabled/
-    sudo rm default
-	sudo ln -s /etc/nginx/sites-available/joyofnerding.com
-    sudo ln -s /etc/nginx/sites-available/thejoyofnerding.com
-
-1. TODO - read up on the SSL cipher stuff and pick a good suite.
+       cd /etc/nginx/sites-enabled/
+       sudo rm default
+       sudo ln -s /etc/nginx/sites-available/joyofnerding.com
+       sudo ln -s /etc/nginx/sites-available/thejoyofnerding.com
 
 ## Mail - dovecot / exim / spamassassin
 
@@ -277,7 +266,7 @@ I picked Dallas for the location.
 
     1. Install it:
 
-       sudo apt install dovecot-imapd
+           sudo apt install dovecot-imapd
 
     1. Configure it:
 

@@ -217,7 +217,7 @@ I picked Newark for the location.
 
     1. Install it:
 
-       sudo apt install dovecot-imapd
+           sudo apt install dovecot-imapd
 
     1. Configure it:
 
