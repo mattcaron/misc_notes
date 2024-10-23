@@ -134,7 +134,7 @@ I picked Newark for the location.
 
     1. Then add the following to my crontab:
 
-           @daily               /usr/bin/ntpq -p; echo; df -lh; echo; landscape-sysinfo
+           @daily               df -lh; echo; landscape-sysinfo
 
 1. Configure the time zone:
 
