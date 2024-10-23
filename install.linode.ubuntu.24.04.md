@@ -1657,6 +1657,6 @@ Note: The original instructions specified BIND9, which is fine, but a bit heavyw
        MAILTO=root
 
        # run every day at 6AM
-       * 6 * * *     root     /home/matt/bin/minecraft_backup
+       0 6 * * *     root     /home/matt/bin/minecraft_backup
        
        # EOF
