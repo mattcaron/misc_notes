@@ -137,7 +137,7 @@ I picked Dallas for the location.
        PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/snap/bin
        MAILTO=root
 
-       37 02 * * *     root     service apache2 stop; certbot renew; chmod -R g+r /etc/letsencrypt; service apache2 start; service dovecot reload; service exim4 reload
+       37 02 * * *     root     service nginx stop; certbot renew; chmod -R g+r /etc/letsencrypt; service nginx start; service dovecot reload; service exim4 reload
 
     Note that:
       - we restart services
@@ -154,11 +154,121 @@ I picked Dallas for the location.
        sudo ufw allow http
        sudo ufw allow https
 
-1. TODO - more config
+1. Create `/etc/nginx/sites-available/joyofnerding.com` as follows:
 
-   1. Permanent Redirect www.thejoyofnerding.com to just joyofnerding.com
-   1. Serve that from the correct dir.
-   1. But first, it needs content....
+    # joyofnerding.com is the default server.
+
+    server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        server_name joyofnerding.com www.joyofnerding.com;
+
+        # All http gets redirected to https
+        rewrite ^/$ https://www.joyofnerding.com permanent;
+        rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
+    }
+	
+    server {
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
+
+        server_name joyofnerding.com www.joyofnerding.com;
+
+        ssl_certificate /etc/ssl/private/joyofnerding.com/fullchain.pem;
+        ssl_certificate_key /etc/ssl/private/joyofnerding.com/privkey.pem;
+
+        #  Note: You should disable gzip for SSL traffic.
+        # See: https://bugs.debian.org/773332
+        gzip off;
+    
+        #
+        # Read up on ssl_ciphers to ensure a secure configuration.
+        # See: https://bugs.debian.org/765782
+
+        root /home/matt/public_html/www.joyofnerding.com;
+
+        # Add index.php to the list if you are using PHP
+        index index.html index.htm index.nginx-debian.html;
+
+        location / {
+            # First attempt to serve request as file, then
+            # as directory, then fall back to displaying a 404.
+            try_files $uri $uri/ =404;
+        }
+
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #
+        location ~ /\.ht {
+            deny all;
+        }
+    }
+
+1. Create `/etc/nginx/sites-available/thejoyofnerding.com` as follows:
+
+    # thejoyofnerding.com redirects to joyofnerding.com
+
+    server {
+        listen 80;
+        listen [::]:80;
+
+        server_name thejoyofnerding.com www.thejoyofnerding.com;
+
+        # All thejoyofnerding.com gets redirected to joyofnerding.com
+        rewrite ^/$ https://www.joyofnerding.com permanent;
+        rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
+    }
+
+    server {
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        server_name thejoyofnerding.com www.thejoyofnerding.com;
+
+        ssl_certificate /etc/ssl/private/thejoyofnerding.com/fullchain.pem;
+        ssl_certificate_key /etc/ssl/private/thejoyofnerding.com/privkey.pem;
+
+        #  Note: You should disable gzip for SSL traffic.
+        # See: https://bugs.debian.org/773332
+        gzip off;
+
+        #
+        # Read up on ssl_ciphers to ensure a secure configuration.
+        # See: https://bugs.debian.org/765782
+
+        # All thejoyofnerding.com gets redirected to joyofnerding.com
+        rewrite ^/$ https://www.joyofnerding.com permanent;
+        rewrite ^/(.*)$ https://www.joyofnerding.com/$1 permanent;
+    }
+	
+1. Edit `/etc/nginx/nginx.conf`. Find the `SSL Settings` section,
+   remove all the existing code, and add the following:
+   
+        # Generated from https://ssl-config.mozilla.org/
+
+        ssl_session_timeout 1d;
+        ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
+
+        # modern configuration
+        ssl_protocols TLSv1.3;
+        ssl_prefer_server_ciphers off;
+
+        # HSTS (ngx_http_headers_module is required) (63072000 seconds)
+        add_header Strict-Transport-Security "max-age=63072000" always;
+
+        # OCSP stapling
+        ssl_stapling on;
+        ssl_stapling_verify on;
+
+1. Disable the default site, enable these, and restart the server.
+
+    cd /etc/nginx/sites-enabled/
+    sudo rm default
+	sudo ln -s /etc/nginx/sites-available/joyofnerding.com
+    sudo ln -s /etc/nginx/sites-available/thejoyofnerding.com
+
+1. TODO - read up on the SSL cipher stuff and pick a good suite.
 
 ## Mail - dovecot / exim / spamassassin
 
