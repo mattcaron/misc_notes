@@ -139,6 +139,8 @@ I picked Dallas for the location.
 
        37 02 * * *     root     service nginx stop; certbot renew; chmod -R g+r /etc/letsencrypt; service nginx start; service dovecot reload; service exim4 reload
 
+       # EOF
+
     Note that:
       - we restart services
       - we fix up the permissions to be group readable, because new files will be created as 0600.
