@@ -921,6 +921,9 @@ I picked Newark for the location.
        @daily               /home/matt/bin/mysql_backup > /dev/null
        @daily               /home/matt/bin/postgresql_backup > /dev/null
 
+       # clean out the backups (all end in .lzma) over 90 days old so the disk doesn't fill up
+       0 12 * * *           find ~/attic/backup/linode/ -name \*.lzma -mtime +90 -execdir rm '{}' \;
+
 ## Nextcloud
 
 1. Make sure to add `owncloud.mattcaron.net` to linode DNS
