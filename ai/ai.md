@@ -259,6 +259,13 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
   * For generating short video
   * Note that [you need to manually download and install some extra models](https://github.com/kabachuha/sd-webui-text2video?tab=readme-ov-file#where-to-get-the-weights)
 
+* [ControlNet](https://github.com/Mikubill/sd-webui-controlnet.git)
+  * Required by Deforum
+
+* [Deforum](https://github.com/deforum-art/sd-webui-deforum)
+  * For generating transformation videos (morping, etc.)
+  * [Tutorial](https://stable-diffusion-art.com/deforum/)
+
 ## Ollama (for text interactions)
 
 ### References
