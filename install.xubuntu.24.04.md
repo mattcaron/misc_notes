@@ -847,7 +847,7 @@ file then use it to decrypt the volume - your call.
 
   1. Install publishing tools from apt:
 
-         sudo apt install xsane scribus scribus-template gnuplot gnuplot-mode digikam kipi-plugins okular okular-extra-backends k3b libk3b-extracodecs gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox graphviz audacity libsox-fmt-all dvdbackup dia gsfonts-x11 ubuntustudio-fonts vorbisgain clementine krita sound-juicer djvulibre-bin djvulibre-desktop pdf2djvu ubuntu-restricted-extras cheese arandr blender kdenlive tesseract-ocr mp3info libreoffice meshlab pithos handbrake mp3gain
+         sudo apt install xsane scribus scribus-template gnuplot gnuplot-mode digikam kipi-plugins okular okular-extra-backends k3b libk3b-extracodecs gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox graphviz audacity libsox-fmt-all dvdbackup dia gsfonts-x11 ubuntustudio-fonts vorbisgain clementine krita sound-juicer djvulibre-bin djvulibre-desktop pdf2djvu ubuntu-restricted-extras cheese arandr blender kdenlive tesseract-ocr mp3info libreoffice meshlab pithos handbrake mp3gain obstudio
 
   1. Install dvdstyler:
       1. Refs: <http://ubuntuhandbook.org/index.php/2019/05/dvdstyler-3-1-released-with-hd-videos-support-how-to-install/>
@@ -864,6 +864,18 @@ file then use it to decrypt the volume - your call.
   1. Change wodim to be suid root to limit having to sudo.
 
          sudo chmod u+s `which wodim`
+
+  1. Add a udev rule so my Griffin Powermate works. Create `/etc/udev/rules.d/99-powermate.rules` as follows:
+
+         # Griffin Powermate
+         SUBSYSTEM=="input", ATTRS{idVendor}=="077d", ATTRS{idProduct}=="0410", SYMLINK+="powermate", MODE="660", GROUP="video"
+
+     This does 2 main things:
+
+     1. Fixes the perms so it is usable by members of the `video` group.
+     1. Creates a symlink as `/dev/powermate` for ease of use.
+
+     You can then set it up in the JogShuttle config screen in Kdenlive (which should just autodetect it).
 
   1. Make DVDs work
 
