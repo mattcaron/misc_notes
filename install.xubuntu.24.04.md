@@ -847,7 +847,7 @@ file then use it to decrypt the volume - your call.
 
   1. Install publishing tools from apt:
 
-         sudo apt install xsane scribus scribus-template gnuplot gnuplot-mode digikam kipi-plugins okular okular-extra-backends k3b libk3b-extracodecs gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox graphviz audacity libsox-fmt-all dvdbackup dia gsfonts-x11 ubuntustudio-fonts vorbisgain clementine krita sound-juicer djvulibre-bin djvulibre-desktop pdf2djvu ubuntu-restricted-extras cheese arandr blender kdenlive tesseract-ocr mp3info libreoffice meshlab pithos handbrake mp3gain obstudio
+         sudo apt install xsane scribus scribus-template gnuplot gnuplot-mode digikam kipi-plugins okular okular-extra-backends k3b libk3b-extracodecs gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox graphviz audacity libsox-fmt-all dvdbackup dia gsfonts-x11 ubuntustudio-fonts vorbisgain clementine krita sound-juicer djvulibre-bin djvulibre-desktop pdf2djvu ubuntu-restricted-extras cheese arandr blender kdenlive tesseract-ocr mp3info libreoffice meshlab pithos handbrake mp3gain gimp-plugin-registry
 
   1. Install dvdstyler:
       1. Refs: <http://ubuntuhandbook.org/index.php/2019/05/dvdstyler-3-1-released-with-hd-videos-support-how-to-install/>
@@ -883,6 +883,17 @@ file then use it to decrypt the volume - your call.
 
             sudo apt install libdvd-pkg
             sudo dpkg-reconfigure libdvd-pkg
+
+  1. Install OBS Studio
+
+         sudo add-apt-repository ppa:obsproject/obs-studio
+         sudo apt install obs-studio
+
+  1. Install updated Hugo
+
+     Yeah, it's a snap, and snaps suck, but the one in apt is too old.
+
+         sudo snap install hugo 
 
 ### Crazy desktop machine with too many drives
 
