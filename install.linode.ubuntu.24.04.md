@@ -1544,9 +1544,15 @@ I'm setting this up based on the prerequisite of only allowing IPv4 connections 
     1. [Addon install tutorial](https://nodecraft.com/support/games/minecraft-bedrock/how-to-install-addons-to-your-minecraft-bedrock-edition-server)
         - Basically boils down to:
             1. Install it locally.
+               - It goes in `~/.local/share/mcpelauncher/games/com.mojang`
+               - In the launcher settings, there is an "Import World or Pack"
+               - **And then you need to exit and restart the launcher**
             2. Copy the `behavior_packs`, `resource_packs` directories and the `world_behavior_pack_history.json`, `world_behavior_packs.json`, `world_resource_pack_history.json`, `world_resource_packs.json` to the world directory on the server.
     1. [File install locations for the minecraft launcher](https://mcpelauncher.readthedocs.io/en/latest/faq/index.html#can-i-use-resource-packs)
-        - Basically - `~/.local/share/mcpelauncher/games/com.mojang/minecraftWorlds`
+        - Basically:
+
+              cd ~/.local/share/mcpelauncher/games/com.mojang/minecraftWorlds
+              zip -r mods.zip behavior_packs/ resource_packs/ world_behavior_pack_history.json world_behavior_packs.json world_resource_pack_history.json world_resource_packs.json
 
 ### BedrockConnect
 
