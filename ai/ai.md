@@ -422,6 +422,21 @@ Note that the GUI is a WebUI running locally, and the music playback is all dist
 
 By default, MusicGPT stores things in `~/.local/share/musicgpt`. Let's not. So, move that dir to `~/storage1/ai` and then symlink back - `cd ~/.local/share && ln -s ~/storage1/ai/musicgpt .`
 
+## Auto-Subtitle (for generating Subtitles & Closed Captions)
+
+### Install
+
+    git clone https://github.com/m1guelpf/auto-subtitle.git
+    cd auto-subtitle
+    python -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt -U
+    python setup.py install
+
+It's missing this dependency, so install it manually:
+
+    pip install ffmpeg-python
+
 ## One startup script to rule them all
 
 The scripts are in <https://github.com/mattcaron/ai_scripts> and handles optionally integrating Stable Diffusion with Open-Webui/Ollama (conditional as to whether SD is running), because we do so via a configuration fed via environment variables set by the scripts.
