@@ -343,15 +343,55 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 
 #### Continue plugin for VSCode / Codium
 
-TODO - document
+    codium --install-extension continue.continue
+
+And then configure it:
+
+   1. Open it by hitting Ctrl + L. That will open the sidebar and bring up the quickstart.. which is annoying and doesn't use the things we want.
+   1. Click the gear to open the `config.json` at the correct spot, and set it up like this:
+
+          "models": [
+            {
+              "model": "llama3.2:1b",
+              "provider": "ollama",
+              "title": "Llama 3.2: 1b",
+              "apiBase": "http://localhost:11434/"
+            },
+            {
+              "model": "dolphin-llama3:latest",
+              "provider": "ollama",
+              "title": "Dolphin Llama 3",
+              "apiBase": "http://localhost:11434/"
+            }
+          ],
+          "tabAutocompleteModel": {
+            "title": "Dolphin Coder",
+            "provider": "ollama",
+            "model": "dolphincoder:latest",
+            "apiBase": "http://localhost:11434/"
+          },
+          "embeddingsProvider": {
+            "model": "mxbai-embed-large:latest",
+            "provider": "ollama"
+          },
+
+Now you can do the AI things.
 
 #### Page Assist for Firefox
 
-TODO - document
+1. Install the Page Assist extension via the normal "extensions" method.
+1. Open the settings and:
+    1. Under `RAG Settings`, set the model to `nomic-embed-text:latest`
+1. Set the model however you want it based on what is appropriate for the hardware on which it is running.
 
-#### ThunderAI for Thunderburd
+#### ThunderAI for Thunderbird
 
-TODO - document
+1. Install the Thunder AI extension via the normal "Add Ons" method.
+1. Open the settings and:
+   1. Change "Connection Type" to `Ollama API`
+   1. Set "Host Address" to `http://127.0.0.1:11434`
+   1. Click `Update Ollama Models List`
+   1. Select an appropriate model for the hardware on which it is running.
 
 ## MusicGPT (For music generation)
 
