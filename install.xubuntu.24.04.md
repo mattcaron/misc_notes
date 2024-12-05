@@ -1165,10 +1165,23 @@ download it again.
 
               sudo ufw allow 26000 comment 'quake'
 
-  1. Install doomsday (modernized Doom/Doom2/Heretic/Hexen native engine) and
-     eureka level editor
+  1. Install doomsday (modernized Doom/Doom2/Heretic/Hexen native engine)
 
-         sudo apt install doomsday eureka
+     * The version in the 24.04 repos crashes, likely due to: <https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1960121.html>
+     * I tried compiling it from source, but it still crashed when starting the game.
+     * So, flatpak.
+
+           sudo apt install flatpak
+           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+           flatpak install flathub net.dengine.Doomsday
+
+        and then run it with:
+
+           flatpak run net.dengine.Doomsday
+
+  1. Install eureka (doom level editor)
+
+          sudo apt install eureka
 
      (this is configured from inside its own menus)
 
