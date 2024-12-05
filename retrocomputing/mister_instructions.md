@@ -1,4 +1,10 @@
-# Basic install
+# MiSTer install instructions
+
+## Important note
+
+These instructions are from summer of 2020 and are therefore old. I have not rebuild it since. The state of the art has advanced greatly since then, with the advent of things like [Mr. Fusion](https://github.com/MiSTer-devel/mr-fusion). This document should, therefore, be regarded more as a historical curiosity rather than a proper guide.
+
+## Basic install
 
 This is a synthesis of the docs and the `MiSTer-sd-installer-linux.sh` script from `https://github.com/michaelshmitty/SD-Installer-macos_MiSTer`.
 
@@ -158,105 +164,9 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 
 1. [Filesystem reference](https://github.com/MiSTer-devel/Main_MiSTer/wiki/Folders-and-File-naming)
 1. Software for most things goes in the `games` subdir. It's organized by platform. Put your roms in the right subdir for your platform.
-1. The directory names (filesystem case) are not always correct if using an ext4 formatted drive, as I am. Correct case is listed below:
-    * AcornAtom
-    * AcornElectron
-    * AliceMC10
-    * Altair8800
-    * Amiga
-    * Amstrad
-    * 'Amstrad PCW'
-    * AO486
-    * APOGEE
-    * APPLE-I
-    * Apple-II
-    * AQUARIUS
-    * Arcadia
-    * ARCHIE
-    * Arduboy
-    * Astrocade
-    * ATARI2600
-    * ATARI5200
-    * ATARI7800
-    * ATARI800
-    * AtariLynx
-    * AtariST
-    * AVision
-    * AY-3-8500
-    * BBCMicro
-    * BK0011M
-    * C16
-    * C64
-    * ChannelF
-    * Chip8
-    * CO2650
-    * CoCo2
-    * CoCo3
-    * Coleco
-    * EDSAC
-    * Electron
-    * EpochGalaxyII
-    * Galaksija
-    * GAMEBOY
-    * GAMEBOY2P
-    * GameNWatch
-    * GBA
-    * GBA2P
-    * Genesis
-    * hbmame
-    * Intellivision
-    * Interact
-    * Jaguar
-    * Jupiter
-    * Laser
-    * Lynx48
-    * MACPLUS
-    * mame
-    * MegaCD
-    * MEMTEST
-    * MSX
-    * MultiComp
-    * NEOGEO
-    * NES
-    * ODYSSEY2
-    * Ondra_SPO186
-    * ORAO
-    * Oric
-    * PC88
-    * PC8801
-    * PDP1
-    * PET2001
-    * PMD85
-    * PSX
-    * QL
-    * RX78
-    * S32X
-    * SAMCOUPE
-    * sharpmz
-    * SMS
-    * SNES
-    * 'Sord M5'
-    * Spectrum
-    * SPMX
-    * SuperJacob
-    * SVI328
-    * TatungEinstein
-    * TGFX16
-    * TGFX16-CD
-    * TI-99_4A
-    * TomyScramble
-    * TRS-80
-    * TSConf
-    * UK101
-    * VC4000
-    * VECTOR06
-    * VECTREX
-    * VIC20
-    * WonderSwan
-    * X68000
-    * zx48
-    * ZX81
-    * ZXNext
+1. The directory names (filesystem case) are not always correct if using an ext4 formatted drive, as I am. It will also change over time.
+
+The [MiSTer FPGA Documentation](https://mister-devel.github.io/MkDocs_MiSTer/) seems to have a reasonably up to date list of cores and their corresponding directories.
 
 1. Mappings for stuff from Archive.org:
 
@@ -430,12 +340,6 @@ Config notes follow. Note that I was aiming for nostalgia - what I remember it l
 This setup is a little bit different, in that running it gives you a user interface and then you add games to that, pointing it at directories. As such, you can either put them on the SD card (curent setup creates a `/media/fat/ScummVM/GAMES`) directory or, if using an external drive, for example, put them wherever you like. To this end, I made `/media/usb0/scummvm` and put all my games there, then added them via the menu.
 
 # TODO - 20210726
-
-## General
-
-1. Copy over the 2020 TOSEC archive and update the TOSEC section accordingly.
-    1. Make sure to unzip the files on move this time, so I don't need to drop to a prompt and do it later.
-1. Fix the resolution issues on systems listed above.
 
 ## Controllers
 
