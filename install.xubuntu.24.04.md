@@ -1045,7 +1045,7 @@ download it again.
 
   1. Install video game things from apt:
 
-         sudo apt install wine-stable playonlinux steam jstest-gtk pcsx2 gamemode lutris protontricks
+         sudo apt install wine-stable playonlinux steam jstest-gtk pcsx2 gamemode protontricks wine32:i386
 
   1. And from snap
 
