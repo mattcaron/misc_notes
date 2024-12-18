@@ -750,6 +750,14 @@ file then use it to decrypt the volume - your call.
 
          sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client sqlite3 dia gsfonts-x11 python3-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python3-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.2-dev libwxbase3.2-1t64 ccache npm gdc libgphobos-dev libsqlite3-dev openscad slic3r arduino adb cmake libncurses-dev flex bison gperf astyle okteta
 
+  1. Set up KVM and management tools
+
+         sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+         sudo systemctl enable --now libvirtd
+         sudo usermod -aG libvirt,kvm matt
+
+       The KVM guest drivers are available from <https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md>.
+
   1. Install freecad
 
          sudo add-apt-repository ppa:freecad-maintainers/freecad-stable
@@ -778,14 +786,6 @@ file then use it to decrypt the volume - your call.
   1. Install qbrew build dependencies:
 
          sudo apt install qt5-qmake qtbase5-dev qttools5-dev-tools
-
-  1. Install Virtualbox package archive, install Virtualbox, and give users permission to use it:
-
-         wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --no-default-keyring --keyring=/usr/share/keyrings/oracle-virtualbox-2016.gpg --import
-         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian noble contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
-         sudo apt update
-         sudo apt install virtualbox-7.1
-         sudo usermod -a -G vboxusers matt
 
   1. Install docker and give users permission to use it:
 
