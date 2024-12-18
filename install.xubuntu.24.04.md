@@ -1124,30 +1124,6 @@ download it again.
              # Nintendo Switch Pro Controller over bluetooth hidraw
              KERNEL=="hidraw*", KERNELS=="*057E:2009*", MODE="0666"
 
-  1. Set up the 8BitDo Ultimate controller
-
-         sudo apt install xboxdrv
-
-     To set perms and automatically run xboxdrv, add `/etc/udev/rules.d/99-8bitdo-ultimate.rules` with the contents of:
-
-         # 8BitDo Ultimate controller
-         SUBSYSTEM=="usb", ATTRS{idVendor}=="2dc8", ATTRS{idProduct}=="3106", MODE="0666"
-
-     Fix perms:
-
-         sudo chmod a+r /etc/udev/rules.d/99-8bitdo-ultimate.rules
-
-     And then kick it:
-
-         sudo udevadm control --reload-rules && sudo udevadm trigger
-
-     Once that is done, the following driver line will work:
-
-         /usr/bin/xboxdrv --device-by-id 2dc8:3106 --type xbox360
-
-     **Note:** this must be kept running in order for the controller to not time
-     out and power off after about 2 minutes.
-  
   1. Install Rise of The Triad (ROTT), symlink game files where expected, and configure it properly.
 
          sudo apt install rott
