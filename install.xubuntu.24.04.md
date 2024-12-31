@@ -748,7 +748,7 @@ file then use it to decrypt the volume - your call.
 
   1. Install development tools.
 
-         sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client sqlite3 dia gsfonts-x11 python3-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python3-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.2-dev libwxbase3.2-1t64 ccache npm gdc libgphobos-dev libsqlite3-dev openscad slic3r arduino adb cmake libncurses-dev flex bison gperf astyle okteta
+         sudo apt install nmap gcc make g++ gdb autoconf libtool automake libc6-dev meld xmlstarlet libtk-gbarr-perl subversion monodoc-manual glade kcachegrind kcachegrind-converters graphviz mysql-client sqlite3 dia gsfonts-x11 python3-pycurl python3-paramiko python3-pip python3-virtualenv python-is-python3 python3-setuptools regexxer git gitk git-svn libmath-round-perl picocom manpages-posix manpages-posix-dev manpages-dev manpages dh-make devscripts mercurial libboost-all-dev libboost-all-dev libhunspell-dev libwxgtk3.2-dev libwxbase3.2-1t64 ccache npm gdc libgphobos-dev libsqlite3-dev openscad slic3r arduino adb cmake libncurses-dev flex bison gperf astyle okteta f3d
 
   1. Set up KVM and management tools
 
