@@ -563,16 +563,16 @@ I picked Newark for the location.
            cd ~/workspace/code
            git clone https://github.com/sympa-community/sympa.git
            cd sympa
-           git checkout -b production 6.2.72
+           git checkout -b production 6.2.74
 
        to upgrade later:
 
            cd ~/workspace/code/sympa
            git fetch
            git checkout production
-           git merge 6.2.72
+           git merge 6.2.74
 
-       (where 6.2.72 is the current version)
+       (where 6.2.74 is the current version)
 
     1. Copy this whole mess over to the linode server:
 
@@ -596,7 +596,7 @@ I picked Newark for the location.
 
     1. Set the versions in the environment (subsequent shells use this to save typing):
 
-           export VER=6.2.72
+           export VER=6.2.74
            export OLDVER=6.2.72
 
     1. Make the destination directory:
@@ -623,6 +623,7 @@ I picked Newark for the location.
     1. Make some compatibilty symlinks:
 
            sudo -E -u sympa -s
+		   
            cd /opt/sympa-${VER}
            ln -s /var/lib/sympa/expl .
            ln -s /var/lib/sympa/wwsarchive .
