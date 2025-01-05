@@ -758,6 +758,12 @@ file then use it to decrypt the volume - your call.
 
        The KVM guest drivers are available from <https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md>.
 
+  1. Install OpenAndroidBackup dependencies
+
+     * Ref <https://github.com/mrrfv/open-android-backup/blob/master/README.md#linux>
+
+           sudo apt install p7zip-full adb curl whiptail pv bc secure-delete zenity
+
   1. Install freecad
 
          sudo add-apt-repository ppa:freecad-maintainers/freecad-stable
