@@ -647,7 +647,7 @@ file then use it to decrypt the volume - your call.
 
   1. More applications
 
-         sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils gnome-calculator tumbler tumbler-plugins-extra audacious
+         sudo apt install xfce4-goodies xfce4-mount-plugin usb-creator-gtk cifs-utils gnome-calculator tumbler tumbler-plugins-extra audacious usbview
 
   1. Install real chrome.
 
