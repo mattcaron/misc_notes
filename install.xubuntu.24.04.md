@@ -758,6 +758,11 @@ file then use it to decrypt the volume - your call.
 
        The KVM guest drivers are available from <https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md>.
 
+       1. And then add a backup for the current libvirt config
+
+              cd /etc/cron.daily
+              sudo ln -s /home/matt/workspace/code/scripts/backup_scripts/libvirt_config_backup
+
   1. Install OpenAndroidBackup dependencies
 
      * Ref <https://github.com/mrrfv/open-android-backup/blob/master/README.md#linux>
