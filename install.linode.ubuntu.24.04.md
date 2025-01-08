@@ -548,7 +548,7 @@ I picked Newark for the location.
 
    1. restart
 
-         sudo service spamd restart
+          sudo service spamd restart
 
 1. Edit `/etc/aliases` and:
 
@@ -761,24 +761,24 @@ I picked Newark for the location.
 
     1. Fake out `suexec`, because it is hardcoded to want things in `/var/www`:
 
-           1. Make dir:
+         1. Make dir:
 
-                  sudo mkdir /var/www/sympa/
-                  sudo chmod a+rx /var/www/sympa/
-                  sudo chown sympa:sympa /var/www/sympa/
+               sudo mkdir /var/www/sympa/
+               sudo chmod a+rx /var/www/sympa/
+               sudo chown sympa:sympa /var/www/sympa/
 
-           1. Create `/var/www/sympa/wwsympa.cgi`:
+         1. Create `/var/www/sympa/wwsympa.cgi`:
 
-                  #!/bin/sh
-                  # The script we want Sympa to execute is accessed via a symlink but
-                  # suexec doesn't like that so this script is a wrapper which gets
-                  # executed directly to avoid that problem.
-                  exec  /opt/sympa/cgi-bin/wwsympa.fcgi
+                #!/bin/sh
+                # The script we want Sympa to execute is accessed via a symlink but
+                # suexec doesn't like that so this script is a wrapper which gets
+                # executed directly to avoid that problem.
+                exec  /opt/sympa/cgi-bin/wwsympa.fcgi
 
-           1. Fix the perms on it:
+         1. Fix the perms on it:
 
-                  sudo chown sympa:sympa /var/www/sympa/wwsympa.cgi
-                  sudo chmod u+x /var/www/sympa/wwsympa.cgi
+                sudo chown sympa:sympa /var/www/sympa/wwsympa.cgi
+                sudo chmod u+x /var/www/sympa/wwsympa.cgi
 
     1. `/etc/sympa/sympa.conf` changes:
 
