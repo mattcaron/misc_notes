@@ -308,11 +308,44 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 
 ##### Installation
 
+1. Prerequisites - versions 0.5.15 and later require node22.
+
+    * Cribbed from https://deb.nodesource.com/setup_22.x but I don't run random scripts from the internet.
+
+    1. Add key
+
+           wget -O- https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --no-default-keyring --keyring=/usr/share/keyrings/nodesource.gpg --import
+
+    1. Create `/etc/apt/sources.list.d/nodesource.list` as follows:
+
+           deb [arch=amd64 signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main
+           
+    1. Create `/etc/apt/preferences.d/nsolid` as follows:
+
+           Package: nsolid
+           Pin: origin deb.nodesource.com
+           Pin-Priority: 600
+
+    1. Create `/etc/apt/preferences.d/nodejs` as follows:
+
+         Package: nodejs
+         Pin: origin deb.nodesource.com
+         Pin-Priority: 600
+
+    1. Fix perms:
+
+         sudo chmod a+r /etc/apt/sources.list.d/nodesource.list /etc/apt/preferences.d/nsolid /etc/apt/preferences.d/nodejs
+
+    1. Install it:
+
+         sudo apt update
+         sudo apt install -y nodejs
+
 1. Clone it and go there
 
        git clone https://github.com/open-webui/open-webui.git
        cd open-webui
-       git checkout v0.3.32
+       git checkout v0.5.15
 
 1. Create a venv for into which we install things (to keep it all compartmentalized)
 
