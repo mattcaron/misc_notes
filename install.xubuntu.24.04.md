@@ -752,7 +752,7 @@ file then use it to decrypt the volume - your call.
 
   1. Set up KVM and management tools
 
-         sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+         sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager virtiofsd
          sudo systemctl enable --now libvirtd
          sudo usermod -aG libvirt,kvm matt
 
