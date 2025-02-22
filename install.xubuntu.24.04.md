@@ -858,7 +858,7 @@ file then use it to decrypt the volume - your call.
 
   1. Install publishing tools from apt:
 
-         sudo apt install xsane scribus scribus-template gnuplot gnuplot-mode digikam kipi-plugins okular okular-extra-backends k3b libk3b-extracodecs gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox graphviz audacity libsox-fmt-all dvdbackup dia gsfonts-x11 ubuntustudio-fonts vorbisgain clementine krita sound-juicer djvulibre-bin djvulibre-desktop pdf2djvu ubuntu-restricted-extras cheese arandr blender tesseract-ocr mp3info libreoffice meshlab pithos handbrake mp3gain gimp-plugin-registry
+         sudo apt install xsane scribus scribus-template gnuplot gnuplot-mode digikam kipi-plugins okular okular-extra-backends k3b libk3b-extracodecs gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly kaffeine xine-ui libvdpau-va-gl1 mpg123 sox rhythmbox graphviz libsox-fmt-all dvdbackup dia gsfonts-x11 ubuntustudio-fonts vorbisgain clementine krita sound-juicer djvulibre-bin djvulibre-desktop pdf2djvu ubuntu-restricted-extras cheese arandr blender tesseract-ocr mp3info libreoffice meshlab pithos handbrake mp3gain gimp-plugin-registry
 
   1. Install dvdstyler:
       1. Refs: <http://ubuntuhandbook.org/index.php/2019/05/dvdstyler-3-1-released-with-hd-videos-support-how-to-install/>
@@ -882,6 +882,13 @@ file then use it to decrypt the volume - your call.
 
          sudo add-apt-repository ppa:kdenlive/kdenlive-stable
          sudo apt install kdenlive
+
+  1. Add updated Audacity PPA
+
+     The one in the base repos is too old.
+
+         sudo add-apt-repository ppa:ubuntuhandbook1/audacity
+         sudo apt install audacity
 
   1. Add a udev rule so my Griffin Powermate works. Create `/etc/udev/rules.d/99-powermate.rules` as follows:
 
