@@ -434,8 +434,8 @@ Now you can do the AI things.
 
     git clone https://github.com/gabotechs/MusicGPT.git
     cd MusicGPT
-    git checkout v0.3.4
-    cargo build
+    git checkout v0.3.28
+    cargo build --release
 
 ### Running
 
@@ -453,7 +453,9 @@ Note that the GUI is a WebUI running locally, and the music playback is all dist
 
 #### Storage hack
 
-By default, MusicGPT stores things in `~/.local/share/musicgpt`. Let's not. So, move that dir to `~/storage1/ai` and then symlink back - `cd ~/.local/share && ln -s ~/storage1/ai/musicgpt .`
+It takes a command line argument of `--data_path`, e.g.:
+
+    musicgpt `--data-path ~/storage1/ai/musicgpt`
 
 ## Auto-Subtitle (for generating Subtitles & Closed Captions)
 
