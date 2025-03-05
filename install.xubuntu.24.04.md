@@ -1305,6 +1305,9 @@ download it again.
             meson build
             cd build
             sudo ninja install
+            sudo cp -a data/udev/99-thrustmaster-wheel-perms.rules /etc/udev/rules.d/.
+            sudo chown root:root /etc/udev/rules.d/99-thrustmaster-wheel-perms.rules
+            sudo chmod a+r /etc/udev/rules.d/99-thrustmaster-wheel-perms.rules
             sudo udevadm control --reload-rules && sudo udevadm trigger
 
      1. After that, wheel should work when plugging it in.
