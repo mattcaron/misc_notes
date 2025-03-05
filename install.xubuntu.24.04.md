@@ -638,6 +638,17 @@ file then use it to decrypt the volume - your call.
 
          GRUB_RECORDFAIL_TIMEOUT=5
 
+     And change:
+
+         GRUB_CMDLINE_LINUX_DEFAULT="splash quiet"
+
+     to:
+
+         GRUB_CMDLINE_LINUX_DEFAULT="splash quiet usbcore.autosuspend=-1"
+
+     (to disable usb power management, which doesn't play nicely with my
+      external PCIe card and my Griffin powermate)
+
      Then do:
 
          sudo update-grub
