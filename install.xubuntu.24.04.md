@@ -500,6 +500,10 @@ file then use it to decrypt the volume - your call.
 
          sudo apt update && sudo apt dist-upgrade
 
+  1. Update do the HWE stack
+
+         sudo apt install --install-recommends linux-generic-hwe-24.04
+
   1. Install generally useful things:
 
          sudo apt install traceroute emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils tigervnc-viewer symlinks sysstat ifstat dstat apg whois powertop printer-driver-cups-pdf units tofrodos ntp unrar mesa-utils mono-runtime aspell aspell-en geeqie input-utils p7zip latencytop apt-show-versions apt-file keepassxc ipcalc iftop atop gkrellm gnote cheese tree gdisk lm-sensors ppa-purge locate gddrescue lzip lziprecover net-tools clusterssh smartmontools nvme-cli fdupes internetarchive wget apt-transport-https vorbis-tools opus-tools shutter
