@@ -1290,6 +1290,9 @@ download it again.
             sudo ./dkms/dkms-install.sh
             echo 'blacklist hid_thrustmaster' | sudo tee /etc/modprobe.d/blacklist-hid-thrustmaster.conf
             echo "options hid-tmff-new timer_msecs=2" | sudo tee /etc/modprobe.d/hid-tmff-new.conf
+            sudo cp -a udev/99-thrustmaster.rules /etc/udev/rules.d/.
+            sudo chown root:root /etc/udev/rules.d/99-thrustmaster.rules
+            sudo chmod a+r /etc/udev/rules.d/99-thrustmaster.rules
 
      1. Install oversteer
 
