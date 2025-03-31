@@ -125,7 +125,7 @@ Refs: <https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019>
           lvcreate --size 8G  --name swap drives
           lvcreate --size 25G --name tmp drives
           lvcreate --size 50G --name var drives
-          lvcreate --size 50G --name root drives
+          lvcreate --size 200G --name root drives
           lvcreate --extents 100%FREE --name home drives
 
       Which corresponds to the following partitions and sizes (mountpoints are
@@ -135,7 +135,7 @@ Refs: <https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019>
           swap           8GB
           tmp           25GB  /tmp
           var           50GB  /var
-          root          50GB  /
+          root          200GB /
           home          Rest  /home
 
       Note that a larger swap is necessary for machines where you want to
@@ -358,7 +358,7 @@ Refs: <https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019>
           lvcreate --size 8G  --name swap drives
           lvcreate --size 25G --name tmp drives
           lvcreate --size 50G --name var drives
-          lvcreate --size 50G --name root drives
+          lvcreate --size 200G --name root drives
           lvcreate --extents 100%FREE --name home drives
 
       Which corresponds to the following partitions and sizes (mountpoints are
@@ -368,7 +368,7 @@ Refs: <https://help.ubuntu.com/community/Full_Disk_Encryption_Howto_2019>
           swap           8GB
           tmp           25GB  /tmp
           var           50GB  /var
-          root          50GB  /
+          root          200GB /
           home          Rest  /home
 
        (See the discussion in the RAID section for information about swap size, etc.)
