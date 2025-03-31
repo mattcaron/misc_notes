@@ -1,4 +1,4 @@
-# Various AI web UIs
+# Various AI tools and their associated web UIs
 
 ## Notes
 
@@ -451,7 +451,7 @@ Note that the GUI is a WebUI running locally, and the music playback is all dist
 
     musicgpt "Your prompt goes here"
 
-#### Storage hack
+#### Storage location
 
 It takes a command line argument of `--data_path`, e.g.:
 
@@ -476,6 +476,8 @@ It's missing this dependency, so install it manually:
 
 The scripts are in <https://github.com/mattcaron/ai_scripts> and handles optionally integrating Stable Diffusion with Open-Webui/Ollama (conditional as to whether SD is running), because we do so via a configuration fed via environment variables set by the scripts.
 
-Alas, MusicGPT is not yet integrated with Open WebUI, so we'll have to use it separately.
+Alas, MusicGPT is not yet integrated with Open WebUI, so we'll have to use it separately. There's a wrapper script for it to generate several samples based on the same prompt.
+
+There's also a wrapper script for WhisperX which sets the common things we use so we don't have to keep adding them.
 
 Now, all that said, as nice as the Stable Diffusion integration is, it's a more simplified interface, and the one provided by Automatic111 as so many more knobs to frob - so it's accessible via the traditional web UI even when it's integrated with Open WebUI.
