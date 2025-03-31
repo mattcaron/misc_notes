@@ -426,6 +426,129 @@ Now you can do the AI things.
    1. Click `Update Ollama Models List`
    1. Select an appropriate model for the hardware on which it is running.
 
+## A big note on AI on AMD GPUs
+
+I've had issues where, under large workloads (big Stable Diffusion images, long running WhisperX translations), my machine would panic reboot.
+
+[It turns out, I am not alone](https://github.com/ROCm/ROCm/issues/2330).
+
+As an aside, there is [more information about this here](https://unix.stackexchange.com/questions/620072/reduce-amd-gpu-wattage).
+
+As near as I can tell, AIB partners love to "factory overclock" these cards and they work fine for their target workloads - that is, *gaming*, but AI seems to push things a little harder, which can cause issues.
+
+I'm not a big fan of overclocking things, but I love overclockers for pushing board manufacturers to use higher quality components. I tend to buy overclocking-friendly boards and then just leave them at stock frequencies - in which case they will basically last forever, because they are so overbuilt.
+
+For reference, my graphics card us an [ASRock 6900XT OC Formula](https://www.asrock.com/Graphics-Card/AMD/Radeon%20RX%206900%20XT%20OC%20Formula%2016GB/). Also, here are the [actual factory specs](https://www.amd.com/en/products/graphics/desktops/radeon/6000-series/amd-radeon-rx-6900-xt.html).
+
+However, in my testing, despite the P BIOS boost supposedly maxing out at 2475MHz, I checked the settings in `pp_od_clk_voltage` (see below) and it was set to *2594Mhz*! So, the driver was overclocking it by a further 119Mhz, which would explain some of the problems that I was seeing.
+
+Anyway, on to fixing things.
+
+For starters, there are a pile of settings in `/sys/class/drm/cardN/device`. Note that the card number will vary depending on your build, but it's almost always 0 or 1. There are a pile of files in there, many of which are documented [here](https://dri.freedesktop.org/docs/drm/gpu/amdgpu.html#gpu-sysfs-power-state-interfaces).
+
+There is also `/sys/kernel/debug/dri/N` (where N is the same number as in `cardN`, above), which has a pile of stuff which you can read, the most interesting of which is likely the first few lines of `amdgpu_pm_info`, which shows clocks, voltages, etc.
+
+A rough amount of testing can be achieved by setting one of the following values in `power_dpm_force_performance_level`:
+
+    auto
+    low
+    high
+    manual
+    profile_standard
+    profile_min_sclk
+    profile_min_mclk
+    profile_peak
+
+You can set it via:
+
+    echo "low" | sudo tee power_dpm_force_performance_level
+
+The default is auto, and that has my GPU hovering around 28W at idle.
+
+If I set it to low, my GPU hovers around 18W at idle.
+
+Running a WhisperX test, I find that the power consumption stays around 30W, but the performance is pretty abysmal - a transcription that takes about 50 seconds on "auto" takes around 2m 40s, which is pretty bad (as in "might as well run it on the CPU" bad.). "high" forces it high and you can see the temperatures and frequency climb, which is almost certainly going to lead the problems I've seen before.
+
+Anyway, the main reason to do this is that it's a quick test before you do something invasive and potentially dangerous. To wit - if you have a test you can run which panic reboots the machine, and you suspect it's the video card, so you set the performance level to low, run it, and it *still* reboots the machine, then nothing in this section is going to help you.
+
+However, if it does stop the crashes, and you want to proceed to adjust clock rates, then you need to "unlock" the overclocking features in the driver... and then underclock things.
+
+1. Set the feature mask to unlock overclocking
+
+   Edit `/etc/default/grub`, find the `GRUB_CMDLINE_LINUX_DEFAULT` line and add
+
+       amdgpu.ppfeaturemask=0xffffffff
+
+   to the end.
+
+   Save it, then do:
+
+       sudo update-grub
+
+   And then reboot.
+
+1. Check current settings.
+
+    Now, `/sys/class/drm/card1/device/pp_od_clk_voltage` should exist, and you can `cat` it to see settings.
+
+       OD_SCLK:
+       0: 500Mhz
+       1: 2594Mhz
+       OD_MCLK:
+       0: 97Mhz
+       1: 1000MHz
+       OD_VDDGFX_OFFSET:
+       0mV
+       OD_RANGE:
+       SCLK:     500Mhz       4000Mhz
+       MCLK:     674Mhz       1312Mhz
+
+1. Modify settings
+
+    Based on the values read above, I want to drop the P1 state OD_SCLK frequency down to AMD's stated maximum of 2475MHz, which is the ASRock's maximum stated boost frequency for this card.
+
+       echo "s 1 2475" | sudo tee pp_od_clk_voltage
+
+   Then, you need to run to actually activate the changes:
+
+       echo "c" | sudo tee pp_od_clk_voltage
+
+1. Test it
+
+   Make sure it works. At this point, a reboot clears it.
+
+1. Make them permanent
+
+   1. Create the file `/usr/bin/set_gpu_clocks` with the following content:
+
+          #!/bin/sh
+          echo "s 1 2475" > /sys/class/drm/card1/device/pp_od_clk_voltage
+          echo "c" > /sys/class/drm/card1/device/pp_od_clk_voltage
+
+       Note the lack of `sudo` here, as that is unnecessary when run at system startup as it runs as root.
+
+   1. Set the perms on it:
+
+          sudo chmod 744 /usr/bin/set_gpu_clocks
+
+   1. Create the file `/etc/systemd/system/set_gpu_clocks.service` with the following content:
+
+          [Unit]
+          Description=Set GPU clocks
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/bin/set_gpu_clocks
+
+          [Install]
+          WantedBy=multi-user.target
+
+   1. Enable the above:
+
+          sudo systemctl enable set_gpu_clocks.service
+
+      Now the clock settings should persist across reboots.
+
 ## MusicGPT (For music generation)
 
 ### Install
