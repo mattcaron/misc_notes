@@ -791,7 +791,8 @@ file then use it to decrypt the volume - your call.
 
   1. Install VSCodium and some plugins
   
-         wget -O- https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo gpg --no-default-keyring --keyring=/usr/share/keyrings/vscodium.gpg --import echo deb [arch=amd64 signed-by=/usr/share/keyrings/vscodium.gpg] https://download.vscodium.com/debs vscodium main | sudo tee /etc/apt/sources.list.d/vscodium.list
+         wget -O- https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | sudo gpg --no-default-keyring --keyring=/usr/share/keyrings/vscodium.gpg --import
+         echo deb [arch=amd64 signed-by=/usr/share/keyrings/vscodium.gpg] https://download.vscodium.com/debs vscodium main | sudo tee /etc/apt/sources.list.d/vscodium.list
          sudo apt update
          sudo apt install codium
          codium --install-extension DavidAnson.vscode-markdownlint
