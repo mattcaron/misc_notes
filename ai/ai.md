@@ -580,20 +580,104 @@ It takes a command line argument of `--data_path`, e.g.:
 
     musicgpt `--data-path ~/storage1/ai/musicgpt`
 
-## Auto-Subtitle (for generating Subtitles & Closed Captions)
 
-### Install
 
-    git clone https://github.com/m1guelpf/auto-subtitle.git
-    cd auto-subtitle
+## WhisperX (for generating Subtitles / Closed Captions)
+
+### Basic install
+
+    mkdir ~/storage1/ai/whisperx
+    cd ~/storage1/ai/whisperx
     python -m venv venv
     source venv/bin/activate
-    pip install -r requirements.txt -U
-    python setup.py install
+    pip install whisperx
+    deactivate
 
-It's missing this dependency, so install it manually:
+And then the `subtitle_video` script will work.
 
-    pip install ffmpeg-python
+### Compile the CTranslate2-rocm library (Machines with AMD GPUs only)
+
+This is a lot of work, but it is an order of magnitude faster. It replaces some of the libraries installed above as part of the installation.
+
+Also, it throws warnings like crazy, but works.
+
+#### CTranslate2-rocm howto guide
+
+https://github.com/arlo-phoenix/CTranslate2-rocm/blob/rocm/README_ROCM.md
+
+#### Install ROCm development files
+
+**This is for AMD GPUs**. If you're using an Nvidia GPU, this is not useful. But, then again, if you are on team green, this is likely just working for you without any special tricks.
+
+##### Dependencies
+
+**WARNING** This installs about 40GB of libraries into the system install location (typically hanging off of `/`).
+
+Note that we install version 6.2.0 here because that is what the arlo-phoenix CTranslate2 fork was compiled and tested against.
+
+This installs:
+
+1. ROCm libs from AMD repos.
+2. A bunch of compilers and supporting libraries.
+
+**NOTE** This is not exhaustive. I just documented what I needed to install in order to get things to build, but I already had a pile of things installed.
+
+1. Add signing key to list of keyrings
+
+       wget -O- https://repo.radeon.com/rocm/rocm.gpg.key | sudo gpg --no-default-keyring --keyring=/etc/apt/keyrings/rocm.gpg --import
+
+2. Set up repository file.
+
+       sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/rocm/apt/6.2 noble main" >> /etc/apt/sources.list.d/rocm.list'
+
+3. Give priority to the stuff from AMD:
+
+       sudo sh -c 'echo "Package: *\nPin: release o=repo.radeon.com\nPin-Priority: 600" > /etc/apt/preferences.d/rocm-pin-600'
+
+4. Actually install things
+
+   Most recent ROCm and compilers. Note that just installing `rocm` fails because `rocdecode` needs `mesa-amdgpu-va-drivers`, which is not installable. So, we install some smaller metapackages. We also need to uninstall the `rocminfo` that we installed above because these want a different version.
+
+       sudo apt update
+       sudo apt remove rocminfo
+       sudo apt install hipcc clang lld clang-tools-17 libstdc++-14-dev libomp-dev rocm-libs rocm-core rocm-dev rocminfo
+       
+#### Build native libs
+
+    git clone https://github.com/arlo-phoenix/CTranslate2-rocm.git --recurse-submodules
+    cd CTranslate2-rocm
+    export PYTORCH_ROCM_ARCH=gfx1030 # Works for AMD 6900XT
+
+    CLANG_CMAKE_CXX_COMPILER=clang++ CXX=clang++ HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" cmake -S . -B build -DWITH_MKL=OFF -DWITH_HIP=ON -DCMAKE_HIP_ARCHITECTURES=$PYTORCH_ROCM_ARCH -DBUILD_TESTS=ON -DWITH_CUDNN=ON 
+
+    # The explicit PATH set here is so it can find `clang-offload-bundler`
+    # Set the -j number to something appropriate for your system. Mine can do 16 threads,
+    # hence the 16.
+    PATH=$PATH:/opt/rocm-6.2.0/lib/llvm/bin/ cmake --build build -- -j16
+
+#### Python install
+
+    # Bootstrap venv
+    source ~/storage1/ai/whisperx/venv/bin/activate
+    
+    # Install our compiled CTranslate glue
+    cd ~/storage1/ai/CTranslate2-rocm/python
+    pip install -r install_requirements.txt
+    python setup.py build_ext --library-dirs=../build/ --include-dirs=../include/
+    python setup.py bdist_wheel
+    pip install dist/*.whl
+
+    # deps
+    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2 --force-reinstall
+
+    deactivate
+
+### Runtime Notes
+
+You need to both activate the VENV and set `LD_LIBRARY_PATH=/home/matt/storage1/ai/CTranslate2-rocm/build` (or wherever you put it) when running WhisperX, e.g.:
+
+    source /home/matt/storage1/ai/whisperx/venv/bin/activate
+    LD_LIBRARY_PATH=/home/matt/storage1/ai/CTranslate2-rocm/build whisperx
 
 ## One startup script to rule them all
 
