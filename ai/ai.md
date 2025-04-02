@@ -12,7 +12,7 @@ This is an aggregate set of dependencies for everything in this file. Many of th
 My main box has an AMD GPU, hence the rocm stuff.
 
     sudo add-apt-repository ppa:deadsnakes/ppa
-    sudo apt install wget git python3.11 python3.11-venv python3.11-dev libgl1 libglib2.0-0 libtcmalloc-minimal4 build-essential libssl-dev libffi-dev cmake golang libclblast-dev
+    sudo apt install wget git python3.11-full python3.11-dev libgl1 libglib2.0-0 libtcmalloc-minimal4 build-essential libssl-dev libffi-dev cmake golang libclblast-dev
 
 ### Laptop specific dependencies (nVidia)
 
