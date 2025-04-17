@@ -98,6 +98,11 @@ I picked Dallas for the location.
 
            @daily               df -lh; echo; landscape-sysinfo
 
+1. Enable time sync:
+
+       sudo apt install systemd-timesyncd
+       sudo timedatectl set-ntp true
+
 1. Configure the time zone:
 
        sudo dpkg-reconfigure tzdata
