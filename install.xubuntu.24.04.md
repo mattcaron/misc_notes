@@ -1227,7 +1227,7 @@ download it again.
      port)
   
          wget -O- http://debian.drdteam.org/drdteam.gpg | sudo gpg --no-default-keyring --keyring=/usr/share/keyrings/drdteam.gpg --import
-         sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/drdteam.gpg] http://debian.drdteam.org/ stable multiverse" >> /etc/apt/sources.list.d/drdteam.list'
+         sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/drdteam.gpg] https://debian.drdteam.org/ stable multiverse" >> /etc/apt/sources.list.d/drdteam.list'
          sudo apt update
          sudo apt install ecwolf
 
