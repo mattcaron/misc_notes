@@ -1045,30 +1045,29 @@ download it again.
 
             udevadm control --reload-rules
             udevadm trigger
-			
+
 ### Laptop
 
 1. Video drivers
 
     This has a discrete nVidia M1200 which I don't use for video games,
-	but actually for AI compute. It's too old for the new nVidia open
-	source drivers, and the Nouveau drivers don't support compute
-	applications, so I'm installing the proprietary drivers - and the
-	PPA has the most recent ones.
+    but actually for AI compute. It's too old for the new nVidia open
+    source drivers, and the Nouveau drivers don't support compute
+    applications, so I'm installing the proprietary drivers - and the
+    PPA has the most recent ones.
 
-		sudo add-apt-repository ppa:graphics-drivers/ppa
+        sudo add-apt-repository ppa:graphics-drivers/ppa
         sudo apt install nvidia-driver-560
-		
-	You can check what version is what here:
-	
-	https://www.nvidia.com/en-us/drivers/unix/
-		
-	And then reboot.
-	
-	Note: you can find these by:
+
+    You can check what version is what here:
+
+       https://www.nvidia.com/en-us/drivers/unix/
+
+    And then reboot.
+
+    Note: you can find these by:
 
         ubuntu-drivers devices
-
 
 ### Video game machines
 
