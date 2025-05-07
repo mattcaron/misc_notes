@@ -1324,6 +1324,13 @@ download it again.
 
             sudo udevadm control --reload-rules && sudo udevadm trigger
 
+  1. Install Minecraft bedrock launcher
+
+         wget -O- https://minecraft-linux.github.io/pkg/deb/pubkey.gpg | sudo gpg --no-default-keyring --keyring=/usr/share/keyrings/minecraft-linux-pkg.gpg --import
+         echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/minecraft-linux-pkg.gpg] https://minecraft-linux.github.io/pkg/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/minecraft-linux-pkg.list
+         sudo apt update
+         sudo apt install mcpelauncher-manifest mcpelauncher-ui-manifest msa-manifest
+
 ### Random other things that may be needed on a case by case basis
 
   1. Set up samba:
