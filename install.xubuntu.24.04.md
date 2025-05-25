@@ -1084,6 +1084,10 @@ download it again.
 
          sudo snap install dolphin-emulator
 
+  1. Add users to gamemode group so they can do gamemode things
+
+         sudo usermod -aG gamemode matt
+
   1. Allow steam in-home streaming ports.
     1. Ref: <https://support.steampowered.com/kb_article.php?ref=8571-GLVN-8711>
 
