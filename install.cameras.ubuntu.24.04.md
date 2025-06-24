@@ -107,10 +107,10 @@ NOTE: This did not set up the 2 drives the same way, so the data is redundant, b
 
        @daily               /usr/bin/ntpq -p; echo; df -lh; echo; cat /proc/mdstat; landscape-sysinfo
 
-## Zoneminder basic set up:
+## Zoneminder basic set up
 
-1. Refs: 
-    * https://zoneminder.readthedocs.io/en/latest/installationguide/ubuntu.html
+1. Refs:
+    * <https://zoneminder.readthedocs.io/en/latest/installationguide/ubuntu.html>
 
 1. Install deps:
 
@@ -151,7 +151,7 @@ NOTE: This did not set up the 2 drives the same way, so the data is redundant, b
 
        sudo systemctl reload apache2
 
-1. Going to http://cameras/zm should now work.
+1. Going to <http://cameras/zm> should now work.
 
 ## Configure the server
 
@@ -255,7 +255,7 @@ box to server.
 
 1. Configure the camera however. You like. Of note:
 
-   1. https://support.reolink.com/hc/en-us/articles/360005238413-The-Difference-Between-Clear-Fluent-and-Balanced
+   1. <https://support.reolink.com/hc/en-us/articles/360005238413-The-Difference-Between-Clear-Fluent-and-Balanced>
       explains the difference between the different streams.
 
 1. Other settings to change on the camera from defaults:
@@ -389,4 +389,3 @@ box to server.
     1. **Timestamp**
         1. **Timestamp Label Format** = `%N - %Y%m%d %I:%M:%S %p`
         1. **Font Size** = `Extra Large`
-
