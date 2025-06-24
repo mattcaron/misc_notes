@@ -155,7 +155,6 @@ then 22.04. and now 24.04. It may not be completely accurate.
 
     and then add the following to my crontab:
 
-        0 */1  * * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot.conf hourly
         30 3   * * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot.conf daily
         0  3   * * 1  /usr/bin/rsnapshot -c /home/matt/.rsnapshot.conf weekly
         30 2   1 * *  /usr/bin/rsnapshot -c /home/matt/.rsnapshot.conf monthly
@@ -331,35 +330,6 @@ then 22.04. and now 24.04. It may not be completely accurate.
            sudo ufw allow from 192.168.9.0/24 to any port 204 comment at-echo
            sudo ufw allow from 192.168.9.0/24 to any port 206 comment at-zis
            sudo ufw allow from 192.168.9.0/24 to any port 1900 comment ssdp
-
-1. Configure MiniDLNA (UPnP/DLNA server)
-
-    1. Edit `/etc/minidlna.conf`
-
-        * comment out all the media_dir lines
-
-        * add this one:
-
-              media_dir=/mnt/shared/shared/dlna
-
-        * And set the `friendly_name` and other such things.
-
-    1. We need to increase the number of inodes that can be watched:
-
-           sudo sysctl fs.inotify.max_user_watches=100000
-
-    1. And we need it to persist, so create `/etc/sysctl.d/90-inotify.conf` with the contents of:
-
-           # Increase inotify max watchs per user for local minidlna
-           fs.inotify.max_user_watches = 100000
-
-    1. Allow it through the firewall:
-
-           sudo ufw allow from 192.168.9.0/24 to any port 8200
-
-    1. And, finally, restart it
-
-           sudo service minidlna restart
 
 ## APPENDIX
 
