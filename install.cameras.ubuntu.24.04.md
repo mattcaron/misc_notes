@@ -186,6 +186,24 @@ All changes noted are from the defaults.
     1. **Do not delete the default storage** It's still the default. We'll just
        set up cameras to not use it anymore.
 
+1. Set up policy to delete old videos
+    1. In the top bar, click **Filters**:
+    1. Fill out the new filter as follows:
+        * Name: `DeleteOldVideos`
+        * Select:
+            * Start Date/Time
+            * less than
+            * -30 days
+                * This is for 30 day retention. Your needs may be different.
+        * Under **Actions**, tick `Delete all matches`
+        * Under **Options**, tick `Run filter in background`
+    1. Click `Save`
+    1. Click `Execute`
+
+    Note that, if you're paranoid, don't tick the boxes under **Actions** and **Options**, and instead use either **List Matches** or **View Matches** to make sure your query is correct before deleting things.
+
+    Also note that the syntax is weird. Since it's less than -30 days, it's 30 days in the future. It would be great if there was an "Age" item in the drop down, but alas, there is not.
+
 ## Add Neolink
 
 So Reolink wireless cameras work.
