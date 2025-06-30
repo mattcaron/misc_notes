@@ -1064,17 +1064,9 @@ download it again.
     PPA has the most recent ones.
 
         sudo add-apt-repository ppa:graphics-drivers/ppa
-        sudo apt install nvidia-driver-560
-
-    You can check what version is what here:
-
-       https://www.nvidia.com/en-us/drivers/unix/
+  sudo ubuntu-drivers install
 
     And then reboot.
-
-    Note: you can find these by:
-
-        ubuntu-drivers devices
 
 ### Video game machines
 
