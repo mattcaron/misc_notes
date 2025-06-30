@@ -530,6 +530,13 @@ file then use it to decrypt the volume - your call.
 
          sudo apt install firefox thunderbird
 
+  1. Add nushell repo
+
+         wget -O- https://apt.fury.io/nushell/gpg.key | sudo gpg --no-default-keyring --keyring=/usr/share/keyrings/fury-nushell.gpg --import
+         sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" >> /etc/apt/sources.list.d/fury-nushell.list'
+         sudo apt update
+         sudo apt install nushell
+
   1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
   
      1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot
