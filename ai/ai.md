@@ -588,10 +588,14 @@ It takes a command line argument of `--data_path`, e.g.:
 
 ### Basic install
 
+  The installation of nvidia-cudnn are supporting libraries for nVidia cards. If you have an AMD card, they are unnecessary, and you should compile CTranslate2-rocm as directed below. The torch / torchaudio install line is specifically for nVidia 50xx series GPUs which need the new library - other GPUs (older nVidia and all AMD) can skip that line because the default dependencies are fine.
+
+    sudo apt install nvidia-cudnn
     mkdir ~/storage1/ai/whisperx
     cd ~/storage1/ai/whisperx
     python -m venv venv
     source venv/bin/activate
+    pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu128
     pip install whisperx
     deactivate
 
