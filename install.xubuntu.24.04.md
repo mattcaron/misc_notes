@@ -1057,9 +1057,16 @@ download it again.
             udevadm control --reload-rules
             udevadm trigger
 
+  1. Video drivers (5070 TI)
+
+     The video drivers included in 24.04 are wrong, as is what `ubuntu-drivers install` installs. The following works.
+
+            sudo add-apt-repository ppa:graphics-drivers/ppa
+            sudo apt install nvidia-driver-575-open
+
 ### Laptop
 
-1. Video drivers
+1. Video drivers (Quadro M1200 Mobile)
 
     This has a discrete nVidia M1200 which I don't use for video games,
     but actually for AI compute. It's too old for the new nVidia open
@@ -1068,7 +1075,7 @@ download it again.
     PPA has the most recent ones.
 
         sudo add-apt-repository ppa:graphics-drivers/ppa
-  sudo ubuntu-drivers install
+        sudo ubuntu-drivers install
 
     And then reboot.
 
