@@ -300,7 +300,7 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 
 ### Interfaces
 
-#### Ollama Web UI
+#### Open Web UI (for Ollama)
 
 ##### References
 
@@ -373,6 +373,16 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
      ./backend/start.sh
 
 (But, again, we'll have a script to make this all easy later in the document.)
+
+#### Notes
+
+##### RAG
+
+1. Don't use the default embedding model (SentenceTransformers), as it is very basic. Use a proper embedding model. My current favorite is `snowflake-arctic-embed`.
+
+1. If you change the embedding model, you need to reimport all documents. In some (many? most?) cases, this actually means removing the knowledge store, creating a new one, then re-importing things due to the database setup being set for the vector size that the embedding engine (or model?) produces.
+
+1. If you get a file import error and a complaint that it "cannot handle this data type" and the uploaded file type is a PDF, try turning off PDF OCR. This means that it choked on some image in the document which is in some format that it doesn't understand and therefore can't process.
 
 #### Roo Code plugin for VSCode / Codium
 
