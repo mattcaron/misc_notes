@@ -374,6 +374,10 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 
 (But, again, we'll have a script to make this all easy later in the document.)
 
+#### Roo Code plugin for VSCode / Codium
+
+    codium --install-extension rooveterinaryinc.roo-cline
+
 #### Continue plugin for VSCode / Codium
 
     codium --install-extension continue.continue
