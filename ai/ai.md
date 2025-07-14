@@ -563,36 +563,13 @@ However, if it does stop the crashes, and you want to proceed to adjust clock ra
 
       Now the clock settings should persist across reboots.
 
-## MusicGPT (For music generation)
+## Audiocraft WebUi (for music generation)
 
-### Install
-
-**Note**: This assumes a functional Rust/cargo install (which I have).
-
-    git clone https://github.com/gabotechs/MusicGPT.git
-    cd MusicGPT
-    git checkout v0.3.28
-    cargo build --release
-
-### Running
-
-It has 2 modes, GUI and CLI. They take common args, which you can view with `--help`.
-
-#### GUI
-
-    musicgpt
-
-Note that the GUI is a WebUI running locally, and the music playback is all distorted under Firefox. Chrome works fine, however.
-
-#### CLI
-
-    musicgpt "Your prompt goes here"
-
-#### Storage location
-
-It takes a command line argument of `--data_path`, e.g.:
-
-    musicgpt `--data-path ~/storage1/ai/musicgpt`
+    python3.11 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu128
+    python3.11 webui.py
 
 ## WhisperX (for generating Subtitles / Closed Captions)
 
