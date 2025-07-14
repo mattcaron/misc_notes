@@ -30,8 +30,8 @@ This is so the rocm utilities work. Add/sub any other users as needed.
 
 ### Refs
 
-* https://github.com/AUTOMATIC1111/stable-diffusion-webui?tab=readme-ov-file#installation-and-running
-* https://easywithai.com/guide/how-to-install-sdxl-locally/
+* <https://github.com/AUTOMATIC1111/stable-diffusion-webui?tab=readme-ov-file#installation-and-running>
+* <https://easywithai.com/guide/how-to-install-sdxl-locally/>
 
 ### Code
 
@@ -58,9 +58,9 @@ that. See next step.
     cd stable-diffusion-webui
     ./webui.sh
 
-### Download checkpoints, LoRAs, VAEs, etc.
+### Download checkpoints, LoRAs, VAEs, etc
 
-Look around https://civitai.com
+Look around <https://civitai.com>
 
 * Put checkpoints in `stable-diffusion-webui/models/Stable-diffusion`.
 * LoRAs go in `stable-diffusion-webui/models/Lora`.
@@ -270,7 +270,7 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 
 ### References
 
-* https://github.com/ollama/ollama/blob/main/docs/linux.md#manual-install
+* <https://github.com/ollama/ollama/blob/main/docs/linux.md#manual-install>
 
 ### Installation
 
@@ -304,13 +304,13 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
 
 ##### References
 
-* https://docs.openwebui.com/getting-started/#build-and-install-%EF%B8%8F
+* <https://docs.openwebui.com/getting-started/#build-and-install-%EF%B8%8F>
 
 ##### Installation
 
 1. Prerequisites - versions 0.5.15 and later require node22.
 
-    * Cribbed from https://deb.nodesource.com/setup_22.x but I don't run random scripts from the internet.
+    * Cribbed from <https://deb.nodesource.com/setup_22.x> but I don't run random scripts from the internet.
 
     1. Add key
 
@@ -580,8 +580,6 @@ It takes a command line argument of `--data_path`, e.g.:
 
     musicgpt `--data-path ~/storage1/ai/musicgpt`
 
-
-
 ## WhisperX (for generating Subtitles / Closed Captions)
 
 ### Basic install
@@ -603,7 +601,7 @@ Also, it throws warnings like crazy, but works.
 
 #### CTranslate2-rocm howto guide
 
-https://github.com/arlo-phoenix/CTranslate2-rocm/blob/rocm/README_ROCM.md
+<https://github.com/arlo-phoenix/CTranslate2-rocm/blob/rocm/README_ROCM.md>
 
 #### Install ROCm development files
 
