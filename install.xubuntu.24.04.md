@@ -537,6 +537,10 @@ file then use it to decrypt the volume - your call.
          sudo apt update
          sudo apt install nushell
 
+     Also, install `ddgr`, which is needed by `ai.nu`
+
+         sudo apt install ddgr
+
   1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
   
      1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot
