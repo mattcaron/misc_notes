@@ -1413,4 +1413,4 @@ download it again.
 
       1. And set the perms on it:
 
-             sudo chmod +x /etc/network/if-up.d/wol_fix
+             sudo chmod a+rx /etc/network/if-up.d/wol_fix
