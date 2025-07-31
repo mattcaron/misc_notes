@@ -740,7 +740,7 @@ file then use it to decrypt the volume - your call.
          sudo apt install sweethome3d sweethome3d-furniture sweethome3d-furniture-nonfree
 
      Once installed, grab asset packs from
-       <http://www.sweethome3d.com/download.jsp> and install them.
+       <http://www.sweethome3d.com/download.jsp> and install them. Note that I've saved a bunch in ~/workspace/sweethome3d
 
   1. Remove audio apps that I don't use (mostly to stop them from showing in the
      volume control menu):
