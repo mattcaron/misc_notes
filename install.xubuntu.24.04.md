@@ -1400,16 +1400,7 @@ download it again.
              @hourly              /home/matt/bin/tempChecker
 
   1. Fix Wake On Lan
-      1. Install ethtool
 
-             sudo apt install ethtool
-
-      1. Create `/etc/network/if-up.d/wol_fix` with the following content,
-         replacing `[card]` with the card:
-
-             #!/bin/sh
-             /sbin/ethtool -s [card] wol g
-
-      1. And set the perms on it:
-
-             sudo chmod a+rx /etc/network/if-up.d/wol_fix
+     1. Click the Network Manager Applet, then click "Edit Connections..."
+     1. Pick the connection in question, then double click it.
+     1. Under the "Ethernet" tab, in the "Wake on LAN" section, untick "Default" and tick "Magic".
