@@ -903,12 +903,11 @@ file then use it to decrypt the volume - your call.
 
          sudo chmod u+s `which wodim`
 
-  1. Add updated Kdenlive PPA
+  1. Install Kdenlive
 
-     The one in the base repos is too old.
+     Hopefully, when the new Ubuntu LTS with Qt6/KDE6 is released, we can go back to using a native build, but until then, we'll have to live with a snap. See <https://ubuntuhandbook.org/index.php/2024/03/install-kdenlive-new-ppa/>.
 
-         sudo add-apt-repository ppa:kdenlive/kdenlive-stable
-         sudo apt install kdenlive
+         sudo snap install kdenlive
 
   1. Add updated Audacity PPA
 
