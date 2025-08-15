@@ -953,65 +953,6 @@ then a bunch of single drives for working, etc. - basically, stuff that doesn't
 need to be redundant because if I lose it, it's not a big deal, because I can
 download it again.
 
-  1. UPS
-
-      The first bit, with GNOME, doesn't seem to exist anymore and I can't find
-      an XFCE equivalent. Anyway:
-
-         sudo apt install nut
-
-      Edit `/etc/nut/ups.conf` and add the following at the bottom:
-
-         [ups]
-             driver = usbhid-ups
-             port = auto
-
-     There's only one UPS hooked to this guy, so we don't need to worry about disambiguation.
-
-     Also, if you just installed nut, but the UPS is already plugged in, you'll
-     need to unplug and replug it to fire the hotplug events.
-
-     Start it:
-
-         sudo upsdrvctl start
-
-     Add the following to `/etc/nut/upsd.conf`
-
-         ACL all 0.0.0.0/0
-         ACL localhost 127.0.0.1/32
-         ACCEPT localhost
-         REJECT all
-
-     This will reject all nonlocal traffic
-
-     Add the following to `/etc/nut/upsd.users`
-
-         [local_mon]
-             password = PASSWORD_HERE
-             allowfrom = localhost
-             upsmon master
-
-     Obviously, make `PASSWORD_HERE` some random password
-
-     Add the following to `/etc/nut/upsmon.conf`, at the bottom of the `MONITOR` section:
-
-         MONITOR ups@localhost 1 local_mon PASSWORD_HERE master
-
-     Edit `/etc/nut/nut.conf` and set
-
-         MODE=standalone
-
-     Enable and start it:
-
-         sudo systemctl enable nut-server
-         sudo systemctl restart nut-server
-         sudo systemctl enable nut-client
-         sudo systemctl restart nut-client
-
-     You can print statistics via:
-
-         upsc ups
-
   1. The mouse controller software
 
          sudo add-apt-repository ppa:solaar-unifying/stable
