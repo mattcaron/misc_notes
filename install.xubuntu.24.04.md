@@ -542,7 +542,10 @@ file then use it to decrypt the volume - your call.
          sudo apt install ddgr
 
   1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
-  
+
+     **NOTE**: This may be deprecated. I need to see if the P53 actually has this problem. Additionally,
+     it might go away on the P51 with a reapplication of thermal paste.
+
      1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot
         and let the thermal throttling stop it from actually
         melting". Are you really serious with this foolishness?  This
@@ -1001,23 +1004,75 @@ download it again.
 
      The video drivers included in 24.04 are wrong, as is what `ubuntu-drivers install` installs. The following works.
 
-            sudo add-apt-repository ppa:graphics-drivers/ppa
-            sudo apt install nvidia-driver-575-open
+         sudo add-apt-repository ppa:graphics-drivers/ppa
+         sudo apt install nvidia-driver-575-open
 
 ### Laptop
 
-1. Video drivers (Quadro M1200 Mobile)
+1. Video drivers (Quadro RTX 5000 Mobile)
 
-    This has a discrete nVidia M1200 which I don't use for video games,
-    but actually for AI compute. It's too old for the new nVidia open
-    source drivers, and the Nouveau drivers don't support compute
-    applications, so I'm installing the proprietary drivers - and the
-    PPA has the most recent ones.
+    This has a discrete nVidia RTX 5000 which I don't use for video
+    games, but actually for AI compute. It's too old for the new
+    nVidia open source drivers, and the Nouveau drivers don't support
+    compute applications, so I'm installing the proprietary drivers -
+    and the PPA has the most recent ones.
 
         sudo add-apt-repository ppa:graphics-drivers/ppa
         sudo ubuntu-drivers install
 
+2. There is also a weird screen flickering / tearing / corruption issue which
+   seems to be related to a bug in the i915 driver as it relates to the IOMMU
+   configuration (see <https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2062951>). For now, to fix:
+
+   1. Edit `/etc/default/grub`
+   2. Add `intel_iommu=igfx_off` to the end of `GRUB_CMDLINE_LINUX_DEFAULT`
+   3. `sudo update-grub`
+
     And then reboot.
+
+3. The fans seem to be overly aggressive. Let's fix that.
+
+   Ref: <https://blog.monosoul.dev/2021/10/17/how-to-control-thinkpad-p14s-fan-speed-in-linux/>
+
+   1. `sudo apt install thinkfan`
+   2. Then edit `/etc/thinkfan.conf` and set it as follows:
+
+          sensors:
+            # CPU
+            - tpacpi: /proc/acpi/ibm/thermal
+              indices: [0]
+            # GPU
+            - tpacpi: /proc/acpi/ibm/thermal
+              indices: [1]
+            # NVMe0
+            - hwmon: /sys/class/hwmon/hwmon3/temp1_input
+            # NVMe1
+            - hwmon: /sys/class/hwmon/hwmon5/temp1_input
+            # NVMe2
+            - hwmon: /sys/class/hwmon/hwmon4/temp1_input
+            # Motherboard sensors (I think)
+            - tpacpi: /proc/acpi/ibm/thermal
+              indices: [4, 5, 6]
+          fans:
+            - tpacpi: /proc/acpi/ibm/fan
+
+          levels:
+            - [0, 0,  35]
+            - [1, 35, 40]
+            - [2, 40, 50]
+            - [3, 50, 60]
+            - [4, 60, 70]
+            - [5, 70, 75]
+            - [6, 75, 80]
+            - [7, 80, 85]
+            - ["level full-speed", 85, 32767]
+
+       (You can test changes with `sudo thinkfan -n`).
+
+   3. Finally, set it to start automatically, and then start it:
+          echo 'THINKFAN_ARGS="-c /etc/thinkfan.conf"' | sudo tee -a /etc/default/thinkfan
+          sudo systemctl enable thinkfan
+          sudo systemctl start thinkfan
 
 ### Video game machines
 
@@ -1327,10 +1382,11 @@ download it again.
 
                      nct6775
 
-          1. For hiro / Thinkpad P51:
+          1. For hiro / Thinkpad P53:
               1. add the following to `/etc/modules`:
 
                      coretemp
+                     jc42
 
           1. For new machines, you figure out what you need by running
              `sensors-detect` and following the prompts - the defaults are
