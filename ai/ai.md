@@ -91,13 +91,17 @@ Look around <https://civitai.com>
 
 ###### For people
 
-Prompt for these was "a girl with pink hair wearing a long trenchcoat, a rainy
-neon-lit futuristic city in the background". No negative prompt. Everything else
+Prompt for these was `a girl with pink hair wearing a long trenchcoat, a rainy
+neon-lit futuristic city in the background`. No negative prompt. Everything else
 left at defaults (even if this is not optimal use of the model).
 
 * [AbsoluteReality](https://civitai.com/models/81458)
 
   ![AbsoluteReality example](./images/absolute_reality.png "AbsoluteReality example")
+
+* [Crow & Pony | qp](https://civitai.com/models/845836/crow-and-pony-or-qp)
+
+  ![Crow & Pony | qp example](./images/crow_pony.png)
 
 * [CyberRealistic Pony](https://civitai.com/models/443821)
 
@@ -125,6 +129,14 @@ left at defaults (even if this is not optimal use of the model).
   ![Lyriel example](./images/lyriel.png
  "Lyriel example")
 
+* [Mega Chonk XL | qp](https://civitai.com/models/885241)
+
+  ![Mega Chonk XL example](./images/mega_chonk.png)
+
+* [Noteworthy | qp - ILL](https://civitai.com/models/1263181/noteworthy-or-qp)
+
+  ![Noteworthy example](./images/noteworthy.png)
+
 * [Pony Diffusion V6 XL](https://civitai.com/models/257749)
   * Recommends a VAE, but when I use it, the final step ends up getting all
       messed up - funny colors, etc.
@@ -143,9 +155,19 @@ left at defaults (even if this is not optimal use of the model).
 
   ![Realistic Vision example](./images/realistic_vision.png "Realistic Vision example")
 
+* [Rev Animated](https://civitai.com/models/7371/rev-animated)
+
+ ![Rev Animated example](./images/rev_animated.png)
+
 * [RPG v5](https://civitai.com/models/1116)
 
   ![RPG v5 example](./images/rpgv5.png "RPG v5 example")
+
+* [SD XL](https://civitai.com/models/101055/sd-xl)
+
+  This is one of the base model upon which other models are based. However, it is still useful to have around for comparison, or to use a LoRA which was based on it and might interact strangely with some other checkpoints.
+
+  ![SD XL example](./images/sdxl.png)
 
 ###### For monsters
 
@@ -183,6 +205,22 @@ they are supposed to generate - mecha and soldiers and such.
   generator example](./images/rpg2000sInkAndPencil.png "RPG 2000's Ink and pencil style character
   generator example")
 
+###### For coloring book pages
+
+Oddly specific, I know.
+
+* [Coloring Page Diffusion](https://civitai.com/models/22626/coloring-page-diffusion)
+
+  ![Coloring Page Example](./images/coloring_page.png)
+
+###### For T-Shirts and similar logos
+
+Also oddly specific.. I know. But it's neat.
+
+* [Magifactory T-Shirt Diffusion](https://civitai.com/models/4694/lessmagifactorygreater-t-shirt-diffusion)
+
+  ![Magifactory T-Shirt Example](./images/magifactory_t-shirt.png)
+
 ###### LoRAs
 
 LoRAs (Low Rank Adaptations) can be thought of as "mods" for fine tuning a base
@@ -216,6 +254,32 @@ prompt and seed, but adding appropriate prompt triggers and LoRA invocation tags
   Wars style with LoRA example")
   
   * Honestly, I kind of like the "without" better - but both are fine.
+
+**Loras for Logos**
+
+There are several of these both for creating the channel logo and for other things - cyberpunk games, distopias, etc.
+
+Our test phrase is `A logo for a bar with a mug full of beer, a cowboy hat, and the text "Last Chance Saloon"`.
+
+Settings were tweaked to invoke the LoRA and to get good results based on usage notes (see the respective entries in [stable_diffusion_notes.md](./stable_diffusion_notes.md)), though geometry was left at 512 x 512 for quick tests.
+
+Also note that most of them don't do text very well.
+
+* [Cartoon Logo SDXL](https://civitai.com/models/234305/cartoon-logo-sdxl)
+
+  ![Cartoon Logo Example](./images/cartoon_logo.png)
+
+* [Harrlogos XL](https://civitai.com/models/176555/harrlogos-xl-finally-custom-text-generation-in-sd)
+
+  ![Harrlogos Example](./images/harrlogos.png)
+
+* [Logo Redmond](https://civitai.com/models/124609/logoredmond-logo-lora-for-sd-xl-10)
+
+  ![Logo Redmond Example](./images/logo_redmond.png)
+
+* [Logo Maker 9000](https://civitai.com/models/436281/logo-maker-9000-sdxl-concept)
+
+  ![Logo Maker 9000 example](./images/logo_maker_9000.png)
 
 ##### Models that work sometimes
 
