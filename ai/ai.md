@@ -635,6 +635,14 @@ However, if it does stop the crashes, and you want to proceed to adjust clock ra
     pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu128
     python3.11 webui.py
 
+## Audiocraft webui
+
+ python3.11 -m venv venv
+ source venv/bin/activate
+ pip install -r requirements.txt
+ pip install torch torchaudio --index-url <https://download.pytorch.org/whl/cu128>
+ python3.11 webui.py
+
 ## WhisperX (for generating Subtitles / Closed Captions)
 
 ### Basic install
