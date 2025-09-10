@@ -141,7 +141,7 @@ then 22.04. and now 24.04. It may not be completely accurate.
 
     on the remote server, you need to add the public key to `authorized_keys`, with the:
 
-       command=rsync --server --sender -vlHogDtprRze.iLsf . /etc /home /var/lib/mysql /var/lib/postgresql /var/lib/sympa
+       command="rsync --server --sender -vlHogDtprRze.iLsf . /etc /home /var/lib/mysql /var/lib/postgresql /var/lib/sympa"
 
     in front of it.
 
@@ -171,10 +171,13 @@ then 22.04. and now 24.04. It may not be completely accurate.
 
 1. Set up ssmtp
 
+        sudo -s
         cd /etc/ssmtp
         mv ssmtp.conf ssmtp.conf.old
         cp ~/system_stuff/ssmtp/ssmtp.conf .
         chgrp mail ssmtp.conf
+        chmod g+r ssmtp.conf
+        exit
 
 1. Add `/etc/fstab` line for external backup drive (because there's no automounter)
 
@@ -295,7 +298,7 @@ then 22.04. and now 24.04. It may not be completely accurate.
         sudo chmod g+s /mnt/shared
 
 1. Set up time machine
-    * Ref: https://www.grizzly-hills.com/2019/11/02/ubuntu-19-10-setting-up-time-machine/
+    * Ref: <https://www.grizzly-hills.com/2019/11/02/ubuntu-19-10-setting-up-time-machine/>
 
     1. Install things:
 
