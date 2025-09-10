@@ -1310,7 +1310,7 @@ I picked Newark for the location.
                    SSLCertificateFile    /etc/ssl/private/chat.mattcaron.net/fullchain.pem
                    SSLCertificateKeyFile /etc/ssl/private/chat.mattcaron.net/privkey.pem
 
-                   Include ssl_common.fragment
+                   Include ssl_vhost_common.fragment
 
                    AllowEncodedSlashes NoDecode
                    ProxyPass /_matrix http://127.0.0.1:8008/_matrix nocanon
@@ -1482,7 +1482,7 @@ I picked Newark for the location.
       configure it, grab the `LocalSettings.php` file and stuff it
       where it needs to be. Yay.
 
-   1. And then do the same for https://rpg.mattcaron.net/fallout>
+   1. And then do the same for <https://rpg.mattcaron.net/fallout>
 
 ## Minecraft server
 
