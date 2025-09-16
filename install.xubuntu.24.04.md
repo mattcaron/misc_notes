@@ -1004,7 +1004,21 @@ download it again.
      The video drivers included in 24.04 are wrong, as is what `ubuntu-drivers install` installs. The following works.
 
          sudo add-apt-repository ppa:graphics-drivers/ppa
-         sudo apt install nvidia-driver-575-open
+         sudo apt install nvidia-driver-580-open
+
+     Also, it likes to corrupt the video memory on suspend/resume. So....
+
+     1. Edit `/etc/modprobe.d/nvidia-graphics-drivers-kms.conf` and add the following lines:
+
+            options nvidia-drm fbdev=1
+            options nvidia NVreg_PreserveVideoMemoryAllocations=1
+            options nvidia NVreg_TemporaryFilePath=/var/tmp
+
+     1. Enable the following services:
+
+            sudo systemctl enable nvidia-suspend
+            sudo systemctl enable nvidia-resume
+            sudo systemctl enable nvidia-hibernate
 
 ### Laptop
 
