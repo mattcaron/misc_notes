@@ -543,8 +543,7 @@ file then use it to decrypt the volume - your call.
 
   1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
 
-     **NOTE**: This may be deprecated. I need to see if the P53 actually has this problem. Additionally,
-     it might go away on the P51 with a reapplication of thermal paste.
+     **NOTE**: This may be deprecated. I need to see if the P53 actually has this problem. Additionally, it might go away on the P51 with a reapplication of thermal paste.
 
      1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot
         and let the thermal throttling stop it from actually
