@@ -1047,8 +1047,20 @@ download it again.
 
    Ref: <https://blog.monosoul.dev/2021/10/17/how-to-control-thinkpad-p14s-fan-speed-in-linux/>
 
+   1. Enable fan control.
+
+      Edit `/etc/modprobe.d/thinkpad_acpi.conf` and add the following line:
+
+          options thinkpad_acpi fan_control=1
+
+      Then unload and reload the module, as well as generating the initramfs.
+
+          sudo modprobe -r thinkpad_acpi
+          sudo modprobe thinkpad_acpi
+          sudo update-initramfs -u
+
    1. `sudo apt install thinkfan`
-   2. Then edit `/etc/thinkfan.conf` and set it as follows:
+   1. Then edit `/etc/thinkfan.conf` and set it as follows:
 
           sensors:
             # CPU
@@ -1082,7 +1094,7 @@ download it again.
 
        (You can test changes with `sudo thinkfan -n`).
 
-   3. Finally, set it to start automatically, and then start it:
+   1. Finally, set it to start automatically, and then start it:
           echo 'THINKFAN_ARGS="-c /etc/thinkfan.conf"' | sudo tee -a /etc/default/thinkfan
           sudo systemctl enable thinkfan
           sudo systemctl start thinkfan
