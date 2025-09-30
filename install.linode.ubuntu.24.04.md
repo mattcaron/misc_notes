@@ -161,6 +161,7 @@ I picked Newark for the location.
        sudo certbot --standalone certonly -d mail.mattcaron.net
        sudo certbot --standalone certonly -d pfmbonsai.com
        sudo certbot --standalone certonly -d chat.mattcaron.net
+       sudo certbot --standalone certonly -d chatclient.mattcaron.net
        sudo certbot --standalone certonly -d video.mattcaron.net
        sudo certbot --standalone certonly -d rpg.mattcaron.net
 
@@ -1317,6 +1318,9 @@ I picked Newark for the location.
                    ProxyPassReverse /_matrix http://127.0.0.1:8008/_matrix
                    ProxyPass /_synapse/client http://127.0.0.1:8008/_synapse/client nocanon
                    ProxyPassReverse /_synapse/client http://127.0.0.1:8008/_synapse/client
+
+                   # simple landing page
+                   DocumentRoot /home/matt/public_html/chat.mattcaron.net
                </VirtualHost>
 
                # Server to server comms (disabled for now as we do not want federation)
@@ -1351,8 +1355,45 @@ I picked Newark for the location.
                pull it all down.
 
 1. Element Web (frontend for Matrix server)
-    1. Copy over `~/public_html/chat.mattcaron.net`.
-    1. In `/etc/apache2/sites-available/chat.mattcaron.net`, set the `DocumentRoot` to `/home/matt/public_html/chat.mattcaron.net`.
+    1. Copy over `~/public_html/chatclient.mattcaron.net`.
+    1. Create `/etc/apache2/sites-available/chatclient.mattcaron.net` as follows:
+
+           <VirtualHost *:80>
+               ServerName chatclient.mattcaron.net
+               ServerAdmin matt@mattcaron.net
+
+               RewriteEngine on    
+               RewriteRule ^/(.*)$  https://chatclient.mattcaron.net/$1  [R,L]
+           </VirtualHost>
+
+           <VirtualHost *:443>
+               ServerName chatclient.mattcaron.net
+               ServerAdmin matt@mattcaron.net
+
+               SSLEngine on
+               SSLCertificateFile    /etc/ssl/private/chatclient.mattcaron.net/fullchain.pem
+               SSLCertificateKeyFile /etc/ssl/private/chatclient.mattcaron.net/privkey.pem
+
+               Include ssl_vhost_common.fragment
+
+               # Best practices per element-web README.                                                            
+               <IfModule mod_headers.c>
+                   Header set X-Frame-Options SAMEORIGIN
+                   Header set X-Content-Type-Options nosniff
+                   Header set X-XSS-Protection "1; mode=block"
+                   Header set Content-Security-Policy "frame-ancestors 'self'"
+                   Header set Cache-Control "no-cache"
+               </IfModule>
+
+               DocumentRoot /home/matt/public_html/chatclient.mattcaron.net
+           </VirtualHost>
+
+           Include ssl_config_common.fragment
+
+    1. Enable it:
+
+           sudo a2ensite chatclient.mattcaron.net
+           sudo service apache2 reload
 
 1. Jitsi
 
