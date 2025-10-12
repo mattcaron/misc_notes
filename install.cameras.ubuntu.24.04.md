@@ -1,34 +1,44 @@
 # Instructions for installing Ubuntu 24.04 on cameras (the Zoneminder NVR system)
 
-Note that this was the result of an install of 22.04 upgraded to 24.04 so it may not be perfect.
-
 ## Base install and configs
 
 NOTE: This did not set up the 2 drives the same way, so the data is redundant, but we can't boot off the second drive. Needs a rebuild, likely when I move to new hardware which can process more streams more efficiently.
 
 1. Install Ubuntu server as normal from an Ubuntu server install CD. I selected
-   the minimal option for a headless server.
+   the default option because the minimal option was... too minimal.
 
-    Partition as follows, for both disks - which we're going to RAID.
+   Partition as follows, for both disks - which we're going to RAID. In order to establish the partitions, I had to drop to a new VTY because the interface sucks balls. Once you have partitions, you return to the nice menu system to establish your RAID groups.
 
-    * /`boot` - 1GB (physical RAID)
+   * `/efi` - 1G - EFI System (type 1)
+   * `/boot` - 1G - Linux RAID (type 43)
+   * rest - Linux RAID (type 43)
 
-    * rest (physical RAID)
-        * Make this RAID LVM, partitioned as follows:
+   Then copy the partition scheme from one to the other, regenerating the GUID so there aren't any duplicates.
 
-              /     - 100GB
-              /tmp  - 50GB
-              /var  - 100GB
-              swap  - 10GB
-              /home - rest
+       sudo -s
+       sfdisk -d /dev/sda | sfdisk /dev/sdb
+       sfdisk --disk-id /dev/sdb `uuidgen`
+       exit
 
-    When it asks for what to install, install "OpenSSH server" and leave
-    everything else blank.
+   Then flip back to the installer, set `boot` to MD RAID, and set the rest to MD RAID with an LVM Group inside of it, with the following volumes:
 
-    Networking is already set up with a reserved DHCP lease on the router. It is
-    accessible as `cameras`. No need for a static IP.
+       /     - 50GB
+       /tmp  - 25GB
+       /home - 10GB
+       swap  - 10GB
+       /var  - 10GB
+       /var/cache/zoneminder - rest
 
-1. After machine is up, edit `/etc/apt/sources.list` and make sure the following are enabled:
+   The default location for zoneminder stuff is `/var/cache/zoneminder/`, hence the big allocation there. But, it's also a separate volume so, if we fill it, we don't make the system unusable.
+
+   **NOTE**: If when the installer says "you need to choose a boot device", they mean the **drive** not the partition. As long as you have an ESP (EFI System Partition) on the drive, you can then go to the drive and choose "Use As Boot Device". ~~Then go to the second drive and select "Add As Another Boot Device". This will set them up as primary and backup EFI System Partitions and life will be good.~~ It would, if the installer didn't fall on its face if you did this. So, **don't** select the second drive as another boot device. Just install on the primary, and we'll do the secondary device later.
+
+   When it asks for what to install, install "OpenSSH server" and leave everything else blank.
+
+   Networking is already set up with a reserved DHCP lease on the router. It is
+   accessible as `cameras`. No need for a static IP.
+
+1. After machine is up, edit `/etc/apt/sources.list.d/ubuntu.sources` and make sure the following are enabled:
 
        Suites: noble noble-updates noble-backports
        Components: main restricted universe multiverse
@@ -36,7 +46,7 @@ NOTE: This did not set up the 2 drives the same way, so the data is redundant, b
        Suites: noble-security
        Components: main restricted universe multiverse
 
-    (they were after install for me)
+    (they were properly set up after install for me)
 
 1. Make sure all is up to date.
 
@@ -45,7 +55,7 @@ NOTE: This did not set up the 2 drives the same way, so the data is redundant, b
 
 1. Install more useful things
 
-       sudo apt install net-tools tree atop nmap iotop emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck lm-sensors ntp ssmtp gdisk git gitk iftop mailutils ppa-purge xsltproc smartmontools
+       sudo apt install net-tools tree atop nmap iotop emacs emacs-goodies-el elpa-go-mode elpa-rust-mode elpa-f elpa-let-alist elpa-markdown-mode elpa-yaml-mode elpa-flycheck cpufrequtils symlinks sysstat ifstat dstat whois powertop latencytop apt-show-versions apt-file lm-sensors ntp ssmtp gdisk git iftop atop tree locate net-tools wget mailutils ppa-purge xsltproc smartmontools
 
 1. Add any necessary user accounts
 
@@ -76,26 +86,46 @@ NOTE: This did not set up the 2 drives the same way, so the data is redundant, b
 
               sudo service ssh restart
 
-1. Enable firewall, bit first, disable firewally logging (it can be quite
+1. Enable firewall, bit first, disable firewall logging (it can be quite
    verbose on a busy network), then turn on the firewall.
 
         sudo ufw logging off
         sudo ufw enable
 
-1. Set up sensors for ASUS i7 board (I forget the model)
+1. Install grub on to the second hard disk.
 
-    add the following to /etc/modules:
+   Remember, we tried to do this at install and it failed.
 
-         coretemp
-         i5500_temp
-         w83627ehf
+        grub-install /dev/sdb
+
+1. Clone our standard set of scripts to the usual places
+
+        mkdir -p ~/workspace/code/scripts
+        cd ~/workspace/code/scripts
+        git clone --depth=1 https://github.com/mattcaron/general_scripts.git general
+
+   Then symlink them into place:
+
+         mkdir ~/bin
+         cd ~/bin
+         ln -s ~/workspace/code/scripts/general/* .
+
+1. Also make sure to copy over the `system_stuff` directory.
+
+1. Add the `efi_sync` to the daily cron list:
+
+         cd /etc/cron.daily
+         sudo ln -s /home/matt/bin/efi_sync .
 
 1. Set up ssmtp
 
+        sudo -s
         cd /etc/ssmtp
         mv ssmtp.conf ssmtp.conf.old
-        cp ~/system_stuff/ssmtp/ssmtp.conf .
+        cp /home/matt/system_stuff/ssmtp/ssmtp.conf .
         chgrp mail ssmtp.conf
+        chmod g+r ssmtp.conf
+        exit
 
 1. Add monitoring (sortof):
 
@@ -112,48 +142,89 @@ NOTE: This did not set up the 2 drives the same way, so the data is redundant, b
 1. Refs:
     * <https://zoneminder.readthedocs.io/en/latest/installationguide/ubuntu.html>
 
-1. Install deps:
+1. Add the deps, PPA and do the basic install:
 
-       sudo apt-get install tasksel
-       sudo tasksel install web-server
-
-1. Add the PPA and do the basic install (TODO - this will eventually officially be released and we should change the PPA accordingly to get off the bleeding edge):
-
-       sudo add-apt-repository ppa:iconnor/zoneminder-proposed
+       sudo apt install software-properties-common
+       sudo add-apt-repository ppa:iconnor/zoneminder-1.36
        sudo apt install zoneminder
 
 1. Fix some perms and ownership:
 
-       sudo chmod 740 /etc/zm/zm.conf
        sudo chown root:www-data /etc/zm/zm.conf
        sudo chown -R www-data:www-data /usr/share/zoneminder/
 
 1. Enable apache modules Zoneminder config:
 
-       sudo a2enmod cgi
-       sudo a2enmod rewrite
-       sudo a2enmod expires
-       sudo a2enmod headers
-       sudo a2enmod php8.3
+       sudo a2enmod rewrite headers cgi php8.3 ssl
        sudo a2enconf zoneminder
-       sudo systemctl reload apache2
+       sudo systemctl restart apache2
 
 1. Let it through the firewall
 
        sudo ufw allow http
+       sudo ufw allow https
+
+1. Set the timezone properly for PHP
+
+   1. Edit `/etc/php/8.3/apache2/php.ini`
+   1. Find the line `;date.timezone =`
+   1. Uncomment it and set it to `date.timezone = America/New_York`
 
 1. Enable and start zoneminder:
 
        sudo systemctl enable zoneminder
        sudo systemctl start zoneminder
 
-1. Reload apache:
+1. Going to <http://cameras/zm> should now work. If not, you screwed up someplace.
 
-       sudo systemctl reload apache2
+1. Configure the site properly (http -> https redirect, SSH, etc.)
 
-1. Going to <http://cameras/zm> should now work.
+   1. In `/etc/apache2/sites-available`, create `zoneminder.conf` as follows:
+
+          <VirtualHost *:80>
+              ServerName cameras
+              ServerAdmin matt@mattcaron.net
+
+              RewriteEngine on    
+              RewriteRule ^/(.*)$  https://cameras/zm/$1  [R,L]
+          </VirtualHost>
+
+          <VirtualHost *:443>
+
+              ServerName cameras
+              ServerAdmin matt@mattcaron.net
+
+              SSLEngine on
+              SSLCertificateFile    /etc/ssl/private/crt
+              SSLCertificateKeyFile /etc/ssl/private/key
+
+              <IfModule mod_headers.c>
+                  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains"
+              </IfModule>
+
+              RewriteEngine on
+              RewriteRule ^/$  https://cameras/zm/  [R,L]
+          </VirtualHost>
+
+          # Generated from https://ssl-config.mozilla.org/
+
+          # modern configuration
+          SSLProtocol             all -SSLv3 -TLSv1 -TLSv1.1 -TLSv1.2
+          SSLHonorCipherOrder     off
+          SSLSessionTickets       off
+
+          SSLUseStapling On
+          SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
+
+   1. Then disable the default and enable the above:
+
+          sudo a2dissite 000-default
+          sudo a2ensite zm-redirect
+          sudo systemctl reload apache2
 
 ## Configure the server
+
+### Configure Options
 
 This is all under **Options**
 
@@ -161,30 +232,31 @@ All changes noted are from the defaults.
 
 1. **System**:
     1. **LANG_DEFAULT** = `en_us`
-    1. **DATE_FORMAT_PATTERN** = `yyyyMMdd`
-    1. TODO - enable logins
+    1. ~~**DATE_FORMAT_PATTERN** = `yyyyMMdd`~~
+       * Don't set this for 1.36.xx. There's a bug that crashes the server and it's just not that important.
+    1. **AUTH_HASH_SECRET** = Set to something random
     1. **OPT_USE_LEGACY_API_AUTH** = unchecked
       * Because it's a new installation
-    1. **TIMEZONE** = `(GMT-05:00) America, New York`
     1. **OPT_CONTROL** = unchecked
       * Because we don't have any PTZ cameras.
     1. TODO - **OPT_TRIGGERS** will be handy for SMTP uploads + triggers
     1. **CHECK_FOR_UPDATES** = unchecked
       * Redundant with the package manager having updates.
-1. **API**
-    1. TODO - Per-user API is going to be useful.
 1. **Email**
-    1. TODO - Various notifications here may be useful.
+    1. **OPT_EMAIL** = checked
+        1. We don't check OPT_MESSAGE because it's a short message for SMS. Regular email is fine.
+    1. **MESSAGE_ADDRESS** = my email
+    1. **NEW_MAIL_MODULES** = checked
+    1. **FROM_EMAIL** = my email
+    1. **URL** = server url
+    1. **SSMTP_MAIL** = checked
+    1. **SSMTP_PATH** = `/usr/sbin/ssmtp`
 1. **Users**
-    1. TODO - Add users, then enable authentication.
+    1. Add users.
+1. **System**:
+    1. **OPT_USE_AUTH** = checked
 
-1. Because the server is set up with most of the space in `/home`:
-    1. `sudo mkdir /home/zm-storage`
-    1. `sudo chown www-data:www-data /home/zm-storage`
-    1. Then go in and add it in **Options->Storage**. I called mine `Bulk
-       Storage`.
-    1. **Do not delete the default storage** It's still the default. We'll just
-       set up cameras to not use it anymore.
+### Configure video retention and notifications
 
 1. Set up policy to delete old videos
     1. In the top bar, click **Filters**:
@@ -204,6 +276,37 @@ All changes noted are from the defaults.
 
     Also note that the syntax is weird. Since it's less than -30 days, it's 30 days in the future. It would be great if there was an "Age" item in the drop down, but alas, there is not.
 
+    1. Fill out another new filter as follows:
+        * Name: `Notifications`
+        * Select:
+            * Alarm Frames
+            * greater than
+            * 0
+        * and
+            * End Date/Time
+            * greater than or equal to
+            * -1 minute
+        * Under **Actions**, tick `Email details of all matches`
+        * Under **Options**, tick `Run filter in background` and then set:
+            * Email To: <my email>
+            * Email Subject: `ZM: %ED% on %MN% at %ET%`
+            * Email Body:
+
+                  An event has been detected on monitor %MN% at %ET%.
+
+                  ID: %EI%
+
+                  Description: %ED%
+
+                  Cause: %EC%
+
+                  View the event here: %ZP%?view=event&eid=%EI%.
+
+                  An image is attached to this email.
+
+                  %EIM%
+    1. Click `Save`
+
 ## Add Neolink
 
 So Reolink wireless cameras work.
@@ -212,11 +315,13 @@ So Reolink wireless cameras work.
 
 I did this on my desktop, not the server. Since both run the same OS and it's a
 (mostly) statically compiled rust binary, I just plan to copy it over from dev
-box to server.
+box to server. Then you don't need to install the rust toolchain stuff on the server.
 
-1. Clone it from its repo:
+1. Clone it from its repo and check out the latest release:
 
-       git clone https://github.com/thirtythreeforty/neolink.git
+       git clone https://github.com/QuantumEntangledAndy/neolink.git
+       cd neolink
+       git checkout 0.4.0 
 
 1. Make sure rust and cargo are updated:
 
@@ -229,7 +334,7 @@ box to server.
 
 1. Then one can build it successfully with:
 
-       cargo build
+       cargo build --release
 
 ### Install on server
 
@@ -252,9 +357,31 @@ box to server.
     1. The cameras have limited user functionality, so their username is always
        `admin`. The password is saved in Keepass.
 
-1. Create a config section for each camera (see below).
-
+1. Create a config section for each camera (see [below](#reolink-argus-eco)).
 1. Set it up to start on boot
+
+   1. Create `/etc/systemd/system/neolink.service` as follows:
+
+          [Unit]
+          Description=Neolink camera service
+          After=network.target
+
+          [Service]
+          Type=simple
+          ExecStart=/home/matt/neolink/neolink rtsp -c /home/matt/neolink/neolink_config.toml
+          KillMode=process
+          Restart=always
+          WorkingDirectory=/home/matt/neolink
+          User=matt
+          Group=matt
+
+          [Install]
+          WantedBy=multi-user.target
+
+   1. Then enable and start it:
+
+          sudo systemctl enable neolink
+          sudo systemctl start neolink
 
 ### Installing on the server
 
@@ -307,7 +434,9 @@ box to server.
        1. **Enable UID**: Off
            1. We use this for the battery cameras, but not this type.
        1. **Port Settings** click "Set Up"
-           1. **RTSP**: On
+           1. **RTMP**: On
+           1. **RTSP**: Off
+               * RTMP works better.
            1. **ONVIF**: Off
                * ONVIF autodiscovery didn't work, and I'm not going to mess
                   with it right now. Might turn it on later.
@@ -329,18 +458,24 @@ box to server.
         1. **Reference Image Blend**: 12.5% (Outdoor)
         1. **Alarm Reference Image Blend**: 12.5%
     1. **Source**:
-        1. **Source Path**:
-           rtsp://user:pass@hostname/h264Preview_01_main
-           and replace hostname, user and pass appropriately.
+        1. **Source Path**: rtmp://<hostname>:1935/bcs/channel0_main.bcs?channel=0&stream=0&user=<user>&password=<password>
         1. **Method**: UDP
-        1. **Capture Resolution** 2560 x 1920 (Custom)
+        1. **Capture Resolution** 2304*1296 (Custom)
     1. **Storage**:
-        1. **Storage Area**: Bulk Storage
         1. **Video Writer**: Camera Passthrough
         1. Tick the box to store audio too
     1. **Timestamp**
         1. **Timestamp Label Format** = `%N - %Y%m%d %I:%M:%S %p`
         1. **Font Size** = `Extra Large`
+    1. **Misc**:
+        1. Default Method For Viewing Events: MJPEG
+            * MP4 doesn't work as well on mobile.
+
+Note: You can use the substream as a trigger for the main recording, thus saving processing. See:
+
+<https://www.reddit.com/r/reolinkcam/comments/jnurzm/adding_reolink_cameras_to_zoneminder_nvr/>
+
+That source would be rtmp://<hostname>:1935/bcs/channel0_sub.bcs?channel=0&stream=0&user=<user>&password=<password>
 
 ### Reolink Argus Eco
 
@@ -353,7 +488,7 @@ box to server.
 
 1. It only works via the Neolink RTSP bridge software (see above).
 
-1. References: <https://github.com/thirtythreeforty/neolink>
+1. References: <https://github.com/QuantumEntangledAndy/neolink.git>
 
 #### Camera Config
 
@@ -399,11 +534,14 @@ box to server.
            rtsp://localhost:8554/camera-name
            replace camera-name with the camera name
         1. **Method**: UDP
-        1. **Capture Resolution** 1080p
+        1. **Capture Resolution** 1920x1072
+          * It's supposed to be sending 1920x1080 but doesn't. Perhaps because of the neolink?
     1. **Storage**:
-        1. **Storage Area**: Bulk Storage
         1. **Video Writer**: Camera Passthrough
         1. Tick the box to store audio too
     1. **Timestamp**
         1. **Timestamp Label Format** = `%N - %Y%m%d %I:%M:%S %p`
         1. **Font Size** = `Extra Large`
+    1. **Misc**:
+        1. Default Method For Viewing Events: MJPEG
+            * MP4 doesn't work as well on mobile.
