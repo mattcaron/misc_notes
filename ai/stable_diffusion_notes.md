@@ -44,11 +44,14 @@ Refs:
 
 * [CyberRealistic Pony](https://civitai.com/models/443821)
   * Based on Pony
-    * 512 as an anchor geometry
+    * 896x1152 / 832x1216
   * Recommendations:
     * Clip Skip: 2
-    * Positive prompt: `score_9, score_8_up, score_7_up, photo, photorealistic`
-    * Negative prompt: `score_6, score_5, score_4, source_pony, source_anime, source_furry, source_cartoon, worst quality, low quality`
+    * CFG: 5
+    * Sampler: DPM++ SDE Karras / DPM++ 2M Karras / Euler a
+    * Steps: 30+
+    * Positive prompt: `score_9, score_8_up, score_7_up, (SUBJECT),`
+    * Negative prompt: `score_6, score_5, score_4, (worst quality:1.2), (low quality:1.2), (normal quality:1.2), lowres, bad anatomy, bad hands, signature, watermarks, ugly, imperfect eyes, skewed eyes, unnatural face, unnatural body, error, extra limb, missing limbs`
 
 * [DreamShaper XL](https://civitai.com/models/112902)
   * Based on SDXL Turbo
@@ -164,14 +167,14 @@ Refs:
   * [Reference Compendium](https://civitai.com/articles/6621)
   * Base model: Pony
   * Recommendations:
-    * Resolution: 832x1216
+    * Resolution: 1024 or greater
     * Clip Skip: 2
-    * CFG: 6
-    * Steps: 30
-    * Sampler: DPM++ SDE
+    * CFG: 6 - 7
+    * Steps: 30 or more
+    * Sampler: DPM2 A or Euler A
     * Scheduler: Karras
-    * Positive prompt: `score_9, score_8_up, score_7_up, (SUBJECT), depth of field, highly detailed, high contrast, film grain, Rim Lighting`
-    * Negative prompt: `score_6, score_5, score_4, text, censored, deformed, bad hand`
+    * Positive prompt: `score_9, score_8_up, score_7_up`
+    * Negative prompt: `score_4, score_5, score_6`
 
 * [Real Dream](https://civitai.com/models/153568/real-dream)
   * Base model: Pony (SDXL)
