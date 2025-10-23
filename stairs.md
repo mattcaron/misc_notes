@@ -204,3 +204,14 @@ Once installed, ssh in with the correct key and apply updates.
            sudo a2dissite 000-default
            sudo a2enmod ssl authnz_external proxy proxy_http proxy_wstunnel
            sudo systemctl restart apache2
+		   
+1. Clean up `cloud-init` garbage. Not sure why this is here.
+
+    Remove the `NOPASSWD` file created by `cloud-init`:
+
+	    sudo rm /etc/sudoers.d/90-cloud-init-users
+	
+	Remove the package:
+
+        sudo apt purge cloud-init -y
+        sudo rm -rf /etc/cloud/ && sudo rm -rf /var/lib/cloud/
