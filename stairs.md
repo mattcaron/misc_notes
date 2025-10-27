@@ -49,20 +49,21 @@ Once installed, ssh in with the correct key and apply updates.
 
           sudo service ssh restart
 
-1. Install and config basic things
+1. Install and config basic things, generally all related to GPIO support.
+   `wiringpi` gives one the command line `gpio` utility, which is very useful.
+   `python3-rpi-lgpio` adds a supporting shim so `node-red-node-pi-gpio` works.
 
     1. Deps
 
-           sudo apt install wiringpi rpi.gpio-common
+           sudo apt install wiringpi python3-rpi-lgpio
 
     1. Config
 
         1. Create `/etc/udev/rules.d/99-gpiomem.rules` as follows, to set the
-           permissions properly. Note that this follows the Ubuntu standard of
-           using the `dialout` group rather than the RPi OS standard `gpio`
-           group.
+           permissions properly. This is a mix of setting `/dev/gpiomem` and
+           other ways of accessing the GPIOs.
 
-               KERNEL=="gpiomem", GROUP="dialout", MODE="0660"
+               KERNEL=="gpiomem", GROUP="gpio", MODE="0660"
 
     1. Reboot so the udev rule takes effect.
 
@@ -122,10 +123,10 @@ Once installed, ssh in with the correct key and apply updates.
            sudo apt install apache2 libapache2-mod-authnz-external
 
     1. Generate a PEM cert/key pair via your favorite method and put them in a
-      useful place. The config below assumes they will be in `/etc/ssl/private`
-      and be called `apache.pem` and `apache.key`. If you're doing something
-      selfsigned, do it at a long interval, like, say, 5 years. Or use
-      letsencrypt. Ownership should be root:ssl-cert with mode 640.
+       useful place. The config below assumes they will be in `/etc/ssl/private`
+       and be called `apache.pem` and `apache.key`. If you're doing something
+       selfsigned, do it at a long interval, like, say, 5 years. Or use
+       letsencrypt. Ownership should be root:ssl-cert with mode 640.
 
     1. Create `/etc/apache2/sites-available/stairs.conf` as follows:
 
