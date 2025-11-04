@@ -530,17 +530,6 @@ file then use it to decrypt the volume - your call.
 
          sudo apt install firefox thunderbird
 
-  1. Add nushell repo
-
-         wget -O- https://apt.fury.io/nushell/gpg.key | sudo gpg --no-default-keyring --keyring=/usr/share/keyrings/fury-nushell.gpg --import
-         sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" >> /etc/apt/sources.list.d/fury-nushell.list'
-         sudo apt update
-         sudo apt install nushell
-
-     Also, install `ddgr`, which is needed by `ai.nu`
-
-         sudo apt install ddgr
-
   1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
 
      **NOTE**: This may be deprecated. I need to see if the P53 actually has this problem. Additionally, it might go away on the P51 with a reapplication of thermal paste.
