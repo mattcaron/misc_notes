@@ -226,6 +226,12 @@ I picked Newark for the location.
            sudo apt install dovecot-imapd
 
     1. Configure it:
+	
+	   1. Edit `/etc/dovecot/conf.d/10-auth.conf` and set
+          `auth_username_translation = %Ln` to force lowercase names
+          and strip the domain from the config. This compensates for
+          stupid clients which send the whole email address as the
+          username.
 
        1. Edit `/etc/dovecot/conf.d/10-master.conf` and:
            1. find the `inet_listener imaps` line, and uncomment the body.
