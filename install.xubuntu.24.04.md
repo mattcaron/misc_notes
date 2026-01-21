@@ -1410,8 +1410,69 @@ download it again.
 
              @hourly              /home/matt/bin/tempChecker
 
-  1. Fix Wake On Lan
+  1. Fix Wake On Lan (desktop)
 
      1. Click the Network Manager Applet, then click "Edit Connections..."
      1. Pick the connection in question, then double click it.
      1. Under the "Ethernet" tab, in the "Wake on LAN" section, untick "Default" and tick "Magic".
+
+  1. Fix Wake On Lan (laptop)
+
+     (That is, disable it, to save power while suspended, especially since it is not typically plugged in to wired Ethernet).
+
+     Create `/etc/systemd/network/50-wired.link` as follows.
+
+         [Match]
+         MACAddress=98:fa:9b:cb:d6:30
+
+         [Link]
+         NamePolicy=kernel database onboard slot path
+         AlternativeNamesPolicy=database onboard slot path
+         MACAddressPolicy=persistent
+         WakeOnLan=off
+
+  1. Improve power management (primarily on laptop)
+
+     1. Run `sudo powertop --html` and look at the results, specifically, the "Tuning" tab, and review the suggestions.
+
+     1. For all the suggestions that you like, put them in a file, say, `/usr/local/bin/powertop_recommendations.sh`. For the P53, it is as follows:
+
+            #!/bin/sh
+
+            echo '1500' > '/proc/sys/vm/dirty_writeback_centisecs'
+            echo '0' > '/proc/sys/kernel/nmi_watchdog'
+            echo 'auto' > '/sys/bus/pci/devices/0000:02:00.0/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:55:00.0/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:00:1f.0/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:03:00.0/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:00:1f.5/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:00:00.0/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:00:12.0/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:52:00.0/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:00:14.2/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:00:1f.6/power/control'
+            echo 'auto' > '/sys/bus/pci/devices/0000:00:14.0/power/control'
+
+        And then fix the permissions:
+
+            sudo chmod a+rx /usr/local/bin/powertop_recommendations.sh
+
+     1. Then set it to start on boot by creating `/etc/systemd/system/powertop_recommendations.service` as follows:
+
+            [Unit]
+            Description=Apply PowerTOP recommendations
+            After=network.target
+
+            [Service]
+            Type=oneshot
+            ExecStart=/usr/local/bin/powertop_recommendations.sh
+            RemainAfterExit=yes
+
+            [Install]
+            WantedBy=multi-user.target
+
+         And then set it up:
+
+            sudo systemctl daemon-reload
+            sudo systemctl enable powertop_recommendations.service
+            sudo systemctl start powertop_recommendations.service
