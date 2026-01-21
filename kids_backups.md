@@ -24,7 +24,7 @@ Two-way sync is not required, it's just a one way push from their machine to the
 
        ssh-keygen -t rsa -f ~/.ssh/id_rsa_backup
 
-1. Sneakernet the `id_rsa_backup.pub` key into that individual account's `authorized keys`, with the following command limiter in front of it:
+1. Copy the `id_rsa_backup.pub` key into that individual account's `authorized keys`, with the following command limiter in front of it:
 
        command="/bin/rrsync /home/matt/backups/"
 
