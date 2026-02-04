@@ -999,7 +999,7 @@ download it again.
    2. Add `intel_iommu=igfx_off` to the end of `GRUB_CMDLINE_LINUX_DEFAULT`
    3. `sudo update-grub`
 
-    And then reboot.
+   And then reboot.
 
 3. The fans seem to be overly aggressive. Let's fix that.
 
