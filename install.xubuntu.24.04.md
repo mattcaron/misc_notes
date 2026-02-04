@@ -530,37 +530,6 @@ file then use it to decrypt the volume - your call.
 
          sudo apt install firefox thunderbird
 
-  1. **LAPTOP ONLY** Set CPU throttling so it doesn't overheat when it decides to turbo all the CPUs.
-
-     **NOTE**: This may be deprecated. I need to see if the P53 actually has this problem. Additionally, it might go away on the P51 with a reapplication of thermal paste.
-
-     1. Rant: Turbo boost is a stupid idea. "Oh, let's run our CPU hot
-        and let the thermal throttling stop it from actually
-        melting". Are you really serious with this foolishness?  This
-        results in die temps upwards of 90C, a pile of thermal
-        throttling messages in the logs, and heat buildup elsewhere in
-        the system.
-
-     1. Methodology for arriving at the numbers:
-
-        a. Rough: Set it to the value that the CPU is rated for with no turbo
-           boosting.
-
-        b. Optimal: Run something computationally intensive for a long
-           period of time (lzip a big file). The goal here is for it
-           to be stable and ideally stay below 80C. What you really
-           want is for it to never thermally throttle (which will show
-           in the syslog). If it ever does, back the speed down.
-
-        1. Create `/etc/default/cpufrequtils` and set the content as
-           follows, with MAX_SPEED set as determined above. The
-           following values are for my current Lenovo P51.
-
-                ENABLE="true"
-                GOVERNOR="powersave"
-                MAX_SPEED="3200000"
-                MIN_SPEED="0"
-
   1. Make ssh (server) work:
 
       1. Install it, if not already installed:
