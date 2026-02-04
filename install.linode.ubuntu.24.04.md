@@ -163,7 +163,6 @@ I picked Newark for the location.
        sudo certbot --standalone certonly -d chat.mattcaron.net
        sudo certbot --standalone certonly -d chatclient.mattcaron.net
        sudo certbot --standalone certonly -d video.mattcaron.net
-       sudo certbot --standalone certonly -d rpg.mattcaron.net
 
 1. Make the directories in /etc group accessible by ssl-cert and make the gid sticky
 
@@ -1496,41 +1495,6 @@ I picked Newark for the location.
            sudo ufw allow 10000 comment "jitsi media"
 
 ## Other websites
-
-1. MediaWiki (rpg.mattcaron.net)
-
-   1. Make the dir, index.html, etc. (this is all in git, so will just get pushed).
-   1. Grab the mediawiki tarball and untar it in wwn (the current
-      RPG game). We'll be using separate mediawiki per install, just
-      like wordpress. It does support multihost, but this is clean and
-      easy and there won't be many of these. Plus, it's *actually* clean
-      segregation, not virtual, so any bugs in that code won't bite us.
-
-   1. Make `/etc/apache2/sites-available/rpg.mattcaron.net.conf` and enable it
-
-          sudo a2ensite rpg.mattcaron.net && sudo systemctl reload apache2
-
-   1. Create the databases and users
-
-       1. Log in to MySQL server and do:
-
-              CREATE DATABASE mw_wwn;
-
-              CREATE USER "mw_wwn"@"localhost" IDENTIFIED BY 'PASSWORD';
-
-              GRANT ALL PRIVILEGES ON mw_wwn.* TO "mw_wwn"@"localhost";
-
-              CREATE DATABASE mw_fallout;
-
-              CREATE USER "mw_fallout"@"localhost" IDENTIFIED BY 'PASSWORD';
-
-              GRANT ALL PRIVILEGES ON mw_fallout.* TO "mw_fallout"@"localhost";
-
-   1. Push everything up and then go to <https://rpg.mattcaron.net/wwn> to
-      configure it, grab the `LocalSettings.php` file and stuff it
-      where it needs to be. Yay.
-
-   1. And then do the same for <https://rpg.mattcaron.net/fallout>
 
 ## Minecraft server
 
