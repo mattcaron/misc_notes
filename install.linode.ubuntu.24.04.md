@@ -226,58 +226,59 @@ I picked Newark for the location.
            sudo apt install dovecot-imapd
 
     1. Configure it:
-	
-	   1. Edit `/etc/dovecot/conf.d/10-auth.conf` and set
+
+        1. Edit `/etc/dovecot/conf.d/10-auth.conf` and set
           `auth_username_translation = %Ln` to force lowercase names
           and strip the domain from the config. This compensates for
           stupid clients which send the whole email address as the
           username.
 
-       1. Edit `/etc/dovecot/conf.d/10-master.conf` and:
-           1. find the `inet_listener imaps` line, and uncomment the body.
+        1. Edit `/etc/dovecot/conf.d/10-master.conf` and:
+            1. find the `inet_listener imaps` line, and uncomment the body.
                - ref: <http://wiki2.dovecot.org/HowTo/EximAndDovecotSASL>
-           1. find the `service auth` section and add to the bottom:
+            1. find the `service auth` section and add to the bottom:
   
-                  #SASL                                                                         
-                  unix_listener auth-client {
-                    mode = 0600
-                    user = Debian-exim
-                  }
+                   #SASL
+                   unix_listener auth-client {
+                     mode = 0600
+                     user = Debian-exim
+                   }
 
-           1. At the bottom, add the following:
+            1. At the bottom, add the following:
 
-                  service stats {
-                    unix_listener stats-reader {
-                      mode = 0666
-                    }
-                    unix_listener stats-writer {
-                      mode = 0666
-                    }
-                  }
+                   service stats {
+                     unix_listener stats-reader {
+                       mode = 0666
+                     }
+                     unix_listener stats-writer {
+                       mode = 0666
+                     }
+                   }
 
-       1. Edit `/etc/dovecot/conf.d/10-mail.conf` and find the `mail_location` line, uncomment it and set it to:
+        1. Edit `/etc/dovecot/conf.d/10-mail.conf` and find the `mail_location` line, uncomment it and set it to:
 
-              mail_location = maildir:/home/%u/Maildir
+               mail_location = maildir:/home/%u/Maildir
 
-       1. Edit `/etc/dovecot/conf.d/10-ssl.conf` and:
-          1. Change it to use the mattcaron.net cert:
+        1. Edit `/etc/dovecot/conf.d/10-ssl.conf` and:
 
-                 ssl_cert = </etc/ssl/private/mail.mattcaron.net/fullchain.pem
-                 ssl_key = </etc/ssl/private/mail.mattcaron.net/privkey.pem
+            1. Change it to use the mattcaron.net cert:
 
-          1. Change ssl to "required"
+                   ssl_cert = </etc/ssl/private/mail.mattcaron.net/fullchain.pem
+                   ssl_key = </etc/ssl/private/mail.mattcaron.net/privkey.pem
 
-                 ssl = required
+            1. Change ssl to "required"
 
-       1. Edit `/etc/dovecot/conf.d/20-imap.conf` and set:
+                   ssl = required
 
-                 mail_max_userip_connections = 100
+        1. Edit `/etc/dovecot/conf.d/20-imap.conf` and set:
 
-          (because I have a ton of machines that poll for email behind a NAT)
+               mail_max_userip_connections = 100
 
-       1. Edit `/etc/dovecot/conf.d/15-lda.conf` and set:
+            (because I have a ton of machines that poll for email behind a NAT)
+
+        1. Edit `/etc/dovecot/conf.d/15-lda.conf` and set:
   
-              postmaster_address = postmaster
+               postmaster_address = postmaster
 
            Yes, this is kind of stupid, especially in light of the comment in the config preceding this line, but I've been getting errors about how it's not set, to just explicitly set it to the sane default.
 
