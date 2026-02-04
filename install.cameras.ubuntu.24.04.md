@@ -452,11 +452,14 @@ box to server. Then you don't need to install the rust toolchain stuff on the se
 
 #### Zoneminder Config
 
+(Note that you can clone existing configs and modify)
+
 1. Add the camera in Zoneminder as follows (only non-default values are noted):
     1. **General**:
         1. **Function**: Modect
         1. **Reference Image Blend**: 12.5% (Outdoor)
         1. **Alarm Reference Image Blend**: 12.5%
+        1. **Groups**: All
     1. **Source**:
         1. **Source Path**: rtmp://<hostname>:1935/bcs/channel0_main.bcs?channel=0&stream=0&user=<user>&password=<password>
         1. **Method**: UDP
@@ -467,6 +470,10 @@ box to server. Then you don't need to install the rust toolchain stuff on the se
     1. **Timestamp**
         1. **Timestamp Label Format** = `%N - %Y%m%d %I:%M:%S %p`
         1. **Font Size** = `Extra Large`
+    1. **Buffers**
+        1. **Maximum Image Buffer Size (frames)**: 100
+        1. **Pre Event Image Count**: 5
+        1. **Alarm Frame Count**: 5
     1. **Misc**:
         1. Default Method For Viewing Events: MJPEG
             * MP4 doesn't work as well on mobile.
@@ -523,6 +530,8 @@ That source would be rtmp://<hostname>:1935/bcs/channel0_sub.bcs?channel=0&strea
   the HD stream) or `subStream` (which is the low res stream).
 
 #### Zoneminder Config
+
+(Note that you can clone existing configs and modify)
 
 1. Add the camera in Zoneminder as follows (only non-default values are noted):
     1. **General**:
