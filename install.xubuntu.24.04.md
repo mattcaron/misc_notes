@@ -779,7 +779,7 @@ file then use it to decrypt the volume - your call.
 
   1. (Maybe) install some extra filesystems (as needed)
 
-         sudo apt install davfs2 sshfs jmtpfs ecryptfs-utils exfatprogs exfat-fuse hfsplus libguestfs-tools
+         sudo apt install davfs2 sshfs jmtpfs exfatprogs exfat-fuse hfsplus libguestfs-tools
 
   1. Install qbrew build dependencies:
 
