@@ -1116,6 +1116,11 @@ download it again.
 
            sudo apt install dosbox-x fluidsynth fluid-soundfont-gm fluid-soundfont-gs
 
+  1. Add lutris PPA
+
+		   sudo add-apt-repository ppa:lutris-team/lutris
+		   sudo apt install lutris
+
   1. Set up additional video card libraries and tools:
 
       * Refs:
