@@ -996,10 +996,12 @@ download it again.
    configuration (see <https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2062951>). For now, to fix:
 
    1. Edit `/etc/default/grub`
-   2. Add `intel_iommu=igfx_off` to the end of `GRUB_CMDLINE_LINUX_DEFAULT`
+   2. Add `intel_iommu=off` to the end of `GRUB_CMDLINE_LINUX_DEFAULT`
    3. `sudo update-grub`
 
    And then reboot.
+
+   Note: `intel_iommu=igfx_off` fixes this too, but I'm trying a more agressive option to fix the screen not waking up properly after suspend/resume.
 
 3. The fans seem to be overly aggressive. Let's fix that.
 
@@ -1069,6 +1071,8 @@ download it again.
    1. Edit `/etc/default/grub`
    2. Add `i915.enable_dc=0 ahci.mobile_lpm_policy=1` to the end of `GRUB_CMDLINE_LINUX_DEFAULT`
    3. `sudo update-grub`
+
+   And reboot.
 
 ### Video game machines
 
