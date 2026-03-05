@@ -109,7 +109,7 @@ Once installed, ssh in with the correct key and apply updates.
     1. Add some necessary components:
 
            cd ~/.node-red
-           npm install node-red-dashboard node-red-node-email node-red-node-openweathermap node-red-contrib-config node-red-contrib-msg-resend @flowfuse/node-red-dashboard
+           npm install node-red-node-email node-red-node-openweathermap node-red-contrib-config node-red-contrib-msg-resend @flowfuse/node-red-dashboard
 
     1. Start it, including on boot
 
@@ -135,8 +135,8 @@ Once installed, ssh in with the correct key and apply updates.
                ServerAdmin matt@mattcaron.net
 
                # Redirect common paths to https.
-               Redirect permanent /nodered  https://newstairs/nodered
-               Redirect permanent / https://newstairs/nodered/dashboard
+               Redirect permanent /nodered  https://stairs/nodered
+               Redirect permanent / https://stairs/nodered/dashboard
            </VirtualHost>
 
            <VirtualHost _default_:443>
@@ -179,7 +179,7 @@ Once installed, ssh in with the correct key and apply updates.
                ProxyRequests Off
 
                # Redirect / to the UI
-               Redirect permanent / <https://newstairs/nodered/dashboard>
+               Redirect permanent / <https://stairs/nodered/dashboard>
 
                # Core NodeRed proxy config.
                ProxyPass /nodered/comms  ws://localhost:1880/nodered/comms
