@@ -392,51 +392,39 @@ Also note that most of them don't do text very well.
 
     1. Create `/etc/apt/preferences.d/nodejs` as follows:
 
-         Package: nodejs
-         Pin: origin deb.nodesource.com
-         Pin-Priority: 600
+           Package: nodejs
+           Pin: origin deb.nodesource.com
+           Pin-Priority: 600
 
     1. Fix perms:
 
-         sudo chmod a+r /etc/apt/sources.list.d/nodesource.list /etc/apt/preferences.d/nsolid /etc/apt/preferences.d/nodejs
+           sudo chmod a+r /etc/apt/sources.list.d/nodesource.list /etc/apt/preferences.d/nsolid /etc/apt/preferences.d/nodejs
 
     1. Install it:
 
-         sudo apt update
-         sudo apt install -y nodejs
+           sudo apt update
+           sudo apt install -y nodejs
 
-1. Clone it and go there
+1. Make a venv for it and install it
 
-       git clone https://github.com/open-webui/open-webui.git
-       cd open-webui
-       git checkout v0.5.15
-
-1. Create a venv for into which we install things (to keep it all compartmentalized)
-
-       npm install
-       npm run build
+       mkdir /home/matt/storage1/ai/open-webui
+       cd /home/matt/storage1/ai/open-webui
        python3.11 -m venv venv
        source venv/bin/activate
-       pip install --upgrade pip
-       pip install -r backend/requirements.txt -U
+       pip install open-webui
 
-1. Note that updates are an abbreviated version of the above:
+1. Run it with
 
-       cd open-webui
-       git fetch
-       git checkout <new version>
+       open-webui serve
 
-       npm install
-       npm run build
-       source venv/bin/activate
-       pip install -r backend/requirements.txt -U
+    (or use the one script to rule them all, below)
 
-1. Run it with:
+1. To update
 
-     source venv/bin/activate
-     ./backend/start.sh
-
-(But, again, we'll have a script to make this all easy later in the document.)
+      cd /home/matt/storage1/ai/open-webui
+      source venv/bin/activate
+      pip install --upgrade pip
+      pip install --upgrade open-webui
 
 #### Notes
 
