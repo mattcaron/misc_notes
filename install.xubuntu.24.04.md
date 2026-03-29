@@ -1118,8 +1118,8 @@ download it again.
 
   1. Add lutris PPA
 
-		   sudo add-apt-repository ppa:lutris-team/lutris
-		   sudo apt install lutris
+         sudo add-apt-repository ppa:lutris-team/lutris
+         sudo apt install lutris
 
   1. Set up additional video card libraries and tools:
 
