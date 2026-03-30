@@ -476,6 +476,31 @@ And then configure it:
 
 Now you can do the AI things.
 
+#### OpenCode
+
+1. Install OpenCode
+
+    1. Download latest `opencode-linux-x64.tar.gz` from <https://github.com/anomalyco/opencode/releases>, unzip it so you can run it, and put it someplace in your path.
+
+1. Configure Ollama
+
+    **Note:** This requires you to already have Ollama set up and to have some models you would like to use downloaded.
+
+       ollama launch opencode --config
+
+    Pick the models you want, then be happy.
+
+    Once Ollama is running, for each of those models, you need to run it (with `ollama run <model>`) and then:
+
+       /set parameter num_ctx 262144
+       /save <model>-opencode
+
+    You can check by running the `<model>-opencode` model and then checking the context size with `ollama ps`. Note that not all models support 64K contexts - some cap much lower. The above numbers are based on setting a 256K context in qwen-3.5:9b, which uses about 15GB and therefore fits in a 16GB video card.
+
+1. Install plugin for VSCode / Codium
+
+       codium --install-extension sst-dev.opencode
+
 #### Page Assist for Firefox
 
 1. Install the Page Assist extension via the normal "extensions" method.
