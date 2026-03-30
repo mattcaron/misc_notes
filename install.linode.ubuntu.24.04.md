@@ -575,16 +575,16 @@ I picked Newark for the location.
            cd ~/workspace/code
            git clone https://github.com/sympa-community/sympa.git
            cd sympa
-           git checkout -b production 6.2.76
+           git checkout -b production 6.2.78
 
        to upgrade later:
 
            cd ~/workspace/code/sympa
            git fetch
            git checkout production
-           git merge 6.2.76
+           git merge 6.2.78
 
-       (where 6.2.76 is the current version)
+       (where 6.2.78 is the current version)
 
     1. Copy this whole mess over to the linode server:
 
@@ -608,8 +608,8 @@ I picked Newark for the location.
 
     1. Set the versions in the environment (subsequent shells use this to save typing):
 
-           export VER=6.2.76
-           export OLDVER=6.2.74
+           export VER=6.2.78
+           export OLDVER=6.2.76
 
     1. Make the destination directory:
 
@@ -674,14 +674,14 @@ I picked Newark for the location.
            cd /var/lib/sympa/
            mkdir pictures
 
-    1. Run the upgrade script (on upgrade)
-
-           sudo -u sympa /opt/sympa-${VER}/bin/sympa.pl --upgrade
-
     1. Auto-install a pile of perl modules:
 
            cd ~/workspace/code/sympa
            sudo cpanm --installdeps --with-recommends .
+
+    1. Run the upgrade script (on upgrade)
+
+           sudo -u sympa /opt/sympa-${VER}/bin/sympa.pl upgrade
 
     1. Fix up supporting bits and bobs
 
