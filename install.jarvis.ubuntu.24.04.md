@@ -60,6 +60,19 @@ then 22.04. and now 24.04. It may not be completely accurate.
 
 1. Add any necessary user accounts
 
+1. Allow normal users to read `dmesg` again.
+
+   Edit `/etc/sysctl.d/10-kernel-hardening.conf` and uncomment the following
+   line at the bottom of the file:
+
+       kernel.dmesg_restrict = 0
+
+   then do:
+
+       sudo service procps restart
+
+   To apply the change.
+
 1. Make ssh work:
 
     1. For an old machine, use the old keys - you did save /etc, didn't you?
