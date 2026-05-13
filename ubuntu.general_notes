@@ -703,3 +703,9 @@ v.) Resize the underlying filesystem.
 resize2fs /dev/drives/home
 
 And all is well.
+
+48.) NVidia Optimus graphics offload stuff
+
+Launch the game with this in the steam command line. Or use the equivalent in a normal launcher, lutris, etc.
+
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia gamewrapper "%command%"
