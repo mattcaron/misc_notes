@@ -819,10 +819,6 @@ file then use it to decrypt the volume - your call.
 
          sudo usermod -a -G dialout matt
 
-  1. Install RPi SD card imager (if you need to make RPi images)
-
-         sudo apt install rpi-imager
-
 ### Publishing/media/etc. machines
 
 (This includes all kinds of desktop publishing, media manipluation and transcoding, video editing, etc.)
