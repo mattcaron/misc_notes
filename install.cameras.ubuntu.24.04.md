@@ -474,9 +474,6 @@ box to server. Then you don't need to install the rust toolchain stuff on the se
         1. **Maximum Image Buffer Size (frames)**: 100
         1. **Pre Event Image Count**: 5
         1. **Alarm Frame Count**: 5
-    1. **Misc**:
-        1. Default Method For Viewing Events: MJPEG
-            * MP4 doesn't work as well on mobile.
 
 Note: You can use the substream as a trigger for the main recording, thus saving processing. See:
 
