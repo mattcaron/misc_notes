@@ -1504,11 +1504,7 @@ This is setting up a private Minecraft Bedrock server. For optimal cross platfor
 
 ### Base server
 
-Note:
-
-I'm setting this up based on the prerequisite of only allowing IPv4 connections - that way I don't have to worry about people having to try different ports.
-
-1. Add a DNS entry for the IPv4 address for `minecraft.mattcaron.net`.
+1. Add a DNS entry for the IPv4 and IPv6 addresses for `minecraft.mattcaron.net`.
 
 1. Download from <https://www.minecraft.net/en-us/download/server/bedrock>
 
@@ -1519,11 +1515,12 @@ I'm setting this up based on the prerequisite of only allowing IPv4 connections 
 
 1. Open up firewall ports:
 
-       sudo ufw allow from any to 0.0.0.0/0 port 19133 proto udp comment 'minecraft'
+	   sudo ufw allow 19133 comment 'minecraft'
+   	   sudo ufw allow 19134 comment 'minecraft'
 
 1. Edit `/home/minecraft/minecraft/server.properties` and set the config appropriately.
 
-    - IMPORTANT - set the port to 19133, as BedrockConnect (below) is going to get 19132.
+    - IMPORTANT - set the ports to 19133 and 19134, as BedrockConnect (below) is going to get 19132.
 
 1. Create `/home/minecraft/runminecraft` as follows:
 
@@ -1622,7 +1619,7 @@ Because Microsoft likes to limit who can run servers, we have to make our own se
 
 1. Allow it through the firewall
 
-sudo ufw allow from any to 0.0.0.0/0 port 19132 proto udp comment 'minecraft server list'
+       sudo ufw allow 19132 comment 'minecraft server list'
 
 1. Enable and start the service:
 
