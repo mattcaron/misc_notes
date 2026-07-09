@@ -506,7 +506,7 @@ Now you can do the AI things.
     Once Ollama is running, for each of those models, you need to run it (with `ollama run <model>`) and then:
 
        /set parameter num_ctx 262144
-       /save <model>-opencode
+       /save <model>-bigcontext
 
     You can check by running the `<model>-opencode` model and then checking the context size with `ollama ps`. Note that not all models support 64K contexts - some cap much lower. The above numbers are based on setting a 256K context in qwen-3.5:9b, which uses about 15GB and therefore fits in a 16GB video card.
 
