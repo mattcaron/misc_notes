@@ -398,7 +398,7 @@ box to server. Then you don't need to install the rust toolchain stuff on the se
 1. Go to https://<cameraname> and login. Default username is admin with no
    password.
 
-1. Configure the camera however. You like. Of note:
+1. Configure the camera however you like. Of note:
 
    1. <https://support.reolink.com/hc/en-us/articles/360005238413-The-Difference-Between-Clear-Fluent-and-Balanced>
       explains the difference between the different streams.
@@ -471,7 +471,7 @@ box to server. Then you don't need to install the rust toolchain stuff on the se
         1. **Timestamp Label Format** = `%N - %Y%m%d %I:%M:%S %p`
         1. **Font Size** = `Extra Large`
     1. **Buffers**
-        1. **Maximum Image Buffer Size (frames)**: 100
+        1. **Maximum Image Buffer Size (frames)**: 150
         1. **Pre Event Image Count**: 5
         1. **Alarm Frame Count**: 5
 
