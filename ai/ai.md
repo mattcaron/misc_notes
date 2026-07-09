@@ -426,6 +426,19 @@ Also note that most of them don't do text very well.
       pip install --upgrade pip
       pip install --upgrade open-webui
 
+1. Update open files limits
+
+    It likes to open a ton of files which causes us to hit the 1024 open
+    files limit. For AI users (right now, just me, else I'd make a
+    group), let's increase that.
+
+    Create `/etc/security/limits.d/50-matt-open-files.conf` as follows:
+
+       matt soft nofile 65536
+       matt hard nofile 65536
+
+    (Log off and back in to have it take effect - you can check with `ulimit -n`)
+
 #### Notes
 
 ##### RAG
